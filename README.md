@@ -7,6 +7,11 @@
 
 ---
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/adiel2012/gpt-model-training/blob/master/llm_implementations.ipynb)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-adiel2012%2Fgpt--model--training-blue?logo=github)](https://github.com/adiel2012/gpt-model-training)
+
+---
+
 April 2026
 
 ---
@@ -55,6 +60,8 @@ Large language models have undergone a dramatic transformation over the past sev
 The training paradigm has also shifted substantially. Early models relied on a simple recipe: more data plus more parameters equals better performance. Scaling laws reinforced this trend, but by late 2025, several hard constraints became apparent. Marginal gains from more compute diminish as we double FLOPs. High-quality, deduplicated text is finite and increasingly expensive to obtain. And ever-larger models collide with real-time product requirements and energy budgets.
 
 The modern approach recognizes that raw pre-training scale is only the beginning. Post-training—the combination of supervised fine-tuning, preference optimization, and reinforcement learning—now accounts for the majority of a model's usable capability. The field has moved from "make the base model bigger" to "given a strong base model, how do we make it safe, efficient, and excellent at specific jobs?"
+
+All core concepts and architectural components described in this guide are accompanied by from-scratch PyTorch implementations in the **[llm_implementations.ipynb](llm_implementations.ipynb)** notebook.
 
 ### 1.2 The Modern Training Pipeline at a Glance
 

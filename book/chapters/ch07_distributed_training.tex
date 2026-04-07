@@ -1,4 +1,14 @@
 \chapter{Distributed Training and Infrastructure}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Master 3D Parallelism: Data, Tensor, and Pipeline strategies for scale.
+    \item Review ZeRO optimizer sharding and communication-efficient NCCL patterns.
+    \item Implement mixed-precision (BF16/FP8) and fault-tolerant training.
+    \item Evaluate the 2026 frontier training frameworks (Megatron, DeepSpeed v2).
+  \end{itemize}
+\end{chapteroverview}
 
 \section{Parallelism Strategies}
 
@@ -40,12 +50,14 @@ Periodic snapshots, asynchronous checkpointing, distributed sharding, automatic 
 
 \section{Optimizers and Learning Rate Schedules}
 
+Full update rules in Appendix~\ref{app:optim}: \hyperref[form:adamw]{AdamW}, \hyperref[form:lion]{Lion}, \hyperref[form:cosine]{cosine schedule}; code: \hyperref[lst:adamw]{Listing~\ref*{lst:adamw}}, \hyperref[lst:cosine]{Listing~\ref*{lst:cosine}}.
+
 \subsection{Optimizer Selection}
 
 \begin{itemize}
   \item \textbf{AdamW \parencite{loshchilov2019decoupled}:} The 2025--2026 default. Adam with decoupled weight decay. Hyperparameters: $\beta_1 = 0.9$, $\beta_2 = 0.95$, $\epsilon = 10^{-8}$, weight decay $= 0.1$ (higher than the original $0.01$ recommendation for LLM pre-training). Decoupled weight decay (unlike L2 regularization) correctly regularizes adaptive learning rates.
 
-  \item \textbf{Muon (Momentum + Orthogonalization) \parencite{kosson2024muon}:} Applies a Nesterov momentum update followed by orthogonalization via Newton-Schulz iterations. Treats weight matrices as the correct unit of analysis rather than individual scalars. Matches or exceeds AdamW on pre-training perplexity with 25\% fewer FLOPs on the optimizer step itself. Increasingly adopted for medium-scale (1B--70B) pre-training in 2025.
+  \item \textbf{Muon (Momentum + Orthogonalization) \parencite{kosson2024muon}:} Applies a Nesterov momentum update followed by orthogonalization via Newton-Schulz iterations. It treats weight matrices as the correct unit of analysis rather than individual scalars, ensuring that all directions in weight space are explored with equal intensity. Matches or exceeds AdamW on pre-training perplexity with 25\% fewer FLOPs on the optimizer step (see \hyperref[form:muon]{formulation \S\ref*{form:muon}}, \hyperref[lst:muon]{code Listing~\ref*{lst:muon}}).
 
   \item \textbf{Lion (EvoLved Sign Momentum) \parencite{chen2023symbolic}:} Sign-based update rule: uses only the sign of the gradient momentum, not its magnitude. 2--3$\times$ memory reduction vs.\ AdamW (no second moment). Effective learning rate typically needs to be 3--10$\times$ smaller than AdamW. Works well for fine-tuning; mixed results at large pre-training scale.
 

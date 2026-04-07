@@ -1,6 +1,18 @@
-\chapter{Catastrophic Forgetting and Continual Learning}
+\chapter{Continual Learning and Lifelong Adjustment}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Mitigate catastrophic forgetting using EWC and Low-Rank Adaptation.
+    \item Implement dynamic weight updates for real-time knowledge injection.
+    \item Analyze the 2026 architectures designed for memory and context retention.
+    \item Evaluate the trade-offs between architectural stability and plasticity.
+  \end{itemize}
+\end{chapteroverview}
 
 \section{The Forgetting Problem}
+
+EWC Fisher penalty: \hyperref[form:ewc]{\S\ref*{form:ewc}} in Appendix~\ref{app:continual}; code: \hyperref[lst:ewc]{Listing~\ref*{lst:ewc}}.
 
 When a model is fine-tuned on task B, performance on previously learned task A degrades---sometimes catastrophically. This limits the ability to update deployed models without full retraining.
 

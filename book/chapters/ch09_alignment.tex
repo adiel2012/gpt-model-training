@@ -1,10 +1,22 @@
 \chapter{Alignment -- RLHF, DPO, and Beyond}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Trace the evolution from RLHF to reference-free methods (DPO, SimPO).
+    \item Implement alignment with binary feedback (KTO) and group-relative rewards (GRPO).
+    \item Evaluate the role of verifiable rewards (RLVR) in reasoning-heavy models.
+    \item Understand the 2026 modular alignment stack for safety and helpfulness.
+  \end{itemize}
+\end{chapteroverview}
 
 \section{The Alignment Problem}
 
 A grammatically perfect model may be unhelpful, evasive, or unsafe. The field has evolved from RLHF alone to a modular stack of complementary methods.
 
 \section{Reward Modeling}
+
+Complete objectives in Appendix~\ref{app:alignment}: \hyperref[form:ppo]{PPO}, \hyperref[form:dpo]{DPO}, \hyperref[form:simpo]{SimPO}, \hyperref[form:kto]{KTO}, \hyperref[form:grpo]{GRPO}.
 
 The reward model (RM) translates human preferences into scalar scores. RM quality determines the ceiling for all RM-based alignment methods.
 
@@ -21,12 +33,12 @@ Transformed GPT-3 into ChatGPT \parencite{ouyang2022training}. Pipeline: SFT $\r
 
 \section{DPO}
 
-Eliminates the reward model entirely \parencite{rafailov2023direct}. 90--95\% of RLHF performance at 40--60\% less compute.
+Eliminates the reward model entirely \parencite{rafailov2023direct} (\hyperref[form:dpo]{formula \S\ref*{form:dpo}}, \hyperref[lst:dpo]{code Listing~\ref*{lst:dpo}}). 90--95\% of RLHF performance at 40--60\% less compute.
 
 \begin{keyinsight}[DPO Successors]
 \begin{itemize}
-  \item \textbf{SimPO \parencite{meng2024simpo}:} No reference model. Average log probability as implicit reward. +6.4 on AlpacaEval 2 vs.\ DPO. Simpler and faster.
-  \item \textbf{KTO \parencite{ethayarajh2024kto}:} Binary thumbs-up/down feedback. Production-friendly---leverages implicit signals (clicks, regenerations).
+  \item \textbf{SimPO \parencite{meng2024simpo}:} Eliminates the reference model entirely. It uses length-normalized log probabilities as an implicit reward and introduces a target reward margin $\gamma$ (see \hyperref[form:simpo]{formulation \S\ref*{form:simpo}}, \hyperref[lst:simpo]{code Listing~\ref*{lst:simpo}}).
+  \item \textbf{KTO (Kahneman-Tversky Optimization) \parencite{ethayarajh2024kto}:} Operates on binary thumbs-up/down signals rather than preferences. It maximizes the utility of model outputs by aligning with human loss aversion (see \hyperref[form:kto]{formulation \S\ref*{form:kto}}, \hyperref[lst:kto]{code Listing~\ref*{lst:kto}}).
   \item \textbf{Iterative DPO:} Semi-online re-sampling from the current policy. Closes the distribution gap between training data and current model outputs.
   \item \textbf{IPO \parencite{azar2024ipo}:} Information-Preference Optimization. Regularizes DPO to prevent overfitting to preference margins.
 \end{itemize}
@@ -34,7 +46,7 @@ Eliminates the reward model entirely \parencite{rafailov2023direct}. 90--95\% of
 
 \section{GRPO}
 
-DeepSeek's dominant algorithm for reasoning \parencite{guo2025deepseekr1}. Generates a group of 8--64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33--50\% memory savings over PPO.
+DeepSeek's dominant algorithm for reasoning \parencite{guo2025deepseekr1} (\hyperref[form:grpo]{formula \S\ref*{form:grpo}}, \hyperref[lst:grpo]{code Listing~\ref*{lst:grpo}}). Generates a group of 8--64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33--50\% memory savings over PPO.
 
 \[
 \mathcal{L}_\text{GRPO} = \mathbb{E}\left[\sum_i \hat{A}_i \cdot \log \pi_\theta(o_i \mid q) - \beta \cdot \text{KL}[\pi_\theta \| \pi_\text{ref}]\right]

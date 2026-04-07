@@ -1,8 +1,20 @@
-\chapter{Knowledge Distillation}
+\chapter{Knowledge Distillation and Model Compression}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Master the forward and reverse KL distillation loss functions.
+    \item Implement sequence-level distillation for complex reasoning tasks.
+    \item Analyze the trade-offs between student model size and knowledge retention.
+    \item Evaluate the role of speculative decoding as a dynamic distillation strategy.
+  \end{itemize}
+\end{chapteroverview}
 
 Knowledge distillation (KD) transfers capability from a large \emph{teacher} model to a smaller \emph{student}, achieving performance beyond what the student could reach by training on ground-truth labels alone.
 
 \section{Why Distillation Matters}
+
+Complete derivations in Appendix~\ref{app:distill}: \hyperref[form:fwd_kd]{forward KL}, \hyperref[form:rev_kd]{reverse KL (MiniLLM)}, \hyperref[form:spec_dec]{speculative decoding acceptance}; code: \hyperref[lst:fwd_kd]{Listing~\ref*{lst:fwd_kd}}, \hyperref[lst:spec_dec]{Listing~\ref*{lst:spec_dec}}.
 
 Frontier labs use distillation systematically: Behemoth $\rightarrow$ Scout/Maverick (Meta), R1-671B $\rightarrow$ 1.5B--70B (DeepSeek), Gemini Pro $\rightarrow$ Flash $\rightarrow$ Nano (Google). Distilled 7B models now routinely outperform undistilled 70B models on target tasks.
 

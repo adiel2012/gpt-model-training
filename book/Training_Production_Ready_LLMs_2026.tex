@@ -34,6 +34,12 @@
 \usepackage{listings}
 \usepackage{makeidx}
 \makeindex
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc,shadows}
+\usepackage[undotted]{minitoc}
+\nomtcrule
+\setcounter{minitocdepth}{1}
+\dominitoc
 
 % ── Bibliography (biblatex + biber) ──
 \usepackage[
@@ -49,6 +55,7 @@
   url=true,
   doi=false,
   sorting=nyt,
+  backref=true,
 ]{biblatex}
 \addbibresource{references.bib}
 
@@ -102,6 +109,21 @@
   left=8pt, right=8pt, top=6pt, bottom=6pt
 }
 
+\newtcolorbox{chapteroverview}[1][]{
+  enhanced,
+  colback=navy!5, colframe=navy,
+  width=\textwidth,
+  arc=0pt, outer arc=0pt,
+  left=15pt, right=15pt, top=10pt, bottom=10pt,
+  boxrule=0pt, leftrule=4pt,
+  fontupper=\sffamily,
+  title=\textbf{What You Will Learn},
+  coltitle=navy,
+  attach title to upper,
+  after title={\par\medskip},
+  #1
+}
+
 % ── Code listing style ──
 \lstdefinestyle{pythonstyle}{
   backgroundcolor=\color{codebg},
@@ -118,7 +140,8 @@
   language=Python,
   showspaces=false,
   showstringspaces=false,
-  tabsize=4
+  tabsize=4,
+  numbers=none
 }
 
 % ── Headings ──
@@ -167,13 +190,15 @@
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{3}
 
+% -- Navigation commands are now redundant in unified Treasury --
+
 \begin{document}
 
 % ══════════════════════════════════════════════════════════════════
 %  TITLE PAGE
 % ══════════════════════════════════════════════════════════════════
 \begin{titlepage}
-\centering
+\begin{center}
 \vspace*{3cm}
 {\sffamily\fontsize{36}{42}\selectfont\bfseries\textcolor{navy}{Training Production-Ready\\[8pt]Large Language Models}\par}
 \vspace{1cm}
@@ -186,6 +211,7 @@
 {\textcolor{gray}{Pre-training \textbullet{} Fine-tuning \textbullet{} Alignment \textbullet{} Inference Optimization}\par}
 \vfill
 {\sffamily\textcolor{gray}{April 2026}\par}
+\end{center}
 \end{titlepage}
 
 % ══════════════════════════════════════════════════════════════════
@@ -231,6 +257,7 @@
 \input{chapters/app_d_recipes}
 \input{chapters/app_e_cloud}
 \input{chapters/app_f_hyperparams}
+\input{chapters/app_g_implementation_treasury}
 
 \printbibliography[heading=bibintoc, title={References}]
 

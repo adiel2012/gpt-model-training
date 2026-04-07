@@ -1,4 +1,14 @@
-\chapter{Inference Optimization and Deployment}
+\chapter{Inference and Deployment at Scale}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Distinguish between throughput-bound and memory-bound inference.
+    \item Master KV cache management (PagedAttention, RadixAttention).
+    \item Implement the 2026 quantization stack (H100 FP8, post-training quantization).
+    \item Optimize throughput with speculative decoding and drafting.
+  \end{itemize}
+\end{chapteroverview}
 
 \section{Quantization}
 
@@ -33,6 +43,8 @@ A small draft model generates $k$ tokens; the large target model verifies all $k
 Naive batching waits for all requests in a batch to complete before accepting new ones---wasteful when requests differ in length. Continuous batching \parencite{yu2022orca} inserts new requests as slots free up, achieving near-100\% GPU utilization.
 
 \section{KV Cache Management}
+
+KV cache formula (\hyperref[form:kvcache]{\S\ref*{form:kvcache}}), quantization bounds (\hyperref[form:quant]{\S\ref*{form:quant}}) in Appendix~\ref{app:pipeline}; speculative decoding code: \hyperref[lst:spec_dec]{Listing~\ref*{lst:spec_dec}}.
 
 \begin{itemize}
   \item \textbf{PagedAttention (vLLM) \parencite{kwon2023efficient}:} Non-contiguous physical KV cache blocks managed like OS virtual memory. Eliminates fragmentation, enables 2--4$\times$ more concurrent requests.

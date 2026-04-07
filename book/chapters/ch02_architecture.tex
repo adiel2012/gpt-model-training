@@ -1,4 +1,15 @@
 \chapter{Transformer Architecture -- The Foundation}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Evaluate the decoder-only transformer and its 2026 architectural variations.
+    \item Analyze MQA, GQA, and MLA for efficient KV cache management at scale.
+    \item Compare modern positional encodings including RoPE, iRoPE, and ALiBi.
+    \item Review production-standard normalization (RMSNorm) and activation (SwiGLU) functions.
+    \item Understand the 2025 transition to fine-grained Mixture of Experts (MoE).
+  \end{itemize}
+\end{chapteroverview}
 
 \section{The Decoder-Only Transformer}
 
@@ -27,16 +38,25 @@ Llama 4 Maverick & 400B total & 1M & MoE, iRoPE, 128 experts \\
 
 \subsection{Multi-Head Attention Variants}
 
-Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections. The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
+Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections (\hyperref[form:sdpa]{formulation}: Appendix~\ref{app:attention}; \hyperref[lst:sdpa]{code}: Appendix~H). The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
 
 \begin{itemize}
-  \item \textbf{Multi-Query Attention (MQA):} Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale.
-  \item \textbf{Grouped Query Attention (GQA):} $G$ KV head groups ($1 < G < H$) \parencite{ainslie2023gqa}. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models.
-  \item \textbf{Multi-head Latent Attention (MLA):} DeepSeek-V3. Compressed KV projection via a shared latent vector---achieves MQA memory footprint with near-MHA quality.
+  \item \textbf{Multi-Query Attention (MQA):} Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale (\hyperref[form:mqa]{formulation \S\ref*{form:mqa}}).
+  \item \textbf{Grouped Query Attention (GQA):} $G$ KV head groups ($1 < G < H$) \parencite{ainslie2023gqa}. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models (\hyperref[form:gqa]{formulation \S\ref*{form:gqa}}, \hyperref[lst:gqa]{code Listing~\ref*{lst:gqa}}).
+  \item \textbf{Multi-head Latent Attention (MLA):} DeepSeek-V3. KV cache is compressed into a low-rank latent vector $c_{KV}$, from which heads are projected via an up-projection matrix $W_{UK}$. This achieves the memory footprint of MQA while maintaining the expressive power of MHA (see \hyperref[form:mla]{formulation \S\ref*{form:mla}}, \hyperref[lst:mla]{code Listing~\ref*{lst:mla}}).
 \end{itemize}
+
+\begin{keyinsight}[MLA Mechanics]
+MLA's core innovation is the decoupled latent vector:
+\[
+c_{KV} = W_{DK} h_t, \quad k_t, v_t = W_{UK} c_{KV}
+\]
+where $W_{DK}$ is a down-projection and $W_{UK}$ an up-projection. RoPE is applied to a separate, non-compressed portion of the query and key to maintain relative position awareness without bloating the KV cache.
+\end{keyinsight}
 
 \subsection{Positional Encodings}
 
+Full derivations in Appendix~\ref{app:pos}.
 \begin{itemize}
   \item \textbf{RoPE (Rotary Position Embedding):} Applies rotation matrices to Q/K vectors \parencite{su2024roformer}. Encodes relative positions implicitly. Dominant 2025--2026 standard.
   \item \textbf{iRoPE (Llama 4):} Interleaved no-position and RoPE layers. Enables 10M-token context without explicit positional interpolation.
@@ -46,10 +66,27 @@ Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K
 
 \subsection{Normalization and Activation}
 
+Full formulations in Appendix~\ref{app:norm} (\hyperref[form:rmsnorm]{RMSNorm}, \hyperref[form:swiglu]{SwiGLU}).
 \begin{itemize}
-  \item \textbf{RMSNorm with pre-normalization:} More stable than post-norm LayerNorm. Dominant in all major 2025 models.
-  \item \textbf{SwiGLU:} Gated FFN activation combining Swish and GLU \parencite{shazeer2020glu}. Better performance than ReLU or GELU with the same parameter count.
+  \item \textbf{RMSNorm with pre-normalization:} More stable than post-norm LayerNorm. Dominant in all major 2025 models (\hyperref[form:rmsnorm]{formulation \S\ref*{form:rmsnorm}}).
+  \item \textbf{SwiGLU:} Gated FFN activation combining Swish and GLU \parencite{shazeer2020glu}. Standard for 2024--2026 (\hyperref[form:swiglu]{formulation \S\ref*{form:swiglu}}).
 \end{itemize}
+
+\begin{table}[H]
+\centering\small\sffamily
+\rowcolors{2}{tablealt}{white}
+\begin{tabular}{L{2cm}L{3.5cm}L{5cm}}
+\toprule
+\rowcolor{tablehead}\textcolor{white}{\textbf{Function}} & \textcolor{white}{\textbf{Formulation}} & \textcolor{white}{\textbf{Key Trade-off / Usage}} \\
+\midrule
+ReLU & $\max(0, x)$ & Simple, fast. Risk of ``dying ReLU'' (zero gradient). \\
+GeLU & $x \Phi(x)$ & Smooth, probabilistic gating. GPT-2/3 standard. \\
+Swish / SiLU & $x \sigma(x)$ & Non-monotonic, smoother than ReLU. Llama 1/2. \\
+SwiGLU & $\text{Gated}(x, \text{Swish})$ & Most expressive. 2026 production standard. \\
+\bottomrule
+\end{tabular}
+\caption{Comparative analysis of activation functions in LLMs}
+\end{table}
 
 \section{Mixture of Experts (MoE)}
 

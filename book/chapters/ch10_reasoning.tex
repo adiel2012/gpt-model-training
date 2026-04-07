@@ -1,4 +1,14 @@
 \chapter{Training for Reasoning}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Analyze Chain-of-Thought (CoT) and its 2025--2026 training methods.
+    \item Master Process Reward Models (PRM) for step-level supervision.
+    \item Implement test-time compute scaling and search (MCTS, Best-of-N).
+    \item Understand Thinking Tokens (Quiet-STaR) for emergent reasoning.
+  \end{itemize}
+\end{chapteroverview}
 
 \section{The Rise of Reasoning Models}
 
@@ -47,10 +57,23 @@ MIT: a smaller ``drafter'' model predicts outputs; a larger verifier model confi
 DeepSeek demonstrated that pure RL on verifiable tasks produces emergent reasoning without any SFT \parencite{guo2025deepseekr1}:
 \begin{enumerate}
   \item Start from the base model (no instruction tuning).
-  \item Apply GRPO with binary correctness reward on math/code tasks.
+  \item Apply GRPO (\hyperref[form:grpo]{formulation \S\ref*{form:grpo}}) with binary correctness reward on math/code tasks.
   \item Emergent behaviors: self-verification (``wait, let me reconsider''), extended thinking, strategy switching.
 \end{enumerate}
 
 \begin{warningbox}[Pure RL Training Instability]
 R1-Zero (pure RL, no SFT cold start) exhibits language mixing, repetitive patterns, and poor readability. The DeepSeek production pipeline uses a cold-start SFT phase (a few thousand high-quality CoT examples) before GRPO to stabilize training.
 \end{warningbox}
+\section{Thinking Tokens (Quiet-STaR)}
+
+Rather than forcing reasoning into a separate pre-response phase, Quiet-STaR \parencite{schulman2024quietstar} trains the model to generate ``internal monologue'' tokens at every position in the sequence:
+\begin{itemize}
+  \item \textbf{Divergent Thinking:} The model generates multiple parallel reasoning traces (thoughts) in the background.
+  \item \textbf{Rationalization:} It selects the thought that most improves the prediction of the subsequent actual text tokens.
+  \item \textbf{Token-Level RL:} Thoughts are rewarded based on how much they reduce the cross-entropy loss of the next real token.
+\end{itemize}
+This allows models to benefit from reasoning even on tasks where explicit Chain-of-Thought is not requested, and it creates a unified architecture for both ``fast'' (direct) and ``slow'' (reasoned) processing.
+
+\begin{keyinsight}[The Thinking Token Trade-off]
+Thinking tokens increase inference compute (latency and FLOPs) but can dramatically reduce the model size required to achieve a certain level of performance. A 7B model with 16 thinking tokens can match a 70B model on several reasoning-heavy benchmarks.
+\end{keyinsight}

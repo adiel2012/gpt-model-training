@@ -1,6 +1,16 @@
 \part{Post-Training -- From Base Model to Product}
 
 \chapter{Supervised Fine-Tuning (SFT)}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Master instruction tuning requirements and token-masking techniques.
+    \item Implement parameter-efficient fine-tuning (PEFT) with LoRA and QLoRA.
+    \item Analyze the transition to DoRA and rank-adaptive PEFT in 2026.
+    \item Understand the 2025 shift from large instruction sets to high-quality "Less Is More" (LIMA) datasets.
+  \end{itemize}
+\end{chapteroverview}
 
 \section{Purpose and Principles}
 
@@ -34,6 +44,8 @@ What is the capital of France?<|eot_id|>
 Loss masking: compute cross-entropy loss \emph{only} on assistant tokens, not on system or user tokens. Failure to mask causes the model to learn to generate user messages.
 
 \section{Parameter-Efficient Fine-Tuning (PEFT)}
+
+Full derivations in Appendix~\ref{app:peft}: \hyperref[form:lora]{LoRA (\S\ref*{form:lora})}, \hyperref[form:dora]{DoRA (\S\ref*{form:dora})}; code: \hyperref[lst:lora]{Listing~\ref*{lst:lora}}.
 
 \begin{itemize}
   \item \textbf{LoRA \parencite{hu2022lora}:} Low-rank matrices on frozen weights. $<$1\% extra parameters. Dominant PEFT method.

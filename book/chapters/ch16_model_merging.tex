@@ -1,4 +1,14 @@
-\chapter{Model Merging}
+\chapter{Model Merging and Recombination}
+\minitoc
+
+\begin{chapteroverview}
+  \begin{itemize}
+    \item Master task vector arithmetic and SLERP weight interpolation.
+    \item Implement TIES-Merging and DARE for combining fine-tuned experts.
+    \item Evaluate the "FrankenMoE" strategy for creating heterogeneous ensembles.
+    \item Analyze the 2025 shift from training singular models to evolving model families.
+  \end{itemize}
+\end{chapteroverview}
 
 Model merging combines the weights of multiple fine-tuned models without additional training, enabling capability combination at near-zero compute cost.
 
@@ -13,6 +23,8 @@ Model merging combines the weights of multiple fine-tuned models without additio
 \end{itemize}
 
 \section{Task Vectors}
+
+Full formulations in Appendix~\ref{app:merging}: \hyperref[form:task_vec]{task arithmetic}, \hyperref[form:slerp]{SLERP}, \hyperref[form:ties]{TIES}, \hyperref[form:dare]{DARE}; code: \hyperref[lst:task_vec]{Listing~\ref*{lst:task_vec}}, \hyperref[lst:ties]{Listing~\ref*{lst:ties}}.
 
 Task vector \parencite{ilharco2022editing} $\tau = \theta_\text{fine-tuned} - \theta_\text{base}$. Arithmetic on task vectors enables:
 \begin{itemize}
