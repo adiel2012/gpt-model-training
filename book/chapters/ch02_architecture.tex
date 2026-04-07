@@ -1,0 +1,96 @@
+\chapter{Transformer Architecture -- The Foundation}
+
+\section{The Decoder-Only Transformer}
+
+Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90\% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
+
+\subsection{Architectural Comparison: Key Modern Models}
+
+\begin{table}[H]
+\centering\small\sffamily
+\rowcolors{2}{tablealt}{white}
+\begin{tabular}{L{2.8cm}L{2cm}L{2cm}L{3.5cm}}
+\toprule
+\rowcolor{tablehead}\textcolor{white}{\textbf{Model}} & \textcolor{white}{\textbf{Params}} & \textcolor{white}{\textbf{Context}} & \textcolor{white}{\textbf{Notable Features}} \\
+\midrule
+Llama 3.1 (70B) & 70B & 128K & GQA, RoPE, SwiGLU \\
+Mistral 7B & 7B & 32K & GQA, sliding window \\
+Mixtral 8x7B & 47B total & 32K & MoE, 13B active \\
+DeepSeek-V3 & 671B total & 128K & Fine-grained MoE, MLA \\
+Llama 4 Maverick & 400B total & 1M & MoE, iRoPE, 128 experts \\
+\bottomrule
+\end{tabular}
+\caption{Representative modern model architectures}
+\end{table}
+
+\section{Key Architectural Components}
+
+\subsection{Multi-Head Attention Variants}
+
+Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections. The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
+
+\begin{itemize}
+  \item \textbf{Multi-Query Attention (MQA):} Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale.
+  \item \textbf{Grouped Query Attention (GQA):} $G$ KV head groups ($1 < G < H$) \parencite{ainslie2023gqa}. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models.
+  \item \textbf{Multi-head Latent Attention (MLA):} DeepSeek-V3. Compressed KV projection via a shared latent vector---achieves MQA memory footprint with near-MHA quality.
+\end{itemize}
+
+\subsection{Positional Encodings}
+
+\begin{itemize}
+  \item \textbf{RoPE (Rotary Position Embedding):} Applies rotation matrices to Q/K vectors \parencite{su2024roformer}. Encodes relative positions implicitly. Dominant 2025--2026 standard.
+  \item \textbf{iRoPE (Llama 4):} Interleaved no-position and RoPE layers. Enables 10M-token context without explicit positional interpolation.
+  \item \textbf{ALiBi:} Linear bias on attention scores \parencite{press2022train}. Zero extra parameters, strong length generalization.
+  \item \textbf{YaRN / LongRoPE:} NTK-aware RoPE interpolation for 4--8$\times$ context extension without full retraining \parencite{peng2023yarn}.
+\end{itemize}
+
+\subsection{Normalization and Activation}
+
+\begin{itemize}
+  \item \textbf{RMSNorm with pre-normalization:} More stable than post-norm LayerNorm. Dominant in all major 2025 models.
+  \item \textbf{SwiGLU:} Gated FFN activation combining Swish and GLU \parencite{shazeer2020glu}. Better performance than ReLU or GELU with the same parameter count.
+\end{itemize}
+
+\section{Mixture of Experts (MoE)}
+
+Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token \parencite{shazeer2017outrageously}. Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
+
+\begin{keyinsight}[Key MoE Developments in 2025--2026]
+\begin{itemize}
+  \item \textbf{DeepSeekMoE:} Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
+  \item \textbf{DeepSeekMoE \parencite{dai2024deepseekmoe}:} Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
+  \item \textbf{Sparse Upcycling:} Convert dense models to MoE without training from scratch.
+  \item \textbf{SwitchHead:} MoE applied to attention projection layers (Q, K, V).
+  \item \textbf{Expert Parallelism:} Distributed experts across GPUs for efficient scale.
+  \item \textbf{Load Balancing:} Auxiliary loss or expert-choice routing prevents expert collapse.
+\end{itemize}
+\end{keyinsight}
+
+\section{Context Length and Efficient Attention}
+
+\begin{itemize}
+  \item \textbf{Flash Attention (v2/v3):} $O(n^2) \rightarrow O(n)$ memory via IO-aware tiling \parencite{dao2022flashattention,dao2023flashattention2,shah2024flashattention3}. Mandatory for modern training. FA3 adds warp-specialization for $\sim$2$\times$ speedup over FA2 on H100.
+  \item \textbf{Ring Attention:} Million-token contexts across devices in a ring topology. Each device holds one segment; KV chunks circulate.
+  \item \textbf{Sliding Window Attention:} Fixed local window with cross-layer information flow (Mistral).
+\end{itemize}
+
+\begin{table}[H]
+\centering\small\sffamily
+\rowcolors{2}{tablealt}{white}
+\begin{tabular}{L{3.5cm}C{2.5cm}L{4.5cm}}
+\toprule
+\rowcolor{tablehead}\textcolor{white}{\textbf{Context Window}} & \textcolor{white}{\textbf{KV Cache (7B)}} & \textcolor{white}{\textbf{Use Case}} \\
+\midrule
+4K tokens & 512 MB & Short conversations \\
+32K tokens & 4 GB & Document processing \\
+128K tokens & 16 GB & Full codebase analysis \\
+1M tokens & 128 GB & Entire book corpus \\
+\bottomrule
+\end{tabular}
+\caption{Approximate KV cache memory at different context lengths (BF16, 32 heads)}
+\end{table}
+
+
+% ══════════════════════════════════════════════════════════════════
+%  PART II: DATA
+% ══════════════════════════════════════════════════════════════════

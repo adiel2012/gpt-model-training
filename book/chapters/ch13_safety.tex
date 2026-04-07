@@ -1,0 +1,42 @@
+\chapter{Safety, Alignment, and Red-Teaming}
+
+\section{Safety Taxonomy}
+
+LLM safety failures fall into three broad categories:
+\begin{enumerate}
+  \item \textbf{Harmfulness:} Generating dangerous, illegal, or offensive content.
+  \item \textbf{Dishonesty:} Hallucinating facts, sycophantic agreement, deceptive framing.
+  \item \textbf{Misalignment:} Pursuing goals misaligned with user or societal intent.
+\end{enumerate}
+
+\section{Constitutional AI (CAI)}
+
+Anthropic's Constitutional AI provides a scalable alternative to extensive human annotation:
+\begin{enumerate}
+  \item \textbf{SL-CAI:} For each harmful response, the model generates a critique against a written constitution, then revises the response. Revised outputs become SFT training data.
+  \item \textbf{RL-CAI:} AI-generated preference labels (RLAIF) replace human annotators for training the reward model. Constitutional principles guide preference generation.
+\end{enumerate}
+
+Advantages: dramatically reduces human annotation cost; the constitution is auditable and adjustable; generalizes to unseen harm categories.
+
+\section{Red-Teaming}
+
+\begin{itemize}
+  \item \textbf{Manual red-teaming:} Human adversarial testers find novel jailbreaks and failure modes that automated methods miss.
+  \item \textbf{Automated red-teaming:} LLM generates adversarial prompts at scale (HarmBench, AdvBench). Identifies systematic weaknesses efficiently.
+  \item \textbf{Structured output red-teaming:} Test tool-use, JSON outputs, and code execution paths for injection vulnerabilities.
+\end{itemize}
+
+\section{Interpretability and Explainability}
+
+SHAP and LIME for feature attribution. Attention visualization (with caveats---attention patterns are not explanations). Mechanistic interpretability (Anthropic): identify circuits and features responsible for specific behaviors. EU AI Act (2024--2026) mandates transparency for high-risk AI applications.
+
+\section{Safe Deployment Practices}
+
+\begin{itemize}
+  \item Output classifiers (toxicity, PII detection) as guardrails.
+  \item Input filtering for known harmful patterns.
+  \item Rate limiting and usage monitoring.
+  \item Human-in-the-loop for high-stakes decisions.
+  \item Staged rollouts with safety monitoring before broad deployment.
+\end{itemize}

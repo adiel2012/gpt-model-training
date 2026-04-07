@@ -1,0 +1,24 @@
+\chapter{Catastrophic Forgetting and Continual Learning}
+
+\section{The Forgetting Problem}
+
+When a model is fine-tuned on task B, performance on previously learned task A degrades---sometimes catastrophically. This limits the ability to update deployed models without full retraining.
+
+\section{Mitigation Strategies}
+
+\begin{itemize}
+  \item \textbf{Elastic Weight Consolidation (EWC) \parencite{kirkpatrick2017overcoming}:} Penalizes updates to weights important for previous tasks, identified via the Fisher information matrix approximation.
+  \item \textbf{LoRA-based updates:} Fine-tune only low-rank adapter weights; base model weights remain unchanged. Task-specific adapters can be swapped at inference time.
+  \item \textbf{Replay-based methods:} Mix a small fraction of old task data into new training. 5\% replay often sufficient to preserve 95\% of original task performance.
+  \item \textbf{Hierarchical optimization:} MAML-like meta-learning for fast adaptation with minimal forgetting.
+  \item \textbf{LoRA merging:} Train multiple domain-specific LoRA adapters and merge them periodically, avoiding full model retraining entirely.
+\end{itemize}
+
+\section{Continual Pre-training}
+
+Updating the base model on new data distributions (new knowledge, new language):
+\begin{itemize}
+  \item Learning rate warmup prevents early-stage gradient explosions on new data.
+  \item Data mixing: 80\% new data + 20\% replay from original pre-training corpus.
+  \item Context extension: interleave original context-length data with long-context data during extension training.
+\end{itemize}

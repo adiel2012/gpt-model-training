@@ -1,0 +1,43 @@
+\part{Post-Training -- From Base Model to Product}
+
+\chapter{Supervised Fine-Tuning (SFT)}
+
+\section{Purpose and Principles}
+
+SFT transitions the base model to an instruction-following assistant. It is stable, inexpensive, and immediately effective---but cannot resolve preference trade-offs or handle long-tail failures alone.
+
+\section{Data Quality for SFT}
+
+The Llama~2 team \parencite{touvron2023llama} found that 27K high-quality examples outperform 1M noisy examples. Key quality dimensions:
+\begin{itemize}
+  \item \textbf{Diversity:} Cover the full distribution of user intents.
+  \item \textbf{Accuracy:} Ground-truth responses must be verifiably correct.
+  \item \textbf{Format compliance:} Consistent chat templates and proper system prompts.
+  \item \textbf{Difficulty calibration:} Include challenging multi-step tasks; trivially easy examples waste model capacity.
+\end{itemize}
+
+Quality filtering approaches: LLM-as-judge scoring, perplexity-based selection, human annotation of a seed set, IFD (Instruction Following Difficulty) scoring.
+
+\section{Chat Templates}
+
+Chat templates define how multi-turn conversations are serialized into token sequences. Consistent templates between training and inference are critical:
+
+\begin{lstlisting}[style=pythonstyle, caption={Example chat template (Llama 3 format)}]
+<|begin_of_text|>
+<|start_header_id|>system<|end_header_id|>
+You are a helpful assistant.<|eot_id|>
+<|start_header_id|>user<|end_header_id|>
+What is the capital of France?<|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>
+\end{lstlisting}
+
+Loss masking: compute cross-entropy loss \emph{only} on assistant tokens, not on system or user tokens. Failure to mask causes the model to learn to generate user messages.
+
+\section{Parameter-Efficient Fine-Tuning (PEFT)}
+
+\begin{itemize}
+  \item \textbf{LoRA \parencite{hu2022lora}:} Low-rank matrices on frozen weights. $<$1\% extra parameters. Dominant PEFT method.
+  \item \textbf{QLoRA \parencite{dettmers2023qlora}:} LoRA + 4-bit quantization. Enables 70B+ models on a single consumer GPU.
+  \item \textbf{DoRA \parencite{liu2024dora}:} Weight-Decomposed Low-Rank Adaptation. Decomposes updates into magnitude and direction components---matches or exceeds full fine-tuning on several benchmarks.
+  \item \textbf{Spectrum:} Signal-to-noise ratio analysis identifies the most informative layers for fine-tuning, enabling partial fine-tuning with better ROI per updated parameter.
+\end{itemize}

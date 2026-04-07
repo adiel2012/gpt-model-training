@@ -1,0 +1,31 @@
+\chapter{The Future of LLM Training}
+
+\section{Dominant Trends}
+
+\begin{itemize}
+  \item \textbf{Post-training dominance:} A strong base model plus well-designed post-training can match models 10$\times$ larger with less careful alignment.
+  \item \textbf{Reasoning as a trainable skill:} RLVR + GRPO enable systematic reasoning improvements beyond what SFT achieves.
+  \item \textbf{Synthetic data at scale:} Frontier models generate training data for the next generation. Data flywheel dynamics favor incumbents with strong base models.
+  \item \textbf{Efficiency breakthroughs:} MoE, FP8, speculative decoding, and quantization collectively enable 10--50$\times$ inference cost reduction vs.\ 2023 baselines.
+  \item \textbf{Open-source convergence:} Open models (Llama, Qwen, Mistral) approach closed model performance within 6--12 months of release.
+  \item \textbf{Test-time compute scaling:} A new scaling axis complementing parameter and data scaling, trading inference cost for accuracy.
+\end{itemize}
+
+\section{Open Challenges}
+
+\begin{itemize}
+  \item \textbf{Data scarcity:} Web text quality has plateaued; synthetic data introduces distribution shift and mode collapse risks.
+  \item \textbf{Evaluation gaps:} No reliable benchmark for AGI-level tasks, agentic behavior, or long-horizon planning.
+  \item \textbf{Safety at scale:} Alignment techniques that work at 7B may not generalize to 1T+ parameter models.
+  \item \textbf{Interpretability:} We cannot reliably predict emergent capabilities or explain failure modes.
+  \item \textbf{Energy costs:} Frontier training runs consume megawatt-hours; inference at scale requires dedicated data center planning.
+  \item \textbf{Legal and regulatory:} EU AI Act, copyright litigation, and data provenance requirements create growing compliance burdens.
+  \item \textbf{Multimodal grounding:} Models that understand the physical world through vision, audio, and action remain an open research frontier.
+\end{itemize}
+
+\section{The Next Frontier: 2026--2028}
+
+Likely near-term directions: hardware-software co-design (custom AI chips with in-memory compute), world models for physical reasoning, neurosymbolic integration for reliable formal reasoning, and on-device continual learning for personalization without data privacy risks.
+
+
+% ──────────────────────────────────────────────────────────────────
