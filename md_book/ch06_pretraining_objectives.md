@@ -1,19 +1,15 @@
 \part{Pre-training}
 
 # Pre-training Objectives and Strategies
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Master the next-token prediction (NTP) objective and its 2026 variants.
-    - Review Reinforcement Pre-Training (RPT) for enhanced reasoning.
-    - Analyze curriculum learning and instruction-augmented pre-training.
-    - Understand the multi-stage compute-optimal context extension pipeline.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Master the next-token prediction (NTP) objective and its 2026 variants.
+> - Review Reinforcement Pre-Training (RPT) for enhanced reasoning.
+> - Analyze curriculum learning and instruction-augmented pre-training.
+> - Understand the multi-stage compute-optimal context extension pipeline.
 
 ## Next-Token Prediction
-Self-supervised causal language modeling (see also \S\ref*{form:ntp} for the full NTP objective and \S\ref*{form:ppl} for perplexity (Appendix~app:objectives); code: Listing~\ref*{lst:ntp_loss}):
+Self-supervised causal language modeling (see also [Appendix G](app_g_implementation_treasury.md) for the full NTP objective and [Appendix G](app_g_implementation_treasury.md) for perplexity (Appendix~app:objectives); code: [Appendix G](app_g_implementation_treasury.md)):
 $$
   \mathcal{L} = -\sum_{t=1}^{T} \log p_\theta(x_t \mid x_1, \ldots, x_{t-1})
 $$

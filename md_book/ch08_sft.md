@@ -1,16 +1,12 @@
 \part{Post-Training -- From Base Model to Product}
 
 # Supervised Fine-Tuning (SFT)
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Master instruction tuning requirements and token-masking techniques.
-    - Implement parameter-efficient fine-tuning (PEFT) with LoRA and QLoRA.
-    - Analyze the transition to DoRA and rank-adaptive PEFT in 2026.
-    - Understand the 2025 shift from large instruction sets to high-quality "Less Is More" (LIMA) datasets.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Master instruction tuning requirements and token-masking techniques.
+> - Implement parameter-efficient fine-tuning (PEFT) with LoRA and QLoRA.
+> - Analyze the transition to DoRA and rank-adaptive PEFT in 2026.
+> - Understand the 2025 shift from large instruction sets to high-quality "Less Is More" (LIMA) datasets.
 
 ## Purpose and Principles
 
@@ -24,7 +20,6 @@ The Llama~2 team [touvron2023llama] found that 27K high-quality examples outperf
   - **Accuracy:** Ground-truth responses must be verifiably correct.
   - **Format compliance:** Consistent chat templates and proper system prompts.
   - **Difficulty calibration:** Include challenging multi-step tasks; trivially easy examples waste model capacity.
-
 
 Quality filtering approaches: LLM-as-judge scoring, perplexity-based selection, human annotation of a seed set, IFD (Instruction Following Difficulty) scoring.
 
@@ -45,8 +40,7 @@ Loss masking: compute cross-entropy loss *only* on assistant tokens, not on syst
 
 ## Parameter-Efficient Fine-Tuning (PEFT)
 
-Full derivations in Appendix~app:peft: LoRA (\S\ref*{form:lora)}, DoRA (\S\ref*{form:dora)}; code: Listing~\ref*{lst:lora}.
-
+Full derivations in Appendix~app:peft: LoRA ([Appendix G](app_g_implementation_treasury.md), DoRA ([Appendix G](app_g_implementation_treasury.md); code: [Appendix G](app_g_implementation_treasury.md).
 
   - **LoRA [hu2022lora**:] Low-rank matrices on frozen weights. $<$1\% extra parameters. Dominant PEFT method.
   - **QLoRA [dettmers2023qlora**:] LoRA + 4-bit quantization. Enables 70B+ models on a single consumer GPU.

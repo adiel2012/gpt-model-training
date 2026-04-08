@@ -1,14 +1,10 @@
 # Tokenization -- From Text to Vectors
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Compare BPE, Unigram, and WordPiece tokenization algorithms.
-    - Master the 2026 standard 128K vocabularies for multilingual performance.
-    - Implement multi-byte character handling and special token management.
-    - Analyze the trade-offs between vocabulary size and inference latency.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Compare BPE, Unigram, and WordPiece tokenization algorithms.
+> - Master the 2026 standard 128K vocabularies for multilingual performance.
+> - Implement multi-byte character handling and special token management.
+> - Analyze the trade-offs between vocabulary size and inference latency.
 
 ## Subword Tokenization
 

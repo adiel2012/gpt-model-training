@@ -1,20 +1,16 @@
 # Knowledge Distillation and Model Compression
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Master the forward and reverse KL distillation loss functions.
-    - Implement sequence-level distillation for complex reasoning tasks.
-    - Analyze the trade-offs between student model size and knowledge retention.
-    - Evaluate the role of speculative decoding as a dynamic distillation strategy.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Master the forward and reverse KL distillation loss functions.
+> - Implement sequence-level distillation for complex reasoning tasks.
+> - Analyze the trade-offs between student model size and knowledge retention.
+> - Evaluate the role of speculative decoding as a dynamic distillation strategy.
 
 Knowledge distillation (KD) transfers capability from a large *teacher* model to a smaller *student*, achieving performance beyond what the student could reach by training on ground-truth labels alone.
 
 ## Why Distillation Matters
 
-Complete derivations in Appendix~app:distill: forward KL, reverse KL (MiniLLM), speculative decoding acceptance; code: Listing~\ref*{lst:fwd_kd}, Listing~\ref*{lst:spec_dec}.
+Complete derivations in Appendix~app:distill: forward KL, reverse KL (MiniLLM), speculative decoding acceptance; code: [Appendix G](app_g_implementation_treasury.md), [Appendix G](app_g_implementation_treasury.md).
 
 Frontier labs use distillation systematically: Behemoth $\rightarrow$ Scout/Maverick (Meta), R1-671B $\rightarrow$ 1.5B--70B (DeepSeek), Gemini Pro $\rightarrow$ Flash $\rightarrow$ Nano (Google). Distilled 7B models now routinely outperform undistilled 70B models on target tasks.
 
@@ -50,21 +46,17 @@ Standard KD minimizes forward KL $D_\text{KL}(p_\text{teacher} \| p_\text{studen
 
 Align hidden states or attention patterns at intermediate layers, not just the output:
 
-
   - **Feature-map distillation (PKD, TinyBERT):** $\mathcal{L}_\text{feat} = \|W_\text{proj} h^\text{student}_l - h^\text{teacher}_{f(l)}\|_2^2$ where $f(l)$ maps student layer to teacher layer index and $W_\text{proj}$ is a learned projection.
   - **Attention-pattern distillation:** $\mathcal{L}_\text{attn} = D_\text{KL}(A^\text{teacher}_{l,h} \| A^\text{student}_{l,h})$ summed over heads and layers.
   - **Practical note:** Intermediate distillation requires matching architectures or learned projections. Most practical pipelines stick to output-level or logit-level distillation.
-
 
 ## On-Policy Distillation
 
 A key failure mode of offline response distillation: the student is trained on teacher trajectories but evaluated on *its own* trajectories. Distribution mismatch grows with model capability gap. On-policy distillation:
 
-
   - Roll out the *student* to generate candidate completions.
   - Score each completion with the teacher (assign log-probability or RM score).
   - Minimize KL between student and teacher-scored distribution.
-
 
 Requires either white-box access to teacher logits or a fast teacher inference endpoint. Used in GKD [agarwal2024onpolicy] (Generalized Knowledge Distillation).
 
@@ -74,13 +66,11 @@ Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$
 
 ## Practical Distillation Workflow
 
-
   - Select teacher (strongest accessible model: open-weight 70B--671B or API).
   - Generate responses on your instruction set. For reasoning tasks, generate with high temperature ($T = 0.7$--$1.0$) and filter by verifiable correctness.
   - Optionally: collect teacher logits for logit-level KD (requires local teacher).
   - Fine-tune student with $\alpha = 0.5$: 50\% KD loss, 50\% standard CE loss on human labels.
   - Evaluate on target benchmarks; iterate on temperature and $\alpha$.
-
 
 > **Distillation Rules of Thumb**
 >
@@ -118,7 +108,6 @@ def distillation_loss(student_logits, teacher_logits,
     return alpha * ce_loss + (1 - alpha) * kd_loss
 ```
 
-
 % ══════════════════════════════════════════════════════════════════
-%  PART V: EVALUATION & DEPLOYMENT
+| %  PART V: EVALUATION | DEPLOYMENT |
 % ══════════════════════════════════════════════════════════════════

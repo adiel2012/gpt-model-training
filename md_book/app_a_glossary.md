@@ -1,36 +1,34 @@
 # Glossary of Key Terms
 
-\begin{description}[style=nextline, leftmargin=2cm]
-  \item[RLHF] Reinforcement Learning from Human Feedback -- Alignment using human preference data and a reward model.
-  \item[DPO] Direct Preference Optimization -- Alignment without a reward model, via classification on preference pairs.
-  \item[SimPO] Simple Preference Optimization -- DPO variant using average log probability as implicit reward; no reference model required.
-  \item[IPO] Identity Preference Optimization -- Regularized DPO that prevents overfitting to preference margins.
-  \item[KTO] Kahneman-Tversky Optimization -- Alignment from binary feedback (thumbs up/down).
-  \item[GRPO] Group Relative Policy Optimization -- Critic-free RL comparing responses within a group.
-  \item[DAPO] Decoupled Alignment and Policy Optimization -- Streamlined GRPO removing the reference model.
-  \item[GSPO] Group Sequence Policy Optimization -- Qwen's sequence-level variant of GRPO.
-  \item[RLVR] Reinforcement Learning with Verifiable Rewards -- Training on auto-checkable tasks (math, code).
-  \item[SFT] Supervised Fine-Tuning -- Training on instruction-response pairs.
-  \item[LoRA] Low-Rank Adaptation -- Parameter-efficient fine-tuning with low-rank matrices.
-  \item[QLoRA] Quantized LoRA -- LoRA combined with 4-bit base model quantization.
-  \item[DoRA] Weight-Decomposed Low-Rank Adaptation -- Decomposes updates into magnitude and direction components.
-  \item[MoE] Mixture of Experts -- Sparse architecture activating a subset of parameters per token.
-  \item[GQA] Grouped Query Attention -- Shared KV heads grouped among query heads; reduces KV cache size.
-  \item[MQA] Multi-Query Attention -- Single KV head shared by all query heads; maximum cache reduction.
-  \item[MLA] Multi-head Latent Attention -- DeepSeek's compressed KV projection via shared latent vectors.
-  \item[RoPE] Rotary Position Embedding -- Encodes relative position via rotation matrices in attention.
-  \item[iRoPE] Interleaved RoPE -- Alternates positional and non-positional attention layers for extreme context lengths.
-  \item[BPE] Byte-Pair Encoding -- Subword tokenization algorithm merging frequent character pairs.
-  \item[KV Cache] Key-Value Cache -- Stored attention states for efficient autoregressive generation.
-  \item[FSDP] Fully Sharded Data Parallelism -- Distributes optimizer state, gradients, and parameters across devices.
-  \item[PPO] Proximal Policy Optimization -- RL algorithm used in RLHF; requires a critic model.
-  \item[CAI] Constitutional AI -- Self-critique alignment against a set of explicit constitutional principles.
-  \item[RLAIF] Reinforcement Learning from AI Feedback -- AI-generated preferences replacing human annotations.
-  \item[PRM] Process Reward Model -- Assigns reward scores to individual reasoning steps rather than final outputs.
-  \item[CoT] Chain-of-Thought -- Prompting or training for step-by-step intermediate reasoning before answers.
-  \item[MCTS] Monte Carlo Tree Search -- Tree-based search for the best reasoning path at test time.
-  \item[TLT] Token-Level Training -- Draft-verify framework accelerating both training and inference.
-  \item[TIES] Trim, Elect, Sign -- Model merging algorithm that handles conflicting weight updates.
-  \item[DARE] Drop And REscale -- Model merging via random delta dropout with magnitude rescaling.
-  \item[EWC] Elastic Weight Consolidation -- Prevents catastrophic forgetting via Fisher information penalty.
-\end{description}
+- **RLHF:** Reinforcement Learning from Human Feedback -- Alignment using human preference data and a reward model.
+- **DPO:** Direct Preference Optimization -- Alignment without a reward model, via classification on preference pairs.
+- **SimPO:** Simple Preference Optimization -- DPO variant using average log probability as implicit reward; no reference model required.
+- **IPO:** Identity Preference Optimization -- Regularized DPO that prevents overfitting to preference margins.
+- **KTO:** Kahneman-Tversky Optimization -- Alignment from binary feedback (thumbs up/down).
+- **GRPO:** Group Relative Policy Optimization -- Critic-free RL comparing responses within a group.
+- **DAPO:** Decoupled Alignment and Policy Optimization -- Streamlined GRPO removing the reference model.
+- **GSPO:** Group Sequence Policy Optimization -- Qwen's sequence-level variant of GRPO.
+- **RLVR:** Reinforcement Learning with Verifiable Rewards -- Training on auto-checkable tasks (math, code).
+- **SFT:** Supervised Fine-Tuning -- Training on instruction-response pairs.
+- **LoRA:** Low-Rank Adaptation -- Parameter-efficient fine-tuning with low-rank matrices.
+- **QLoRA:** Quantized LoRA -- LoRA combined with 4-bit base model quantization.
+- **DoRA:** Weight-Decomposed Low-Rank Adaptation -- Decomposes updates into magnitude and direction components.
+- **MoE:** Mixture of Experts -- Sparse architecture activating a subset of parameters per token.
+- **GQA:** Grouped Query Attention -- Shared KV heads grouped among query heads; reduces KV cache size.
+- **MQA:** Multi-Query Attention -- Single KV head shared by all query heads; maximum cache reduction.
+- **MLA:** Multi-head Latent Attention -- DeepSeek's compressed KV projection via shared latent vectors.
+- **RoPE:** Rotary Position Embedding -- Encodes relative position via rotation matrices in attention.
+- **iRoPE:** Interleaved RoPE -- Alternates positional and non-positional attention layers for extreme context lengths.
+- **BPE:** Byte-Pair Encoding -- Subword tokenization algorithm merging frequent character pairs.
+- **KV Cache:** Key-Value Cache -- Stored attention states for efficient autoregressive generation.
+- **FSDP:** Fully Sharded Data Parallelism -- Distributes optimizer state, gradients, and parameters across devices.
+- **PPO:** Proximal Policy Optimization -- RL algorithm used in RLHF; requires a critic model.
+- **CAI:** Constitutional AI -- Self-critique alignment against a set of explicit constitutional principles.
+- **RLAIF:** Reinforcement Learning from AI Feedback -- AI-generated preferences replacing human annotations.
+- **PRM:** Process Reward Model -- Assigns reward scores to individual reasoning steps rather than final outputs.
+- **CoT:** Chain-of-Thought -- Prompting or training for step-by-step intermediate reasoning before answers.
+- **MCTS:** Monte Carlo Tree Search -- Tree-based search for the best reasoning path at test time.
+- **TLT:** Token-Level Training -- Draft-verify framework accelerating both training and inference.
+- **TIES:** Trim, Elect, Sign -- Model merging algorithm that handles conflicting weight updates.
+- **DARE:** Drop And REscale -- Model merging via random delta dropout with magnitude rescaling.
+- **EWC:** Elastic Weight Consolidation -- Prevents catastrophic forgetting via Fisher information penalty.

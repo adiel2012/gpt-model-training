@@ -1,25 +1,19 @@
 # Synthetic Data Generation
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Review the self-instruct and prompt-based data generation evolution.
-    - Master Magpie and PersonaHub for generating high-diversity instruction sets.
-    - Implement quality control and model collapse prevention strategies.
-    - Analyze the cost-efficiency of synthetic data vs. human annotation.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Review the self-instruct and prompt-based data generation evolution.
+> - Master Magpie and PersonaHub for generating high-diversity instruction sets.
+> - Implement quality control and model collapse prevention strategies.
+> - Analyze the cost-efficiency of synthetic data vs. human annotation.
 
 Frontier models are trained on trillions of tokens---but high-quality human-written text is finite. Synthetic data, generated or augmented by existing LLMs, now supplies a substantial fraction of both pre-training and post-training corpora.
 
 ## The Case for Synthetic Data
 
-
   - **Scale without annotation cost:** A single human expert can label $\sim$1K examples per day; a model can generate millions in minutes.
   - **Long-tail coverage:** Rare instructions, specialized domains, and unusual reasoning patterns are under-represented in web crawls.
   - **Consistency:** Synthetic data can be templated to enforce format, difficulty, and safety constraints uniformly.
   - **Reasoning chain density:** Writing out step-by-step solutions is prohibitively slow for humans; LLMs produce them at scale.
-
 
 ## Core Techniques
 
@@ -63,14 +57,12 @@ Persona Hub [chan2024personahub]: maintain a library of 1 billion synthesized us
 
 Raw synthetic data contains errors, repetition, and unsafe content. A multi-stage filter is essential:
 
-
   - **Format checks:** Regex validation for expected chat template structure.
   - **Length filtering:** Remove excessively short responses ($<$20 tokens) and runaway generations ($>$4K tokens without meaningful content).
   - **Self-consistency scoring:** Generate the response twice with different seeds; low cosine similarity flags inconsistent or hallucinated content.
   - **LLM-as-judge:** Score on helpfulness, accuracy, and safety (1--5 scale). Discard scores $\leq$3.
   - **Deduplication:** MinHash near-deduplication to prevent overfitting to repeated patterns.
   - **Human spot-check:** 1--2\% random sample reviewed by domain experts to calibrate automated filters.
-
 
 ## Risks: Model Collapse and Bias Amplification
 
@@ -82,23 +74,17 @@ Bias amplification: errors and biases in the teacher model are reproduced and re
 
 ## Synthetic Data Composition Recommendations
 
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{3.5cm}L{2.5cm}L{5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Synthetic Source**} & \textcolor{white}{**Mix \%**} & \textcolor{white}{**Purpose**} \\
-\midrule
-Magpie (self-generated) & 20--40\% & On-distribution instruction diversity \\
-Evol-Instruct evolved & 15--25\% & Difficulty calibration \\
-Verified math/code chains & 10--20\% & Reasoning capability \\
-Orca CoT augmented & 10--20\% & Step-by-step process learning \\
-Human-curated anchor & 20--30\% & Distribution grounding, collapse prevention \\
-\bottomrule
-\end{tabular}
-\caption{Recommended SFT data mix composition using synthetic sources}
-\end{table}
+[H]
+L{2.5cm}L{5cm}}
+|  | **Purpose** |
+|---|---|---|---|
+| Magpie (self-generated) | 20--40\% | On-distribution instruction diversity |
+| Evol-Instruct evolved | 15--25\% | Difficulty calibration |
+| Verified math/code chains | 10--20\% | Reasoning capability |
+| Orca CoT augmented | 10--20\% | Step-by-step process learning |
+| Human-curated anchor | 20--30\% | Distribution grounding, collapse prevention |
 
+*Table: Recommended SFT data mix composition using synthetic sources*
 
 % ══════════════════════════════════════════════════════════════════
 %  PART III: PRE-TRAINING

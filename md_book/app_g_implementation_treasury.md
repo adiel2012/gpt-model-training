@@ -1,4 +1,4 @@
-# The Implementation Treasury: Theory \& Code
+| # The Implementation Treasury: Theory \ | Code |
 \label{app:treasury}
 
 This appendix provides a unified reference for the mathematical formulations and 
@@ -110,7 +110,7 @@ def scaled_dot_product_attention(
 
 $$
   \mathrm{head}_h = \mathrm{Attention}(Q W_h^Q, K W_h^K, V W_h^V), \quad
-  \mathrm{MHA}(Q, K, V) = \mathrm{Concat}(\mathrm{head}_1, \dots, \mathrm{head}_H) W^O
+  \mathrm{MHA}(Q, K, V) = \mathrm{Concat}(\mathrm{head}_1, ..., \mathrm{head}_H) W^O
 $$
 
 ```python
@@ -262,7 +262,7 @@ class MoE(nn.Module):
 \label{form:rope}
 
 $$
-  R_{\theta_i, t} = \begin{pmatrix} \cos(t\theta_i) & -\sin(t\theta_i) \\ \sin(t\theta_i) & \cos(t\theta_i) \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d}
+| R_{\theta_i, t} = \begin{pmatrix} \cos(t\theta_i) | -\sin(t\theta_i)  \sin(t\theta_i) | \cos(t\theta_i) \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d} |
 $$
 
 ```python
@@ -509,7 +509,7 @@ def simpo_loss(model, x_w, x_l, beta=2.0, gamma=0.5):
 \label{form:grpo}
 
 $$
-  \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\!\left[\sum_{i=1}^{G}\sum_t \dots \right]
+  \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\!\left[\sum_{i=1}^{G}\sum_t ... \right]
 $$
 
 ```python

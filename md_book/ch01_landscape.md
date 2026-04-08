@@ -1,16 +1,12 @@
 \part{Foundations}
 
 # The LLM Training Landscape in 2026
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Understand the 2026 shift from parameter-count to inference-optimality.
-    - Review the 5-stage modern training pipeline (Pre-training to Deployment).
-    - Analyze Chinchilla scaling laws and their 2026 industrial overrides.
-    - Estimate the compute and human capital costs of frontier LLM development.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Understand the 2026 shift from parameter-count to inference-optimality.
+> - Review the 5-stage modern training pipeline (Pre-training to Deployment).
+> - Analyze Chinchilla scaling laws and their 2026 industrial overrides.
+> - Estimate the compute and human capital costs of frontier LLM development.
 
 ## The Evolution of Language Model Training
 
@@ -22,13 +18,11 @@ The training paradigm has shifted substantially. Early models relied on a simple
 
 ## The Modern Training Pipeline
 
-
-  - **Data Curation \& Pre-training:** Next-token prediction on trillions of tokens.
+| - **Data Curation \ | Pre-training:** Next-token prediction on trillions of tokens. |
   - **Supervised Fine-Tuning (SFT):** Instruction-response pairs for baseline behavior.
   - **Preference Optimization:** DPO, SimPO, or KTO for human value alignment.
   - **Reinforcement Learning:** Verifiable rewards or environment feedback for reasoning.
-  - **Evaluation, Safety \& Deployment:** Benchmarking, red-teaming, quantization, serving.
-
+| - **Evaluation, Safety \ | Deployment:** Benchmarking, red-teaming, quantization, serving. |
 
 ## Scaling Laws and the Compute-Optimal Frontier
 
@@ -45,20 +39,16 @@ By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a 
 
 ## Cost Realities
 
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{3.8cm}L{2.8cm}L{3.5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Component**} & \textcolor{white}{**Cost Range**} & \textcolor{white}{**Key Driver**} \\
-\midrule
-Pre-training (frontier) & \$5M -- \$100M+ & Compute (GPU hours) \\
-Pre-training (7B--70B) & \$50K -- \$5M & Data quality + GPU hours \\
-Fine-tuning (LoRA/QLoRA) & \$100 -- \$10K & Dataset size, GPU type \\
-RLHF / DPO alignment & \$10K -- \$500K & Human annotation costs \\
-Evaluation \& Red-teaming & \$5K -- \$100K & Evaluator complexity \\
-Inference infrastructure & \$1K -- \$50K/mo & Traffic, latency SLA \\
-\bottomrule
-\end{tabular}
-\caption{Typical cost ranges for LLM training components}
-\end{table}
+[H]
+L{2.8cm}L{3.5cm}}
+|  | **Key Driver** |
+|---|---|---|---|
+| Pre-training (frontier) | \$5M -- \$100M+ | Compute (GPU hours) |
+| Pre-training (7B--70B) | \$50K -- \$5M | Data quality + GPU hours |
+| Fine-tuning (LoRA/QLoRA) | \$100 -- \$10K | Dataset size, GPU type |
+| RLHF / DPO alignment | \$10K -- \$500K | Human annotation costs |
+| Evaluation \ | Red-teaming | \$5K -- \$100K | Evaluator complexity |
+| Inference infrastructure | \$1K -- \$50K/mo | Traffic, latency SLA |
+
+*Table: Typical cost ranges for LLM training components*
+

@@ -10,6 +10,7 @@
 Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90\% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
 
 ### Architectural Comparison: Key Modern Models
+
 | **Model** | **Params** | **Context** | **Notable Features** |
 | :--- | :--- | :--- | :--- |
 | Llama 3.1 (70B) | 70B | 128K | GQA, RoPE, SwiGLU |
@@ -25,11 +26,9 @@ Nearly all modern autoregressive LLMs use a decoder-only transformer architectur
 
 Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections (formulation and code: [Appendix G](app_g_implementation_treasury.md)). The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
 
-
   - **Multi-Query Attention (MQA):** Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale (formulation: [Appendix G](app_g_implementation_treasury.md)).
   - **Grouped Query Attention (GQA):** $G$ KV head groups ($1 < G < H$) [ainslie2023gqa]. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models (formulation and code: [Appendix G](app_g_implementation_treasury.md)).
   - **Multi-head Latent Attention (MLA):** DeepSeek-V3. KV cache is compressed into a low-rank latent vector $c_{KV}$, from which heads are projected via an up-projection matrix $W_{UK}$. This achieves the memory footprint of MQA while maintaining the expressive power of MHA (formulation and code: [Appendix G](app_g_implementation_treasury.md)).
-
 
 > **MLA Mechanics**
 >
@@ -48,13 +47,13 @@ Full derivations in [Appendix G](app_g_implementation_treasury.md).
   - **ALiBi:** Linear bias on attention scores [press2022train]. Zero extra parameters, strong length generalization.
   - **YaRN / LongRoPE:** NTK-aware RoPE interpolation for 4--8$\times$ context extension without full retraining [peng2023yarn].
 
-
 ### Normalization and Activation
 
 Full formulations in [Appendix G](app_g_implementation_treasury.md) (RMSNorm, SwiGLU).
 
   - **RMSNorm with pre-normalization:** More stable than post-norm LayerNorm. Dominant in all major 2025 models (formulation: [Appendix G](app_g_implementation_treasury.md)).
   - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024--2026 (formulation: [Appendix G](app_g_implementation_treasury.md)).
+
 | **Function** | **Formulation** | **Key Trade-off / Usage** |
 | :--- | :--- | :--- |
 | ReLU | $\max(0, x)$ | Simple, fast. Risk of "dying ReLU" (zero gradient). |
@@ -77,10 +76,10 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
 
 ## Context Length and Efficient Attention
 
-
   - **Flash Attention (v2/v3):** $O(n^2) \rightarrow O(n)$ memory via IO-aware tiling [dao2022flashattention,dao2023flashattention2,shah2024flashattention3]. Mandatory for modern training. FA3 adds warp-specialization for $\sim$2$\times$ speedup over FA2 on H100.
   - **Ring Attention:** Million-token contexts across devices in a ring topology. Each device holds one segment; KV chunks circulate.
   - **Sliding Window Attention:** Fixed local window with cross-layer information flow (Mistral).
+
 | **Context Window** | **KV Cache (7B)** | **Use Case** |
 | :--- | :--- | :--- |
 | 4K tokens | 512 MB | Short conversations |
@@ -88,5 +87,4 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
 | 128K tokens | 16 GB | Full codebase analysis |
 | 1M tokens | 128 GB | Entire book corpus |
 *Table: Approximate KV cache memory at different context lengths (BF16, 32 heads)*
-
 

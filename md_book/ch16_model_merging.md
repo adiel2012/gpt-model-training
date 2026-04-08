@@ -1,19 +1,14 @@
 # Model Merging and Recombination
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Master task vector arithmetic and SLERP weight interpolation.
-    - Implement TIES-Merging and DARE for combining fine-tuned experts.
-    - Evaluate the "FrankenMoE" strategy for creating heterogeneous ensembles.
-    - Analyze the 2025 shift from training singular models to evolving model families.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Master task vector arithmetic and SLERP weight interpolation.
+> - Implement TIES-Merging and DARE for combining fine-tuned experts.
+> - Evaluate the "FrankenMoE" strategy for creating heterogeneous ensembles.
+> - Analyze the 2025 shift from training singular models to evolving model families.
 
 Model merging combines the weights of multiple fine-tuned models without additional training, enabling capability combination at near-zero compute cost.
 
 ## Merging Methods
-
 
   - **Linear interpolation:** $\theta = (1-\alpha)\theta_A + \alpha\theta_B$. Simple but creates interference between dissimilar capabilities.
   - **SLERP (Spherical Linear Interpolation):** Interpolates along the geodesic of weight space. Better than linear for preserving each model's characteristics.
@@ -21,10 +16,9 @@ Model merging combines the weights of multiple fine-tuned models without additio
   - **DARE [yu2023language** (Drop And REscale):] Randomly drop task-vector parameters and rescale survivors. Reduces interference between merged models by eliminating redundant updates.
   - **Model Breadcrumbs:** Remove outlier parameters before merging. Outliers cause interference; removing them improves merge quality.
 
-
 ## Task Vectors
 
-Full formulations in Appendix~app:merging: task arithmetic, SLERP, TIES, DARE; code: Listing~\ref*{lst:task_vec}, Listing~\ref*{lst:ties}.
+Full formulations in Appendix~app:merging: task arithmetic, SLERP, TIES, DARE; code: [Appendix G](app_g_implementation_treasury.md), [Appendix G](app_g_implementation_treasury.md).
 
 Task vector [ilharco2022editing] $\tau = \theta_\text{fine-tuned} - \theta_\text{base}$. Arithmetic on task vectors enables:
 
@@ -32,19 +26,16 @@ Task vector [ilharco2022editing] $\tau = \theta_\text{fine-tuned} - \theta_\text
   - **Capability subtraction:** $\theta_\text{base} - \tau_\text{toxic}$ removes unwanted behaviors.
   - **Analogy:** $\theta_\text{base} + \tau_\text{French} - \tau_\text{English}$ adapts a model to French.
 
-
 > **When Merging Works Best**
 >
 > Merging works best when models share the same base and have been fine-tuned on complementary (not conflicting) tasks. Models fine-tuned on the same task but different data benefit more from ensemble methods than weight merging.
 
 ## Practical Merging Workflow
 
-
   - Fine-tune $n$ specialized models from the same base.
   - Compute task vectors $\tau_i = \theta_i - \theta_\text{base}$ for each.
   - Apply TIES or DARE to reduce interference.
   - Evaluate merged model on target benchmarks; tune merge coefficients $\alpha_i$.
   - Distribute as a single merged model.
-
 
 Tools: `mergekit` [ilharco2022editing] (open source), Hugging Face `transformers` weight manipulation.

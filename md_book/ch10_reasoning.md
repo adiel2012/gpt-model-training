@@ -1,14 +1,10 @@
 # Training for Reasoning
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Analyze Chain-of-Thought (CoT) and its 2025--2026 training methods.
-    - Master Process Reward Models (PRM) for step-level supervision.
-    - Implement test-time compute scaling and search (MCTS, Best-of-N).
-    - Understand Thinking Tokens (Quiet-STaR) for emergent reasoning.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Analyze Chain-of-Thought (CoT) and its 2025--2026 training methods.
+> - Master Process Reward Models (PRM) for step-level supervision.
+> - Implement test-time compute scaling and search (MCTS, Best-of-N).
+> - Understand Thinking Tokens (Quiet-STaR) for emergent reasoning.
 
 ## The Rise of Reasoning Models
 
@@ -18,11 +14,9 @@ Models that break complex problems into explicit intermediate steps---the most s
 
 Prompting or training models to generate intermediate reasoning steps before the final answer. Few-shot CoT [wei2022chain] demonstrated step-by-step prompting dramatically improves multi-step arithmetic, symbolic reasoning, and commonsense tasks.
 
-
   - **Zero-shot CoT:** Append ``Let's think step by step'' to the prompt.
   - **Few-shot CoT:** Provide example (question, reasoning chain, answer) triples in the prompt.
   - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15\% on GSM8K vs.\ single-sample CoT.
-
 
 ## Process Reward Models (PRM)
 
@@ -31,7 +25,6 @@ Instead of rewarding only the final answer, PRMs assign a score to each reasonin
   - Denser supervision signal: $n$ steps $\rightarrow$ $n$ reward signals per example.
   - Enables early pruning of incorrect branches during tree search.
   - Used in OpenAI's o-series for competition math and coding [lightman2023lets].
-
 
 Annotation challenge: step-level labels are expensive. Solutions: automated labeling via outcome consistency (steps on paths leading to correct answers are labeled positive) and synthetic step decomposition from a stronger model.
 
@@ -42,7 +35,6 @@ Allocate more inference compute per query to find better solutions:
   - **Best-of-N:** Sample $N$ complete solutions; select via outcome RM or verifier.
   - **Beam Search over CoT:** Expand $k$ partial chains at each step; prune with PRM.
   - **Monte Carlo Tree Search (MCTS):** Full tree exploration with PRM scoring. Used in AlphaCode 2 and OpenAI o3.
-
 
 > **Test-Time Compute Scaling**
 >
@@ -57,9 +49,8 @@ MIT: a smaller ``drafter'' model predicts outputs; a larger verifier model confi
 DeepSeek demonstrated that pure RL on verifiable tasks produces emergent reasoning without any SFT [guo2025deepseekr1]:
 
   - Start from the base model (no instruction tuning).
-  - Apply GRPO (formulation \S\ref*{form:grpo}) with binary correctness reward on math/code tasks.
+  - Apply GRPO (formulation [Appendix G](app_g_implementation_treasury.md)) with binary correctness reward on math/code tasks.
   - Emergent behaviors: self-verification (``wait, let me reconsider''), extended thinking, strategy switching.
-
 
 > **Pure RL Training Instability**
 >

@@ -1,16 +1,12 @@
 \part{Data -- The Foundation of Everything}
 
 # Data Curation -- The Oil for the Engine
-\minitoc
 
-\begin{chapteroverview}
-  
-    - Implement quality filtering and deduplication at the trillion-token scale.
-    - Review domain sampling proportions (Web, Code, Science, Books) for 2026.
-    - Analyze strategies for removing PII and toxic content while preserving knowledge.
-    - Understand the 2025 shift from quantity-driven to quality-driven curation.
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Implement quality filtering and deduplication at the trillion-token scale.
+> - Review domain sampling proportions (Web, Code, Science, Books) for 2026.
+> - Analyze strategies for removing PII and toxic content while preserving knowledge.
+> - Understand the 2025 shift from quantity-driven to quality-driven curation.
 
 ## Why Data Quality Trumps Quantity
 
@@ -20,23 +16,18 @@ FineWeb [penedo2024fineweb] (15T tokens, heavily curated) outperforms RedPajama 
 
 Web crawl (FineWeb, DCLM), books and academic literature, code repositories (The Stack), curated knowledge bases (Wikipedia), and multilingual sources (FineWeb-2).
 
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{3cm}L{2.5cm}L{5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Source**} & \textcolor{white}{**Typical Mix**} & \textcolor{white}{**Notes**} \\
-\midrule
-Web crawl & 50--70\% & Requires aggressive cleaning \\
-Code & 15--25\% & Boosts reasoning and instruction following \\
-Books & 5--15\% & Long-form coherence \\
-Scientific papers & 3--8\% & Technical reasoning \\
-Wikipedia / Wikidata & 2--5\% & Factual grounding \\
-Curated instruction data & 1--3\% & Bridges to SFT \\
-\bottomrule
-\end{tabular}
-\caption{Typical data source composition for pre-training}
-\end{table}
+[H]
+L{2.5cm}L{5cm}}
+|  | **Notes** |
+|---|---|---|---|
+| Web crawl | 50--70\% | Requires aggressive cleaning |
+| Code | 15--25\% | Boosts reasoning and instruction following |
+| Books | 5--15\% | Long-form coherence |
+| Scientific papers | 3--8\% | Technical reasoning |
+| Wikipedia / Wikidata | 2--5\% | Factual grounding |
+| Curated instruction data | 1--3\% | Bridges to SFT |
+
+*Table: Typical data source composition for pre-training*
 
 ## Cleaning and Filtering Pipeline
 
