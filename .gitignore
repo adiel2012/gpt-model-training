@@ -37,6 +37,7 @@ conda-env/
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
+!llm_implementations.ipynb
 profile_default/
 ipython_config.py
 
