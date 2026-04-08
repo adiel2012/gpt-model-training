@@ -1,4 +1,4 @@
-\documentclass[11pt,twoside,openright]{book}
+\documentclass[11pt,oneside,openany]{book}
 
 % ── Geometry & Layout ──
 \usepackage[
@@ -75,6 +75,10 @@
 \definecolor{warningborder}{HTML}{F57F17}
 \definecolor{codebg}{HTML}{F8F8F8}
 \definecolor{codeframe}{HTML}{CCCCCC}
+\definecolor{codegreen}{HTML}{228B22}
+\definecolor{codepurple}{HTML}{7B1FA2}
+\definecolor{codeblue}{HTML}{0277BD}
+\definecolor{codeorange}{HTML}{E65100}
 
 % ── tcolorbox styles ──
 \newtcolorbox{keyinsight}[1][]{
@@ -126,22 +130,24 @@
 
 % ── Code listing style ──
 \lstdefinestyle{pythonstyle}{
-  backgroundcolor=\color{codebg},
   commentstyle=\color{gray}\itshape,
-  keywordstyle=\color{navy}\bfseries,
-  stringstyle=\color{midblue},
+  keywordstyle=\color{codepurple}\bfseries,
+  stringstyle=\color{codegreen},
+  identifierstyle=\color{codeblue},
   basicstyle=\ttfamily\small,
   breakatwhitespace=false,
   breaklines=true,
   captionpos=b,
-  frame=single,
-  rulecolor=\color{codeframe},
+  frame=none,
   keepspaces=true,
   language=Python,
   showspaces=false,
   showstringspaces=false,
   tabsize=4,
-  numbers=none
+  numbers=none,
+  morekeywords={self, cls, @torch.no_grad, @property},
+  emph={@torch.no_grad, @property},
+  emphstyle=\color{codeorange}\bfseries
 }
 
 % ── Headings ──
