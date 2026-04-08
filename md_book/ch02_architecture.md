@@ -7,7 +7,7 @@
 
 ## The Decoder-Only Transformer
 
-Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90\% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
+Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
 
 ### Architectural Comparison: Key Modern Models
 

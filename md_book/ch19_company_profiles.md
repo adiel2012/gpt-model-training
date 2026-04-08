@@ -11,11 +11,11 @@
 > **OpenAI -- GPT-5 / o3 / o4-mini**
 > **Architecture:** Dense transformer (rumored MoE), Azure AI supercomputers. Unified intelligence, reasoning, coding, multimodality.
 > 
-> **Pre-training:** Massive-scale unsupervised learning. GPT-4.5: data from smaller models. GPT-5: 94.6\% AIME, 74.9\% SWE-bench, 84.2\% MMMU.
+> **Pre-training:** Massive-scale unsupervised learning. GPT-4.5: data from smaller models. GPT-5: 94.6% AIME, 74.9% SWE-bench, 84.2% MMMU.
 > 
 > **Post-training:** SFT + RLHF + ``safe completions'' (output-centric safety). Reasoning via dedicated RL chains of thought. Process reward models score intermediate reasoning steps.
 > 
-> **Deployment:** Real-time router (instant vs.\ deep reasoning). $\sim$80\% fewer factual errors, 50--80\% fewer output tokens.
+> **Deployment:** Real-time router (instant vs.\ deep reasoning). $\sim$80% fewer factual errors, 50--80% fewer output tokens.
 
 ## DeepSeek -- R1 and V3
 
@@ -31,9 +31,9 @@
 > - Rejection Sampling + SFT Stage 2 (800K filtered examples)
 > - Final RL: RLVR (reasoning) + RLHF (helpfulness/safety with separate RMs)
 > 
-> **Results:** R1-Zero AIME: 15.6\% $\rightarrow$ 71.0\% via pure RL. Emergent self-verification, ``aha moments.''
+> **Results:** R1-Zero AIME: 15.6% $\rightarrow$ 71.0% via pure RL. Emergent self-verification, ``aha moments.''
 > 
-> **Distillation:** 1.5B--70B models. 7B: 55.5\% AIME 2024.
+> **Distillation:** 1.5B--70B models. 7B: 55.5% AIME 2024.
 
 ## Meta -- Llama 4 Family
 
@@ -44,7 +44,7 @@
 > 
 > **Post-training (key insight: heavy SFT hurts RL):**
 > [leftmargin=*]
-> - Lightweight SFT: removed 50\%+ easy examples (Llama-as-judge)
+> - Lightweight SFT: removed 50%+ easy examples (Llama-as-judge)
 > - Online RL: continuous, adaptive filtering, curriculum design
 > - Lightweight DPO: final polish
 > - Behemoth codistillation: teacher $\rightarrow$ Scout/Maverick
@@ -87,14 +87,12 @@
 >
 > - **Modular post-training:** Distinct stages, not monolithic. Heavy SFT hurts RL (Meta).
 >   - **MoE is default:** Meta, DeepSeek, Qwen, rumored closed labs.
->   - **GRPO displaces PPO:** Critic-free, 33--50\% memory savings.
+>   - **GRPO displaces PPO:** Critic-free, 33--50% memory savings.
 >   - **Distillation is first-class:** Behemoth$\rightarrow$Scout, R1$\rightarrow$1.5B--70B, Pro$\rightarrow$Flash$\rightarrow$Nano.
 >   - **Reasoning via RL:** Pure RL (DeepSeek), unified routing (OpenAI), thinking modes (Google/Qwen).
 >   - **Safety diverges productively:** Safe completions, CAI, Llama-as-judge, separate RMs.
 
-[H]
-L{2.2cm}L{3.8cm}L{2.8cm}}
-|  | **Post-Training Pipeline** | **Key Innovation** |
+| **Company** | **Architecture** | **Post-Training Pipeline** | **Key Innovation** |
 |---|---|---|---|
 | OpenAI | Dense (MoE?) | SFT $\rightarrow$ Safe Compl.\ $\rightarrow$ RLHF $\rightarrow$ Reasoning RL | Safe completions |
 | DeepSeek | Fine MoE | Cold SFT $\rightarrow$ GRPO $\rightarrow$ Rej.\ Samp.\ $\rightarrow$ SFT2 $\rightarrow$ RLHF+RLVR | Pure RL reasoning |

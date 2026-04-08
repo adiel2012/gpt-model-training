@@ -16,7 +16,7 @@ Prompting or training models to generate intermediate reasoning steps before the
 
   - **Zero-shot CoT:** Append ``Let's think step by step'' to the prompt.
   - **Few-shot CoT:** Provide example (question, reasoning chain, answer) triples in the prompt.
-  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15\% on GSM8K vs.\ single-sample CoT.
+  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15% on GSM8K vs.\ single-sample CoT.
 
 ## Process Reward Models (PRM)
 
@@ -42,7 +42,7 @@ Allocate more inference compute per query to find better solutions:
 
 ## TLT -- Accelerating Training
 
-MIT: a smaller ``drafter'' model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70--210\% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
+MIT: a smaller ``drafter'' model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70--210% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
 
 ## R1-Style Pure RL Training
 

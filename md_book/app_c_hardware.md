@@ -1,8 +1,6 @@
 # Hardware Reference
 
-[H]
-L{2.5cm}C{2cm}L{3.5cm}}
-|  | **FP16 TF** | **Best For** |
+| **Device** | **Memory** | **FP16 TF** | **Best For** |
 |---|---|---|---|
 | NVIDIA B200 SXM | 192 GB HBM3e | 2,250 | Next-gen frontier training |
 | NVIDIA GB200 NVL72 | 13.5 TB (rack) | 130,000 | Rack-scale cluster training |

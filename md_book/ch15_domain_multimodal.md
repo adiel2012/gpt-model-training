@@ -12,7 +12,7 @@
 
 Domain-specific models outperform general models on target tasks because domain vocabulary and reasoning patterns require exposure during pre-training, not just fine-tuning.
 
-  - **BloombergGPT [wu2023bloomberggpt** (finance):] 50\% financial text, 50\% general. Outperforms GPT-3 on financial benchmarks while remaining competitive on general tasks. Key lesson: 50/50 mix preserves generality.
+  - **BloombergGPT [wu2023bloomberggpt** (finance):] 50% financial text, 50% general. Outperforms GPT-3 on financial benchmarks while remaining competitive on general tasks. Key lesson: 50/50 mix preserves generality.
   - **Med-PaLM 2 [singhal2023large** (medical):] Expert-level performance on the USMLE. Multi-step reasoning over clinical evidence requires both medical knowledge and reasoning capabilities.
   - **CodeLlama / DeepSeek-Coder:** Code-specialized continued pre-training from a general base. Infill (fill-in-the-middle) pre-training objective for code completion.
   - **ChatLAW (legal):** Legal corpus with case law, statutes, and regulatory filings.

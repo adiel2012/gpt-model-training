@@ -22,13 +22,13 @@ Microsoft (2025): next-token prediction reframed as a sequential decision-making
 Data organized by difficulty (simple $\rightarrow$ complex) accelerates convergence and boosts final performance. Difficulty metrics: perplexity under a smaller reference model, task complexity (number of reasoning steps required), domain specificity.
 
 ## Instruction-Response Augmented Pre-training
-Synthetic instruction-response pairs in the pre-training corpus bridge the gap to SFT. Typically 1--3\% of the pre-training mix. Reduces the SFT data required by 5--10$\times$ for comparable instruction-following capability.
+Synthetic instruction-response pairs in the pre-training corpus bridge the gap to SFT. Typically 1--3% of the pre-training mix. Reduces the SFT data required by 5--10$\times$ for comparable instruction-following capability.
 
 ## Long-Context Pre-training
 
 Short-context training followed by gradual context extension:
 
-  - Train at 4K context for 90\% of total compute.
+  - Train at 4K context for 90% of total compute.
   - Gradually increase to 32K--128K on a filtered long-document subset.
   - Apply YaRN or LongRoPE for positional interpolation.
 

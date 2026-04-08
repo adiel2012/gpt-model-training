@@ -62,27 +62,25 @@ Raw synthetic data contains errors, repetition, and unsafe content. A multi-stag
   - **Self-consistency scoring:** Generate the response twice with different seeds; low cosine similarity flags inconsistent or hallucinated content.
   - **LLM-as-judge:** Score on helpfulness, accuracy, and safety (1--5 scale). Discard scores $\leq$3.
   - **Deduplication:** MinHash near-deduplication to prevent overfitting to repeated patterns.
-  - **Human spot-check:** 1--2\% random sample reviewed by domain experts to calibrate automated filters.
+  - **Human spot-check:** 1--2% random sample reviewed by domain experts to calibrate automated filters.
 
 ## Risks: Model Collapse and Bias Amplification
 
 > **Model Collapse**
 >
-> Training repeatedly on model-generated data without human-curated anchors leads to *model collapse* [shumailov2024ai]: the distribution narrows, variance decreases, and tail behaviors (rare but important knowledge) are lost. The antidote: always maintain a human-curated anchor set---typically 10--30\% of the training mix---and monitor perplexity on a fixed held-out real-text corpus. If perplexity rises on the real-text held-out set, collapse is beginning.
+> Training repeatedly on model-generated data without human-curated anchors leads to *model collapse* [shumailov2024ai]: the distribution narrows, variance decreases, and tail behaviors (rare but important knowledge) are lost. The antidote: always maintain a human-curated anchor set---typically 10--30% of the training mix---and monitor perplexity on a fixed held-out real-text corpus. If perplexity rises on the real-text held-out set, collapse is beginning.
 
 Bias amplification: errors and biases in the teacher model are reproduced and reinforced in the student. Use diverse teacher models (not just one API) and human review to audit for systematic failures.
 
 ## Synthetic Data Composition Recommendations
 
-[H]
-L{2.5cm}L{5cm}}
-|  | **Purpose** |
-|---|---|---|---|
-| Magpie (self-generated) | 20--40\% | On-distribution instruction diversity |
-| Evol-Instruct evolved | 15--25\% | Difficulty calibration |
-| Verified math/code chains | 10--20\% | Reasoning capability |
-| Orca CoT augmented | 10--20\% | Step-by-step process learning |
-| Human-curated anchor | 20--30\% | Distribution grounding, collapse prevention |
+| **Data Source** | **Proportion** | **Purpose** |
+|---|---|---|
+| Magpie (self-generated) | 20--40% | On-distribution instruction diversity |
+| Evol-Instruct evolved | 15--25% | Difficulty calibration |
+| Verified math/code chains | 10--20% | Reasoning capability |
+| Orca CoT augmented | 10--20% | Step-by-step process learning |
+| Human-curated anchor | 20--30% | Distribution grounding, collapse prevention |
 
 *Table: Recommended SFT data mix composition using synthetic sources*
 

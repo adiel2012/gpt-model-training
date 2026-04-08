@@ -16,8 +16,8 @@ Larger vocabularies reduce sequence length (faster attention) but increase embed
 
 ## Universal Tokenizers
 
-Up to 20.2\% higher win rates in language adaptation. 5\% improvement on unseen languages. Enables efficient post-training language expansion. Key design criterion: fertility ratio (tokens per word) should be $\leq 2$ for all target languages.
+Up to 20.2% higher win rates in language adaptation. 5% improvement on unseen languages. Enables efficient post-training language expansion. Key design criterion: fertility ratio (tokens per word) should be $\leq 2$ for all target languages.
 
 ## Sequence Packing
 
-Length-aware combinatorial optimization: 40\% fewer truncations, improved modeling performance. Cross-document attention masking prevents spurious inter-document dependencies within packed batches.
+Length-aware combinatorial optimization: 40% fewer truncations, improved modeling performance. Cross-document attention masking prevents spurious inter-document dependencies within packed batches.

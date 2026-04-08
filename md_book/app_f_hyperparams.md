@@ -4,9 +4,7 @@ A consolidated reference for common LLM training scenarios.
 
 ## Pre-training
 
-[H]
-L{2.5cm}L{2.5cm}L{3cm}}
-|  | **70B Model** | **Notes** |
+| **Parameter** | **7B Model** | **70B Model** | **Notes** |
 |---|---|---|---|
 | Optimizer | AdamW | AdamW | Muon competitive at 7B |
 | Learning rate (peak) | $3\times10^{-4}$ | $1\times10^{-4}$ | Scale down with model size |
@@ -24,15 +22,13 @@ L{2.5cm}L{2.5cm}L{3cm}}
 
 ## Supervised Fine-Tuning (SFT)
 
-[H]
-L{3cm}L{5cm}}
-|  | **Notes** |
-|---|---|---|---|
+| **Parameter** | **Value Range** | **Notes** |
+|---|---|---|
 | Learning rate | $1\times10^{-5}$ -- $5\times10^{-5}$ | Lower than pre-training; avoid forgetting |
 | Epochs | 2--5 | 3 is the most common sweet spot |
 | Batch size | 32--128 | Larger = more stable; use grad accum |
 | Scheduler | Cosine or linear decay | Linear often sufficient for short runs |
-| Warmup ratio | 0.03--0.1 | 3--10\% of total steps |
+| Warmup ratio | 0.03--0.1 | 3--10% of total steps |
 | Max sequence length | 2,048--8,192 | Pack shorter sequences |
 | Loss masking | On (assistant only) | Critical: never train on user/system tokens |
 
@@ -40,10 +36,8 @@ L{3cm}L{5cm}}
 
 ## LoRA / QLoRA
 
-[H]
-L{3cm}L{5cm}}
-|  | **Notes** |
-|---|---|---|---|
+| **Parameter** | **Common Default** | **Notes** |
+|---|---|---|
 | Rank $r$ | 8 -- 64 | 16 is the most common default; higher $r$ = more params |
 | Alpha $\alpha$ | $2r$ (e.g., 32 for $r$=16) | $\alpha/r$ is the effective LR scale (usually 2) |
 | Dropout | 0.05 -- 0.1 | Low dropout for small datasets |
@@ -56,10 +50,8 @@ L{3cm}L{5cm}}
 
 ## DPO / SimPO Alignment
 
-[H]
-L{3cm}L{5cm}}
-|  | **Notes** |
-|---|---|---|---|
+| **Parameter** | **Value Range** | **Notes** |
+|---|---|---|
 | $\beta$ (KL penalty) | 0.01 -- 0.5 | Lower $\beta$ = more aggressive policy update |
 | Learning rate | $5\times10^{-7}$ -- $1\times10^{-5}$ | Much lower than SFT |
 | Epochs | 1 -- 3 | Over-training causes reward hacking |
@@ -72,10 +64,8 @@ L{3cm}L{5cm}}
 
 ## GRPO Reasoning Training
 
-[H]
-L{3cm}L{5cm}}
-|  | **Notes** |
-|---|---|---|---|
+| **Parameter** | **Value Range** | **Notes** |
+|---|---|---|
 | Group size $G$ | 8 -- 16 | DeepSeek uses 16; larger = more stable advantage estimate |
 | $\beta$ (KL weight) | 0.001 -- 0.01 | Very small; reward signal dominates |
 | Temperature (sampling) | 0.7 -- 1.0 | Higher = more diverse generations for better advantage estimation |
@@ -88,10 +78,8 @@ L{3cm}L{5cm}}
 
 ## Common Failure Modes and Fixes
 
-[H]
-L{3cm}L{4.5cm}}
-|  | **Fix** |
-|---|---|---|---|
+| **Symptom** | **Cause** | **Fix** |
+|---|---|---|
 | Loss NaN early in training | LR too high or warmup too short | Halve LR; double warmup steps |
 | Loss plateau without improvement | LR too low or dataset too small | Increase LR by 2$\times$; check data quality |
 | Loss spike then recovery | Corrupted data batch | Add data validation; inspect spike step's batch |

@@ -1,5 +1,3 @@
-\part{Foundations}
-
 # The LLM Training Landscape in 2026
 
 > **What You Will Learn**
@@ -18,11 +16,11 @@ The training paradigm has shifted substantially. Early models relied on a simple
 
 ## The Modern Training Pipeline
 
-| - **Data Curation \ | Pre-training:** Next-token prediction on trillions of tokens. |
-  - **Supervised Fine-Tuning (SFT):** Instruction-response pairs for baseline behavior.
-  - **Preference Optimization:** DPO, SimPO, or KTO for human value alignment.
-  - **Reinforcement Learning:** Verifiable rewards or environment feedback for reasoning.
-| - **Evaluation, Safety \ | Deployment:** Benchmarking, red-teaming, quantization, serving. |
+- **Data Curation & Pre-training:** Next-token prediction on trillions of tokens.
+- **Supervised Fine-Tuning (SFT):** Instruction-response pairs for baseline behavior.
+- **Preference Optimization:** DPO, SimPO, or KTO for human value alignment.
+- **Reinforcement Learning:** Verifiable rewards or environment feedback for reasoning.
+- **Evaluation, Safety & Deployment:** Benchmarking, red-teaming, quantization, serving.
 
 ## Scaling Laws and the Compute-Optimal Frontier
 
@@ -39,15 +37,13 @@ By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a 
 
 ## Cost Realities
 
-[H]
-L{2.8cm}L{3.5cm}}
-|  | **Key Driver** |
-|---|---|---|---|
+| **Phase** | **Cost Range** | **Key Driver** |
+|---|---|---|
 | Pre-training (frontier) | \$5M -- \$100M+ | Compute (GPU hours) |
 | Pre-training (7B--70B) | \$50K -- \$5M | Data quality + GPU hours |
 | Fine-tuning (LoRA/QLoRA) | \$100 -- \$10K | Dataset size, GPU type |
 | RLHF / DPO alignment | \$10K -- \$500K | Human annotation costs |
-| Evaluation \ | Red-teaming | \$5K -- \$100K | Evaluator complexity |
+| Evaluation & Red-teaming | \$5K -- \$100K | Evaluator complexity |
 | Inference infrastructure | \$1K -- \$50K/mo | Traffic, latency SLA |
 
 *Table: Typical cost ranges for LLM training components*

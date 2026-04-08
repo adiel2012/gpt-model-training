@@ -16,7 +16,7 @@ When a model is fine-tuned on task B, performance on previously learned task A d
 
   - **Elastic Weight Consolidation (EWC) [kirkpatrick2017overcoming**:] Penalizes updates to weights important for previous tasks, identified via the Fisher information matrix approximation.
   - **LoRA-based updates:** Fine-tune only low-rank adapter weights; base model weights remain unchanged. Task-specific adapters can be swapped at inference time.
-  - **Replay-based methods:** Mix a small fraction of old task data into new training. 5\% replay often sufficient to preserve 95\% of original task performance.
+  - **Replay-based methods:** Mix a small fraction of old task data into new training. 5% replay often sufficient to preserve 95% of original task performance.
   - **Hierarchical optimization:** MAML-like meta-learning for fast adaptation with minimal forgetting.
   - **LoRA merging:** Train multiple domain-specific LoRA adapters and merge them periodically, avoiding full model retraining entirely.
 
@@ -25,6 +25,6 @@ When a model is fine-tuned on task B, performance on previously learned task A d
 Updating the base model on new data distributions (new knowledge, new language):
 
   - Learning rate warmup prevents early-stage gradient explosions on new data.
-  - Data mixing: 80\% new data + 20\% replay from original pre-training corpus.
+  - Data mixing: 80% new data + 20% replay from original pre-training corpus.
   - Context extension: interleave original context-length data with long-context data during extension training.
 

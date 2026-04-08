@@ -27,7 +27,7 @@ Transformed GPT-3 into ChatGPT [ouyang2022training]. Pipeline: SFT $\rightarrow$
 
 ## DPO
 
-Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). 90--95\% of RLHF performance at 40--60\% less compute.
+Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). 90--95% of RLHF performance at 40--60% less compute.
 
 > **DPO Successors**
 >
@@ -38,7 +38,7 @@ Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](
 
 ## GRPO
 
-DeepSeek's dominant algorithm for reasoning [guo2025deepseekr1] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). Generates a group of 8--64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33--50\% memory savings over PPO.
+DeepSeek's dominant algorithm for reasoning [guo2025deepseekr1] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). Generates a group of 8--64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33--50% memory savings over PPO.
 
 $$
 \mathcal{L}_\text{GRPO} = \mathbb{E}\left[\sum_i \hat{A}_i \cdot \log \pi_\theta(o_i \mid q) - \beta \cdot \text{KL}[\pi_\theta \| \pi_\text{ref}]\right]
@@ -60,10 +60,8 @@ Verifiable rewards for math and code. Binary, objective signal resists reward ha
 
 ## The Modern Alignment Stack
 
-[H]
-L{3.5cm}L{4.2cm}}
-|  | **What It Solves** |
-|---|---|---|---|
+| **Alignment Goal** | **Method** | **What It Solves** |
+|---|---|---|
 | Instruction Following | SFT | Format, tone, task execution |
 | Preference Alignment | DPO / SimPO / KTO | Human values, norms |
 | Reasoning | GRPO / DAPO + RLVR | Math, code, planning |

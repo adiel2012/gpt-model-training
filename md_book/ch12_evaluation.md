@@ -1,4 +1,4 @@
-| \part{Evaluation, Safety \ | Deployment} |
+
 
 # Evaluating LLMs -- Benchmarks and Beyond
 
@@ -8,10 +8,8 @@
 > - Detect and mitigate data contamination in benchmark results.
 > - Evaluate qualitative capabilities through red-teaming and side-by-side comparison.
 
-[H]
-L{4.5cm}L{2.5cm}}
-|  | **Type** |
-|---|---|---|---|
+| **Benchmark** | **Focus** | **Type** |
+|---|---|---|
 | MMLU / MMLU-Pro | Broad academic knowledge (57+ subjects) | Multiple choice |
 | HumanEval / MBPP | Code generation correctness | Code execution |
 | GSM8K / MATH | Mathematical problem solving | Verified answers |

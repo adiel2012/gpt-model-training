@@ -1,13 +1,10 @@
-| # The Implementation Treasury: Theory \ | Code |
-\label{app:treasury}
+# The Implementation Treasury: Theory & Code
 
 This appendix provides a unified reference for the mathematical formulations and 
 PyTorch implementations discussed throughout the book. Each theoretical concept 
 is paired with a self-contained code snippet for immediate practical application.
 
-% -----------------------------------------------------------------------------
 ## Shared Foundation
-% -----------------------------------------------------------------------------
 
 All code snippets in this treasury assume the following standard imports and 
 PyTorch environment:
@@ -20,17 +17,11 @@ import torch.nn.functional as F
 from typing import Optional, List
 ```
 
-% -----------------------------------------------------------------------------
 ## Optimization Objectives
-\label{app:objectives}
-\label{app:pipeline}
-% -----------------------------------------------------------------------------
-% -----------------------------------------------------------------------------
 
 A production LLM is produced by five sequential optimisation stages.
 
 ### Stage 1 --- Pre-training
-\label{form:ntp}
 
 **Objective** (causal language modelling):
 $$
@@ -49,7 +40,6 @@ def causal_lm_loss(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
 ```
 
 ### Perplexity (PPL)
-\label{form:ppl}
 
 $$
   \mathrm{PPL} = \exp(\mathcal{L}_\mathrm{NTP})
@@ -58,28 +48,24 @@ Perplexity measures the model's confidence in its predictions; it represents the
 
 ### Stage 3 --- Preference Optimisation
 
-\noindent**DPO** (Direct Preference Optimization):
+**DPO** (Direct Preference Optimization):
 $$
   \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\!\left[ \log\sigma\!\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
 $$
 
-\noindent**SimPO** (Simple Preference Optimization):
+**SimPO** (Simple Preference Optimization):
 $$
   \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\!\left[\log\sigma\!\left( \frac{\beta}{|y_w|}{\log\pi_\theta(y_w|x)} - \frac{\beta}{|y_l|}{\log\pi_\theta(y_l|x)} - \gamma \right)\right]
 $$
 
-\noindent**GRPO** (Group Relative Policy Optimisation):
+**GRPO** (Group Relative Policy Optimisation):
 $$
   \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}
 $$
 
-% -----------------------------------------------------------------------------
 ## Attention Mechanisms
-\label{app:attention}
-% -----------------------------------------------------------------------------
 
 ### Scaled Dot-Product Attention
-\label{form:sdpa}
 
 $$
   \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}} + M\right) V
@@ -106,7 +92,6 @@ def scaled_dot_product_attention(
 ```
 
 ### Multi-Head Attention (MHA)
-\label{form:mha}
 
 $$
   \mathrm{head}_h = \mathrm{Attention}(Q W_h^Q, K W_h^K, V W_h^V), \quad
@@ -138,7 +123,6 @@ class MultiHeadAttention(nn.Module):
 ```
 
 ### Grouped Query Attention (GQA)
-\label{form:gqa}
 
 KV groups shared by $H/G$ query heads. $G=1$ is MQA; $G=H$ is MHA.
 
@@ -167,7 +151,6 @@ class GroupedQueryAttention(nn.Module):
 ```
 
 ### Multi-Query Attention (MQA)
-\label{form:mqa}
 
 Shares a single KV pair across all query heads. Special case of GQA where $G=1$.
 
@@ -192,7 +175,6 @@ class MultiQueryAttention(nn.Module):
 ```
 
 ### Multi-head Latent Attention (MLA)
-\label{form:mla}
 
 $$
   c_t^{KV} = W^{DKV} h_t, \quad [k_t^C; v_t^C] = W^{UKV} c_t^{KV}
@@ -220,7 +202,6 @@ class MLA(nn.Module):
 ```
 
 ### Mixture of Experts (MoE)
-\label{form:moe}
 
 Replaces the dense FFN with multiple ``experts'' and a router that activates a subset per token.
 
@@ -253,16 +234,12 @@ class MoE(nn.Module):
         return out
 ```
 
-% -----------------------------------------------------------------------------
 ## Positional Encodings
-\label{app:pos}
-% -----------------------------------------------------------------------------
 
 ### Rotary Position Embedding (RoPE)
-\label{form:rope}
 
 $$
-| R_{\theta_i, t} = \begin{pmatrix} \cos(t\theta_i) | -\sin(t\theta_i)  \sin(t\theta_i) | \cos(t\theta_i) \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d} |
+  R_{\theta_i, t} = \begin{pmatrix} \cos(t\theta_i) & -\sin(t\theta_i) \\ \sin(t\theta_i) & \cos(t\theta_i) \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d}
 $$
 
 ```python
@@ -281,7 +258,6 @@ def precompute_freqs(dim: int, seq_len: int, theta: float = 10000.0) -> torch.Te
 ```
 
 ### ALiBi (Attention with Linear Biases)
-\label{form:alibi}
 
 $$
   \mathrm{score}_{ij} = \frac{q_i \cdot k_j}{\sqrt{d_k}} - m_h \cdot |i - j|
@@ -298,13 +274,9 @@ def alibi_bias(n_heads: int, seq_len: int) -> torch.Tensor:
     return bias.tril()
 ```
 
-% -----------------------------------------------------------------------------
 ## Normalization and Activation
-\label{app:norm}
-% -----------------------------------------------------------------------------
 
 ### RMSNorm
-\label{form:rmsnorm}
 
 $$
   \mathrm{RMSNorm}(x) = \gamma \odot \frac{x}{\|x\|_\mathrm{RMS} + \epsilon}, \quad \|x\|_\mathrm{RMS} = \sqrt{\frac{1}{d}\sum_ix_i^2}
@@ -323,7 +295,6 @@ class RMSNorm(nn.Module):
 ```
 
 ### SwiGLU Feed-Forward Network
-\label{form:swiglu}
 
 $$
   \mathrm{SwiGLU}(x, W, V, W_2) = (x W \odot \mathrm{Swish}(x V)) W_2
@@ -342,13 +313,9 @@ class SwiGLU(nn.Module):
         return self.W3(F.silu(self.W1(x)) * self.W2(x))
 ```
 
-% -----------------------------------------------------------------------------
 ## Optimization
-\label{app:optim}
-% -----------------------------------------------------------------------------
 
 ### AdamW
-\label{form:adamw}
 
 $$
   \theta_t = \theta_{t-1} - \eta \left(\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon} + \lambda \theta_{t-1}\right)
@@ -374,7 +341,6 @@ def adamw_step(
 ```
 
 ### Muon Optimizer
-\label{form:muon}
 
 $$
   X_{new} = 0.5 X (3I - XX^\top)
@@ -394,7 +360,6 @@ def muon_step(p, g, m, lr=0.02, momentum=0.95, n_iters=5):
 ```
 
 ### Lion Optimizer
-\label{form:lion}
 
 $$
   c_t = \text{sign}(\beta_1 m_{t-1} + (1-\beta_1) g_t), \quad m_t = \beta_2 m_{t-1} + (1-\beta_2) g_t
@@ -412,7 +377,6 @@ def lion_step(params, grads, exp_avg, lr=1e-4, beta1=0.9, beta2=0.99, wd=0.1):
 ```
 
 ### Cosine Schedule with Warmup
-\label{form:cosine}
 
 ```python
 def cosine_lr(step: int, total_steps: int, lr_max: float, lr_min: float, warmup_steps: int) -> float:
@@ -422,13 +386,9 @@ def cosine_lr(step: int, total_steps: int, lr_max: float, lr_min: float, warmup_
     return lr_min + 0.5 * (lr_max - lr_min) * (1 + math.cos(math.pi * progress))
 ```
 
-% -----------------------------------------------------------------------------
 ## Parameter-Efficient Fine-Tuning
-\label{app:peft}
-% -----------------------------------------------------------------------------
 
 ### LoRA (Low-Rank Adaptation)
-\label{form:lora}
 
 $$
   h = W_0 x + \frac{\alpha}{r} B A x
@@ -449,14 +409,12 @@ class LoRALinear(nn.Module):
 ```
 
 ### DoRA (Weight-Decomposed Low-Rank Adaptation)
-\label{form:dora}
 
 $$
   W = m \frac{W_0 + BA}{\|W_0 + BA\|_F}
 $$
 
 ### PPO (Proximal Policy Optimization)
-\label{form:ppo}
 
 $$
   \mathcal{L}_\mathrm{CLIP} = \hat{\mathbb{E}}_t [ \min(r_t(\theta) \hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t) ]
@@ -470,13 +428,9 @@ def ppo_loss(policy_logits, old_logits, actions, advantages, eps=0.2):
     return -torch.min(surr1, surr2).mean()
 ```
 
-% -----------------------------------------------------------------------------
 ## Alignment Objectives
-\label{app:alignment}
-% -----------------------------------------------------------------------------
 
 ### DPO (Direct Preference Optimization)
-\label{form:dpo}
 
 $$
   \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\!\left[ \log\sigma\!\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
@@ -492,7 +446,6 @@ def dpo_loss(policy, ref, x_w, x_l, beta=0.1):
 ```
 
 ### SimPO (Simple Preference Optimization)
-\label{form:simpo}
 
 $$
   \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\!\left[\log\sigma\!\left( \frac{\beta}{|y_w|}{\log\pi_\theta(y_w|x)} - \frac{\beta}{|y_l|}{\log\pi_\theta(y_l|x)} - \gamma \right)\right]
@@ -506,7 +459,6 @@ def simpo_loss(model, x_w, x_l, beta=2.0, gamma=0.5):
 ```
 
 ### GRPO (Group Relative Policy Optimisation)
-\label{form:grpo}
 
 $$
   \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\!\left[\sum_{i=1}^{G}\sum_t ... \right]
@@ -546,7 +498,6 @@ def grpo_step(
 ```
 
 ### KTO (Kahneman-Tversky Optimization)
-\label{form:kto}
 
 $$
   \mathcal{L}_\mathrm{KTO} = -\mathbb{E}[w \cdot \log \sigma(\beta(r(x,y) - \text{ref}))]
@@ -561,7 +512,6 @@ def kto_loss(model, ref, input_ids, labels, beta=0.1):
 ```
 
 ### DAPO (Decoupled Alignment for Preference Optimization)
-\label{form:dapo}
 
 Decouples the reference model from the gradient flow to stabilize training and reduce memory overhead.
 
@@ -576,7 +526,6 @@ def dapo_loss(policy, ref, x_w, x_l, beta=0.1):
 ```
 
 ### RLVR (Reinforcement Learning with Verifiable Rewards)
-\label{form:rlvr}
 
 RL training where rewards are computed by rule-based verifiers (e.g., compilers or unit tests).
 
@@ -591,14 +540,9 @@ def rlvr_step(policy, prompt_ids, reward_fn, G=8):
     return advantage.mean()
 ```
 
-% -----------------------------------------------------------------------------
 ## Inference and Distillation
-\label{app:inference_distill}
-\label{app:distill}
-% -----------------------------------------------------------------------------
 
 ### Knowledge Distillation (Forward KL)
-\label{form:fwd_kd}
 
 $$
   \mathcal{L}_\mathrm{fwd} = D_\mathrm{KL}(p_\mathrm{teacher} \| p_\mathrm{student})
@@ -612,14 +556,12 @@ def fwd_kl_distill(s_logits, t_logits, temp=2.0):
 ```
 
 ### MiniLLM (Reverse KL)
-\label{form:rev_kd}
 
 $$
   \mathcal{L}_\mathrm{rev} = D_\mathrm{KL}(p_\mathrm{student} \| p_\mathrm{teacher})
 $$
 
 ### KV Cache Management
-\label{form:kvcache}
 
 The memory footprint (in bytes) of the KV cache is:
 $$
@@ -628,7 +570,6 @@ $$
 where $L$ is layers, $T$ is sequence length, and $H$ is heads.
 
 ### Quantization Scaling
-\label{form:quant}
 
 Linear quantization to $n$ bits (e.g., INT8):
 $$
@@ -636,7 +577,6 @@ $$
 $$
 
 ### Speculative Decoding
-\label{form:spec_dec}
 
 Accept token $x_t$ with probability $\alpha(x_t) = \min(1, p(x_t)/q(x_t))$.
 
@@ -675,20 +615,15 @@ def speculative_decode(
     return ids
 ```
 
-% -----------------------------------------------------------------------------
 ## Model Merging
-\label{app:merging}
-% -----------------------------------------------------------------------------
 
 ### Task Vectors
-\label{form:task_vec}
 
 $$
   \tau = \theta_{fine-tuned} - \theta_{base}
 $$
 
 ### SLERP (Spherical Linear Interpolation)
-\label{form:slerp}
 
 $$
   \mathrm{SLERP}(\theta_A, \theta_B, t) = \frac{\sin((1-t)\Omega)}{\sin\Omega}\theta_A + \frac{\sin(t\Omega)}{\sin\Omega}\theta_B
@@ -705,7 +640,6 @@ def slerp(w_a: torch.Tensor, w_b: torch.Tensor, t: float) -> torch.Tensor:
 ```
 
 ### DARE (Drop And REscale)
-\label{form:dare}
 
 $$
   \theta_{merge} = \theta_{base} + \frac{1}{1-p} \sum_{i=1}^n \text{mask}_i \odot \tau_i
@@ -713,7 +647,6 @@ $$
 where $p$ is the dropout probability.
 
 ### TIES-Merging
-\label{form:ties}
 
 Three-step conflict resolution: Trim, Elect sign, and Disjoint merge.
 
@@ -733,13 +666,9 @@ def ties_merge(base_sd: dict, ft_sds: list[dict], lambdas: list[float], density:
 
 ```
 
-% -----------------------------------------------------------------------------
 ## Continual Learning --- EWC
-\label{app:continual}
-% -----------------------------------------------------------------------------
 
 ### Elastic Weight Consolidation (EWC)
-\label{form:ewc}
 
 ```python
 class EWC:
@@ -749,10 +678,7 @@ class EWC:
     # ... (Penalty and Fisher logic)
 ```
 
-% -----------------------------------------------------------------------------
 ## Final Assembly --- TinyGPT
-\label{app:tinygpt}
-% -----------------------------------------------------------------------------
 
 A minimal, production-ready decoder architecture incorporating the treasury's components.
 

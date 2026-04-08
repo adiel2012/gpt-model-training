@@ -62,19 +62,19 @@ Requires either white-box access to teacher logits or a fast teacher inference e
 
 ## Speculative Decoding as Distillation
 
-Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$ tokens, verified in parallel by the target model. Beyond a decoding speedup, training the drafter to maximally predict acceptance by the target is a form of distillation---the drafter learns to approximate the target's conditional distribution on easy tokens, which constitute 70--90\% of all tokens.
+Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$ tokens, verified in parallel by the target model. Beyond a decoding speedup, training the drafter to maximally predict acceptance by the target is a form of distillation---the drafter learns to approximate the target's conditional distribution on easy tokens, which constitute 70--90% of all tokens.
 
 ## Practical Distillation Workflow
 
   - Select teacher (strongest accessible model: open-weight 70B--671B or API).
   - Generate responses on your instruction set. For reasoning tasks, generate with high temperature ($T = 0.7$--$1.0$) and filter by verifiable correctness.
   - Optionally: collect teacher logits for logit-level KD (requires local teacher).
-  - Fine-tune student with $\alpha = 0.5$: 50\% KD loss, 50\% standard CE loss on human labels.
+  - Fine-tune student with $\alpha = 0.5$: 50% KD loss, 50% standard CE loss on human labels.
   - Evaluate on target benchmarks; iterate on temperature and $\alpha$.
 
 > **Distillation Rules of Thumb**
 >
-> - A 7B student distilled from a 70B teacher typically closes 60--80\% of the gap to the teacher.
+> - A 7B student distilled from a 70B teacher typically closes 60--80% of the gap to the teacher.
 >   - Distillation data volume: 50K--500K high-quality teacher completions is sufficient for most fine-tuning objectives.
 >   - For reasoning tasks, only keep teacher traces that lead to correct verified answers---incorrect reasoning chains hurt more than they help.
 >   - On-policy distillation adds significant complexity; prefer offline SeqKD unless you observe severe distribution mismatch.
