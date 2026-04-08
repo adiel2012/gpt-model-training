@@ -29,36 +29,36 @@ This repository is a comprehensive, production-oriented guide to training Large 
 ## 📚 Table of Contents (Companion Book)
 
 ### Part I: Foundations
-- **Chapter 1**: The LLM Training Landscape in 2026
-- **Chapter 2**: Transformer Architecture (MLA, GQA, MoE)
+- **[Chapter 1: The LLM Training Landscape in 2026](md_book/ch01_landscape.md)**
+- **[Chapter 2: Transformer Architecture (MLA, GQA, MoE)](md_book/ch02_architecture.md)**
 
 ### Part II: Data Engineering
-- **Chapter 3**: Pre-training Data Curation at 10T Scale
-- **Chapter 4**: Tokenization and Sequence Packing
-- **Chapter 5**: Synthetic Data and Data Darwinism
+- **[Chapter 3: Pre-training Data Curation at 10T Scale](md_book/ch03_data_curation.md)**
+- **[Chapter 4: Tokenization and Sequence Packing](md_book/ch04_tokenization.md)**
+- **[Chapter 5: Synthetic Data and Data Darwinism](md_book/ch05_synthetic_data.md)**
 
 ### Part III: Training Infrastructure
-- **Chapter 6**: Pre-training Objectives and Strategies
-- **Chapter 7**: Distributed Training (FSDP, Tensor/Pipeline Parallelism)
+- **[Chapter 6: Pre-training Objectives and Strategies](md_book/ch06_pretraining_objectives.md)**
+- **[Chapter 7: Distributed Training (FSDP, Tensor/Pipeline Parallelism)](md_book/ch07_distributed_training.md)**
 
 ### Part IV: Post-Training (SFT & Alignment)
-- **Chapter 8**: Supervised Fine-Tuning (SFT) and PEFT (LoRA, DoRA)
-- **Chapter 9**: Alignment – RLHF, DPO, and Beyond
-- **Chapter 10**: Training for Reasoning (GRPO, RLVR)
+- **[Chapter 8: Supervised Fine-Tuning (SFT) and PEFT (LoRA, DoRA)](md_book/ch08_sft.md)**
+- **[Chapter 9: Alignment – RLHF, DPO, and Beyond](md_book/ch09_alignment.md)**
+- **[Chapter 10: Training for Reasoning (GRPO, RLVR)](md_book/ch10_reasoning.md)**
 
 ### Part V: Advanced Topics
-- **Chapter 11**: Knowledge Distillation and Compression
-- **Chapter 12**: Evaluation and Benchmarking
-- **Chapter 13**: Safety, Red-Teaming, and Constitutional AI
-- **Chapter 14**: Inference Optimization (Speculative Decoding, Quantization)
-- **Chapter 15**: Domain-Specific and Multimodal Models (Vision-MoE)
-- **Chapter 16**: Model Merging and Recombination (TIES, DARE)
-- **Chapter 17**: Catastrophic Forgetting and Continual Learning
-- **Chapter 18**: The Future of LLM Training
-- **Chapter 19**: How Top Companies Train (OpenAI, DeepSeek, Meta)
+- **[Chapter 11: Knowledge Distillation and Compression](md_book/ch11_distillation.md)**
+- **[Chapter 12: Evaluation and Benchmarking](md_book/ch12_evaluation.md)**
+- **[Chapter 13: Safety, Red-Teaming, and Constitutional AI](md_book/ch13_safety.md)**
+- **[Chapter 14: Inference Optimization (Speculative Decoding, Quantization)](md_book/ch14_inference.md)**
+- **[Chapter 15: Domain-Specific and Multimodal Models (Vision-MoE)](md_book/ch15_domain_multimodal.md)**
+- **[Chapter 16: Model Merging and Recombination (TIES, DARE)](md_book/ch16_model_merging.md)**
+- **[Chapter 17: Catastrophic Forgetting and Continual Learning](md_book/ch17_continual_learning.md)**
+- **[Chapter 18: The Future of LLM Training](md_book/ch18_future.md)**
+- **[Chapter 19: How Top Companies Train (OpenAI, DeepSeek, Meta)](md_book/ch19_company_profiles.md)**
 
 ### Appendices (The Technical Core)
-- **Appendix G: The Implementation Treasury**: The central resource for implementing LLM components from first principles.
+- **[Appendix G: The Implementation Treasury](md_book/app_g_implementation_treasury.md)**: The central resource for implementing LLM components from first principles.
 
 ---
 
