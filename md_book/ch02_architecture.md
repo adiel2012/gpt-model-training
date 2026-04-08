@@ -23,12 +23,12 @@ Nearly all modern autoregressive LLMs use a decoder-only transformer architectur
 
 ### Multi-Head Attention Variants
 
-Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections (formulation: Appendix~app:attention; code: Appendix~H). The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
+Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K$, $V$ projections (formulation and code: [Appendix G](app_g_implementation_treasury.md)). The KV cache grows as $2 \times H \times d_\text{head} \times L$ per token at inference---a critical bottleneck at long context.
 
 
-  - **Multi-Query Attention (MQA):** Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale (formulation \S\ref*{form:mqa}).
-  - **Grouped Query Attention (GQA):** $G$ KV head groups ($1 < G < H$) [ainslie2023gqa]. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models (formulation \S\ref*{form:gqa}, code Listing~\ref*{lst:gqa}).
-  - **Multi-head Latent Attention (MLA):** DeepSeek-V3. KV cache is compressed into a low-rank latent vector $c_{KV}$, from which heads are projected via an up-projection matrix $W_{UK}$. This achieves the memory footprint of MQA while maintaining the expressive power of MHA (see formulation \S\ref*{form:mla}, code Listing~\ref*{lst:mla}).
+  - **Multi-Query Attention (MQA):** Single K,V head shared by all query heads. Maximum KV cache reduction; can hurt quality at small scale (formulation: [Appendix G](app_g_implementation_treasury.md)).
+  - **Grouped Query Attention (GQA):** $G$ KV head groups ($1 < G < H$) [ainslie2023gqa]. Balances cache reduction and quality. Used in Llama 3, Mistral, and most 2025 models (formulation and code: [Appendix G](app_g_implementation_treasury.md)).
+  - **Multi-head Latent Attention (MLA):** DeepSeek-V3. KV cache is compressed into a low-rank latent vector $c_{KV}$, from which heads are projected via an up-projection matrix $W_{UK}$. This achieves the memory footprint of MQA while maintaining the expressive power of MHA (formulation and code: [Appendix G](app_g_implementation_treasury.md)).
 
 
 > **MLA Mechanics**
@@ -41,7 +41,7 @@ Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K
 
 ### Positional Encodings
 
-Full derivations in Appendix~app:pos.
+Full derivations in [Appendix G](app_g_implementation_treasury.md).
 
   - **RoPE (Rotary Position Embedding):** Applies rotation matrices to Q/K vectors [su2024roformer]. Encodes relative positions implicitly. Dominant 2025--2026 standard.
   - **iRoPE (Llama 4):** Interleaved no-position and RoPE layers. Enables 10M-token context without explicit positional interpolation.
@@ -51,10 +51,10 @@ Full derivations in Appendix~app:pos.
 
 ### Normalization and Activation
 
-Full formulations in Appendix~app:norm (RMSNorm, SwiGLU).
+Full formulations in [Appendix G](app_g_implementation_treasury.md) (RMSNorm, SwiGLU).
 
-  - **RMSNorm with pre-normalization:** More stable than post-norm LayerNorm. Dominant in all major 2025 models (formulation \S\ref*{form:rmsnorm}).
-  - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024--2026 (formulation \S\ref*{form:swiglu}).
+  - **RMSNorm with pre-normalization:** More stable than post-norm LayerNorm. Dominant in all major 2025 models (formulation: [Appendix G](app_g_implementation_treasury.md)).
+  - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024--2026 (formulation: [Appendix G](app_g_implementation_treasury.md)).
 | **Function** | **Formulation** | **Key Trade-off / Usage** |
 | :--- | :--- | :--- |
 | ReLU | $\max(0, x)$ | Simple, fast. Risk of "dying ReLU" (zero gradient). |
@@ -65,7 +65,7 @@ Full formulations in Appendix~app:norm (RMSNorm, SwiGLU).
 
 ## Mixture of Experts (MoE)
 
-Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token [shazeer2017outrageously] (formulation \S\ref*{form:moe}, code Listing~\ref*{lst:moe}). Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
+Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token [shazeer2017outrageously] (formulation and code: [Appendix G](app_g_implementation_treasury.md)). Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
 
 > **Key MoE Developments in 2025--2026**
 >
