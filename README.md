@@ -7,7 +7,7 @@
 
 ---
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/adiel2012/gpt-model-training/blob/master/llm_implementations.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/adiel2012/gpt-model-training/blob/main/llm_implementations.ipynb)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-adiel2012%2Fgpt--model--training-blue?logo=github)](https://github.com/adiel2012/gpt-model-training)
 
 ---
