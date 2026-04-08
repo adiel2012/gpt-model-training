@@ -9,6 +9,7 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/adiel2012/gpt-model-training/blob/main/llm_implementations.ipynb)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-adiel2012%2Fgpt--model--training-blue?logo=github)](https://github.com/adiel2012/gpt-model-training)
+[![Companion Book](https://img.shields.io/badge/PDF-Companion_Book-red?logo=adobe-acrobat)](https://github.com/adiel2012/gpt-model-training/blob/main/book/Training_Production_Ready_LLMs_2026.pdf)
 
 ---
 
