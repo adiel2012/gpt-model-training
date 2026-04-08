@@ -1,38 +1,23 @@
-# Transformer Architecture -- The Foundation
-\minitoc
-
-\begin{chapteroverview}
-  
-    - Evaluate the decoder-only transformer and its 2026 architectural variations.
-    - Analyze MQA, GQA, and MLA for efficient KV cache management at scale.
-    - Compare modern positional encodings including RoPE, iRoPE, and ALiBi.
-    - Review production-standard normalization (RMSNorm) and activation (SwiGLU) functions.
-    - Understand the 2025 transition to fine-grained Mixture of Experts (MoE).
-  
-\end{chapteroverview}
+> **What You Will Learn**
+> - Evaluate the decoder-only transformer and its 2026 architectural variations.
+> - Analyze MQA, GQA, and MLA for efficient KV cache management at scale.
+> - Compare modern positional encodings including RoPE, iRoPE, and ALiBi.
+> - Review production-standard normalization (RMSNorm) and activation (SwiGLU) functions.
+> - Understand the 2025 transition to fine-grained Mixture of Experts (MoE).
 
 ## The Decoder-Only Transformer
 
 Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90\% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
 
 ### Architectural Comparison: Key Modern Models
-
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{2.8cm}L{2cm}L{2cm}L{3.5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Model**} & \textcolor{white}{**Params**} & \textcolor{white}{**Context**} & \textcolor{white}{**Notable Features**} \\
-\midrule
-Llama 3.1 (70B) & 70B & 128K & GQA, RoPE, SwiGLU \\
-Mistral 7B & 7B & 32K & GQA, sliding window \\
-Mixtral 8x7B & 47B total & 32K & MoE, 13B active \\
-DeepSeek-V3 & 671B total & 128K & Fine-grained MoE, MLA \\
-Llama 4 Maverick & 400B total & 1M & MoE, iRoPE, 128 experts \\
-\bottomrule
-\end{tabular}
-\caption{Representative modern model architectures}
-\end{table}
+| **Model** | **Params** | **Context** | **Notable Features** |
+| :--- | :--- | :--- | :--- |
+| Llama 3.1 (70B) | 70B | 128K | GQA, RoPE, SwiGLU |
+| Mistral 7B | 7B | 32K | GQA, sliding window |
+| Mixtral 8x7B | 47B total | 32K | MoE, 13B active |
+| DeepSeek-V3 | 671B total | 128K | Fine-grained MoE, MLA |
+| Llama 4 Maverick | 400B total | 1M | MoE, iRoPE, 128 experts |
+*Table: Representative modern model architectures*
 
 ## Key Architectural Components
 
@@ -70,23 +55,13 @@ Full formulations in Appendix~app:norm (RMSNorm, SwiGLU).
 
   - **RMSNorm with pre-normalization:** More stable than post-norm LayerNorm. Dominant in all major 2025 models (formulation \S\ref*{form:rmsnorm}).
   - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024--2026 (formulation \S\ref*{form:swiglu}).
-
-
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{2cm}L{3.5cm}L{5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Function**} & \textcolor{white}{**Formulation**} & \textcolor{white}{**Key Trade-off / Usage**} \\
-\midrule
-ReLU & $\max(0, x)$ & Simple, fast. Risk of ``dying ReLU'' (zero gradient). \\
-GeLU & $x \Phi(x)$ & Smooth, probabilistic gating. GPT-2/3 standard. \\
-Swish / SiLU & $x \sigma(x)$ & Non-monotonic, smoother than ReLU. Llama 1/2. \\
-SwiGLU & $\text{Gated}(x, \text{Swish})$ & Most expressive. 2026 production standard. \\
-\bottomrule
-\end{tabular}
-\caption{Comparative analysis of activation functions in LLMs}
-\end{table}
+| **Function** | **Formulation** | **Key Trade-off / Usage** |
+| :--- | :--- | :--- |
+| ReLU | $\max(0, x)$ | Simple, fast. Risk of "dying ReLU" (zero gradient). |
+| GeLU | $x \Phi(x)$ | Smooth, probabilistic gating. GPT-2/3 standard. |
+| Swish / SiLU | $x \sigma(x)$ | Non-monotonic, smoother than ReLU. Llama 1/2. |
+| SwiGLU | $\text{Gated}(x, \text{Swish})$ | Most expressive. 2026 production standard. |
+*Table: Comparative analysis of activation functions in LLMs*
 
 ## Mixture of Experts (MoE)
 
@@ -94,9 +69,8 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
 
 > **Key MoE Developments in 2025--2026**
 >
-> - **DeepSeekMoE:** Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
->   - **DeepSeekMoE [dai2024deepseekmoe**:] Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
->   - **Sparse Upcycling:** Convert dense models to MoE without training from scratch.
+> - **DeepSeekMoE [dai2024deepseekmoe]:** Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
+> - **Sparse Upcycling:** Convert dense models to MoE without training from scratch.
 >   - **SwitchHead:** MoE applied to attention projection layers (Q, K, V).
 >   - **Expert Parallelism:** Distributed experts across GPUs for efficient scale.
 >   - **Load Balancing:** Auxiliary loss or expert-choice routing prevents expert collapse.
@@ -107,25 +81,12 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
   - **Flash Attention (v2/v3):** $O(n^2) \rightarrow O(n)$ memory via IO-aware tiling [dao2022flashattention,dao2023flashattention2,shah2024flashattention3]. Mandatory for modern training. FA3 adds warp-specialization for $\sim$2$\times$ speedup over FA2 on H100.
   - **Ring Attention:** Million-token contexts across devices in a ring topology. Each device holds one segment; KV chunks circulate.
   - **Sliding Window Attention:** Fixed local window with cross-layer information flow (Mistral).
+| **Context Window** | **KV Cache (7B)** | **Use Case** |
+| :--- | :--- | :--- |
+| 4K tokens | 512 MB | Short conversations |
+| 32K tokens | 4 GB | Document processing |
+| 128K tokens | 16 GB | Full codebase analysis |
+| 1M tokens | 128 GB | Entire book corpus |
+*Table: Approximate KV cache memory at different context lengths (BF16, 32 heads)*
 
 
-\begin{table}[H]
-\centering\small\sffamily
-\rowcolors{2}{tablealt}{white}
-\begin{tabular}{L{3.5cm}C{2.5cm}L{4.5cm}}
-\toprule
-\rowcolor{tablehead}\textcolor{white}{**Context Window**} & \textcolor{white}{**KV Cache (7B)**} & \textcolor{white}{**Use Case**} \\
-\midrule
-4K tokens & 512 MB & Short conversations \\
-32K tokens & 4 GB & Document processing \\
-128K tokens & 16 GB & Full codebase analysis \\
-1M tokens & 128 GB & Entire book corpus \\
-\bottomrule
-\end{tabular}
-\caption{Approximate KV cache memory at different context lengths (BF16, 32 heads)}
-\end{table}
-
-
-% ══════════════════════════════════════════════════════════════════
-%  PART II: DATA
-% ══════════════════════════════════════════════════════════════════
