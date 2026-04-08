@@ -56,7 +56,7 @@ where $\hat{A}_i = \frac{r_i - \text{mean}(r)}{\text{std}(r)}$ is the group-norm
 
 \section{DAPO}
 
-Removes reference model dependency from GRPO \parencite{yu2025dapo}. The most streamlined RL alignment approach. Also introduces \emph{clip-higher} (asymmetric policy clipping) and token-level loss normalization to stabilize training.
+Removes reference model dependency from GRPO \parencite{yu2025dapo} (\hyperref[form:dapo]{formulation \S\ref*{form:dapo}}, \hyperref[lst:dapo]{code Listing~\ref*{lst:dapo}}). The most streamlined RL alignment approach. Also introduces \emph{clip-higher} (asymmetric policy clipping) and token-level loss normalization to stabilize training.
 
 \section{RLAIF and Constitutional AI}
 
@@ -64,7 +64,7 @@ AI-generated preferences replace human annotations. Anthropic's CAI \parencite{b
 
 \section{RLVR}
 
-Verifiable rewards for math and code. Binary, objective signal resists reward hacking. DeepSeek R1 demonstrated emergent reasoning from pure RLVR + GRPO without SFT. The key insight: verifiable correctness is a cleaner training signal than a learned reward model.
+Verifiable rewards for math and code. Binary, objective signal resists reward hacking. DeepSeek R1 demonstrated emergent reasoning from pure RLVR + GRPO without SFT (\hyperref[form:rlvr]{formulation \S\ref*{form:rlvr}}, \hyperref[lst:rlvr]{code Listing~\ref*{lst:rlvr}}). The key insight: verifiable correctness is a cleaner training signal than a learned reward model.
 
 \section{The Modern Alignment Stack}
 

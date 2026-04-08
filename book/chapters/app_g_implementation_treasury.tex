@@ -219,6 +219,40 @@ class MLA(nn.Module):
         return self.Wo(out)
 \end{lstlisting}
 
+\subsection{Mixture of Experts (MoE)}
+\label{form:moe}
+
+Replaces the dense FFN with multiple ``experts'' and a router that activates a subset per token.
+
+\[
+  \mathrm{MoE}(x) = \sum_{i \in \mathcal{K}} \mathrm{gate}(x)_i \cdot E_i(x)
+\]
+
+\begin{lstlisting}[style=pythonstyle, caption={Mixture of Experts (MoE) with top-k routing}, label=lst:moe]
+class MoE(nn.Module):
+    def __init__(self, d_model: int, n_experts: int, top_k: int = 2):
+        super().__init__()
+        self.router = nn.Linear(d_model, n_experts)
+        self.experts = nn.ModuleList([SwiGLU(d_model, d_model * 4) for _ in range(n_experts)])
+        self.top_k = top_k
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B, T, D = x.shape
+        logits = self.router(x)
+        probs = F.softmax(logits, dim=-1)
+        top_probs, top_indices = torch.topk(probs, self.top_k, dim=-1)
+        top_probs = top_probs / top_probs.sum(dim=-1, keepdim=True)
+        
+        out = torch.zeros_like(x)
+        for i, expert in enumerate(self.experts):
+            mask = (top_indices == i).any(dim=-1)
+            if mask.any():
+                expert_weight = (top_indices == i).float() * top_probs
+                expert_weight = expert_weight.sum(dim=-1)
+                out[mask] += expert(x[mask]) * expert_weight[mask].unsqueeze(-1)
+        return out
+\end{lstlisting}
+
 % -----------------------------------------------------------------------------
 \section{Positional Encodings}
 \label{app:pos}
@@ -367,6 +401,16 @@ def muon_step(p, g, m, lr=0.02, momentum=0.95, n_iters=5):
 \]
 Lion uses the `sign` operation to determine update direction, providing better generalization in specific LLM regimes.
 
+\begin{lstlisting}[style=pythonstyle, caption={Lion update step}, label=lst:lion]
+def lion_step(params, grads, exp_avg, lr=1e-4, beta1=0.9, beta2=0.99, wd=0.1):
+    """Lion (Evolutive Sign Momentum) optimizer."""
+    for p, g, m in zip(params, grads, exp_avg):
+        p.mul_(1 - lr * wd)
+        update = torch.sign(m * beta1 + g * (1 - beta1))
+        p.add_(update, alpha=-lr)
+        m.mul_(beta2).add_(g, alpha=1 - beta2)
+\end{lstlisting}
+
 \subsection{Cosine Schedule with Warmup}
 \label{form:cosine}
 
@@ -514,6 +558,37 @@ def kto_loss(model, ref, input_ids, labels, beta=0.1):
     logp = log_prob_seq(model, input_ids, labels)
     logp_ref = log_prob_seq(ref, input_ids, labels)
     return -F.logsigmoid(beta * (logp - logp_ref)).mean()
+\end{lstlisting}
+
+\subsection{DAPO (Decoupled Alignment for Preference Optimization)}
+\label{form:dapo}
+
+Decouples the reference model from the gradient flow to stabilize training and reduce memory overhead.
+
+\begin{lstlisting}[style=pythonstyle, caption={DAPO loss function}, label=lst:dapo]
+def dapo_loss(policy, ref, x_w, x_l, beta=0.1):
+    """Simplified DAPO preference optimization."""
+    pi_w, pi_l = log_prob_seq(policy, x_w, x_w), log_prob_seq(policy, x_l, x_l)
+    with torch.no_grad():
+        ref_w, ref_l = log_prob_seq(ref, x_w, x_w), log_prob_seq(ref, x_l, x_l)
+    reward_margin = beta * ((pi_w - ref_w) - (pi_l - ref_l))
+    return -F.logsigmoid(reward_margin).mean()
+\end{lstlisting}
+
+\subsection{RLVR (Reinforcement Learning with Verifiable Rewards)}
+\label{form:rlvr}
+
+RL training where rewards are computed by rule-based verifiers (e.g., compilers or unit tests).
+
+\begin{lstlisting}[style=pythonstyle, caption={RLVR update step}, label=lst:rlvr]
+def rlvr_step(policy, prompt_ids, reward_fn, G=8):
+    """DeepSeek-R1 style RLVR step using group-relative rewards."""
+    with torch.no_grad():
+        completions = [policy.generate(prompt_ids) for _ in range(G)]
+        rewards = reward_fn(completions)
+    advantage = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
+    # Advantage is then used for standard policy gradient updates
+    return advantage.mean()
 \end{lstlisting}
 
 % -----------------------------------------------------------------------------

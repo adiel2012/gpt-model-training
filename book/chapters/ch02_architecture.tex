@@ -90,7 +90,7 @@ SwiGLU & $\text{Gated}(x, \text{Swish})$ & Most expressive. 2026 production stan
 
 \section{Mixture of Experts (MoE)}
 
-Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token \parencite{shazeer2017outrageously}. Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
+Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token \parencite{shazeer2017outrageously} (\hyperref[form:moe]{formulation \S\ref*{form:moe}}, \hyperref[lst:moe]{code Listing~\ref*{lst:moe}}). Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
 
 \begin{keyinsight}[Key MoE Developments in 2025--2026]
 \begin{itemize}
