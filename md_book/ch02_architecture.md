@@ -1,3 +1,4 @@
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Evaluate the decoder-only transformer and its 2026 architectural variations.
 > - Analyze MQA, GQA, and MLA for efficient KV cache management at scale.
@@ -5,9 +6,30 @@
 > - Review production-standard normalization (RMSNorm) and activation (SwiGLU) functions.
 > - Understand the 2025 transition to fine-grained Mixture of Experts (MoE).
 
-## The Decoder-Only Transformer
-
 Nearly all modern autoregressive LLMs use a decoder-only transformer architecture: sequential blocks of masked self-attention and feed-forward sub-layers. In PaLM-540B, approximately 90% of parameters reside in feed-forward layers---which is why MoE focuses on FFN efficiency.
+
+```mermaid
+graph TD
+    Input[Input Tokens] --> Embed[Embedding + Positional Encoding]
+    Embed --> Block1[Transformer Block 1]
+    Block1 --> Block2[Transformer Block 2]
+    Block2 --> BlockN[Transformer Block N]
+    BlockN --> Norm[RMSNorm]
+    Norm --> Head[Language Model Head]
+    Head --> Output[Probabilities]
+
+    subgraph "Transformer Block"
+        B_Input[Input] --> B_Norm1[RMSNorm]
+        B_Norm1 --> B_Attn[Attention Mechanism \n GQA / MLA]
+        B_Attn --> B_Add1[Residual Connection]
+        B_Input --> B_Add1
+        B_Add1 --> B_Norm2[RMSNorm]
+        B_Norm2 --> B_FFN[Feed-Forward Network \n SwiGLU]
+        B_FFN --> B_Add2[Residual Connection]
+        B_Add1 --> B_Add2
+    end
+```
+
 
 ### Architectural Comparison: Key Modern Models
 
@@ -34,25 +56,27 @@ Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K
 >
 > MLA's core innovation is the decoupled latent vector:
 > $$
+
 > c_{KV} = W_{DK} h_t, \quad k_t, v_t = W_{UK} c_{KV}
 > $$
+
 > where $W_{DK}$ is a down-projection and $W_{UK}$ an up-projection. RoPE is applied to a separate, non-compressed portion of the query and key to maintain relative position awareness without bloating the KV cache.
 
 ### Positional Encodings
 
 Full derivations in [Appendix G](app_g_implementation_treasury.md).
 
-  - **RoPE (Rotary Position Embedding):** Applies rotation matrices to Q/K vectors [su2024roformer]. Encodes relative positions implicitly. Dominant 2025--2026 standard.
+  - **RoPE (Rotary Position Embedding):** Applies rotation matrices to Q/K vectors [su2024roformer]. Encodes relative positions implicitly. Dominant 2025-2026 standard.
   - **iRoPE (Llama 4):** Interleaved no-position and RoPE layers. Enables 10M-token context without explicit positional interpolation.
   - **ALiBi:** Linear bias on attention scores [press2022train]. Zero extra parameters, strong length generalization.
-  - **YaRN / LongRoPE:** NTK-aware RoPE interpolation for 4--8$\times$ context extension without full retraining [peng2023yarn].
+  - **YaRN / LongRoPE:** NTK-aware RoPE interpolation for 4-8x context extension without full retraining [peng2023yarn].
 
 ### Normalization and Activation
 
 Full formulations in [Appendix G](app_g_implementation_treasury.md) (RMSNorm, SwiGLU).
 
   - **RMSNorm with pre-normalization:** More stable than post-norm LayerNorm. Dominant in all major 2025 models (formulation: [Appendix G](app_g_implementation_treasury.md)).
-  - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024--2026 (formulation: [Appendix G](app_g_implementation_treasury.md)).
+  - **SwiGLU:** Gated FFN activation combining Swish and GLU [shazeer2020glu]. Standard for 2024-2026 (formulation: [Appendix G](app_g_implementation_treasury.md)).
 
 | **Function** | **Formulation** | **Key Trade-off / Usage** |
 | :--- | :--- | :--- |
@@ -64,9 +88,9 @@ Full formulations in [Appendix G](app_g_implementation_treasury.md) (RMSNorm, Sw
 
 ## Mixture of Experts (MoE)
 
-Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token [shazeer2017outrageously] (formulation and code: [Appendix G](app_g_implementation_treasury.md)). Only 1--2 of 8--64 experts activate per token. Mixtral 8x7B: 47B total parameters, $\sim$13B active per forward pass.
+Replace the dense FFN with multiple smaller expert networks and a router selecting which experts process each token [shazeer2017outrageously] (formulation and code: [Appendix G](app_g_implementation_treasury.md)). Only 1-2 of 8-64 experts activate per token. Mixtral 8x7B: 47B total parameters, ~13B active per forward pass.
 
-> **Key MoE Developments in 2025--2026**
+> **Key MoE Developments in 2025-2026**
 >
 > - **DeepSeekMoE [dai2024deepseekmoe]:** Fine-grained experts with shared expert isolation. 256 routed experts + 1 shared expert per layer.
 > - **Sparse Upcycling:** Convert dense models to MoE without training from scratch.
@@ -76,7 +100,7 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
 
 ## Context Length and Efficient Attention
 
-  - **Flash Attention (v2/v3):** $O(n^2) \rightarrow O(n)$ memory via IO-aware tiling [dao2022flashattention,dao2023flashattention2,shah2024flashattention3]. Mandatory for modern training. FA3 adds warp-specialization for $\sim$2$\times$ speedup over FA2 on H100.
+  - **Flash Attention (v2/v3):** $O(n^2) \rightarrow O(n)$ memory via IO-aware tiling [dao2022flashattention,dao2023flashattention2,shah2024flashattention3]. Mandatory for modern training. FA3 adds warp-specialization for ~2x speedup over FA2 on H100.
   - **Ring Attention:** Million-token contexts across devices in a ring topology. Each device holds one segment; KV chunks circulate.
   - **Sliding Window Attention:** Fixed local window with cross-layer information flow (Mistral).
 
@@ -88,3 +112,8 @@ Replace the dense FFN with multiple smaller expert networks and a router selecti
 | 1M tokens | 128 GB | Entire book corpus |
 *Table: Approximate KV cache memory at different context lengths (BF16, 32 heads)*
 
+
+
+---
+
+[← Previous Chapter](ch01_landscape.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch03_data_curation.md)

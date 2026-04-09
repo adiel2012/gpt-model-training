@@ -1,5 +1,6 @@
 # The LLM Training Landscape in 2026
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Understand the 2026 shift from parameter-count to inference-optimality.
 > - Review the 5-stage modern training pipeline (Pre-training to Deployment).
@@ -26,12 +27,12 @@ The training paradigm has shifted substantially. Early models relied on a simple
 
 The Chinchilla scaling laws [hoffmann2022training] established that for a fixed compute budget $C$, optimal model size $N$ and training tokens $D$ scale as $N \propto C^{0.5}$ and $D \propto C^{0.5}$---meaning earlier models were systematically undertrained. Chinchilla-70B (70B parameters, 1.4T tokens) [hoffmann2022training] outperformed GPT-3-175B (175B parameters, 300B tokens) [brown2020language] at one-quarter the inference cost.
 
-By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a practical reason: *inference cost dominates training cost at scale*. Training a smaller model on more tokens is cheaper to deploy even if it requires somewhat more training compute.
+By 2025-2026, frontier labs diverge from strict Chinchilla prescriptions for a practical reason: *inference cost dominates training cost at scale*. Training a smaller model on more tokens is cheaper to deploy even if it requires somewhat more training compute.
 
 > **Scaling Law Implications for Practitioners**
 >
 > - Smaller models trained longer ("overtrained" relative to Chinchilla) are cheaper to deploy.
->   - At 7B parameters, the Chinchilla-optimal token count is $\sim$140B; in practice, training on 1T+ tokens delivers significantly better downstream performance.
+>   - At 7B parameters, the Chinchilla-optimal token count is ~140B; in practice, training on 1T+ tokens delivers significantly better downstream performance.
 >   - Emergent capabilities appear discontinuously at scale, making capability predictions unreliable.
 >   - Data quality exerts a multiplicative effect: doubling data quality is often more impactful than doubling data quantity.
 
@@ -48,3 +49,8 @@ By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a 
 
 *Table: Typical cost ranges for LLM training components*
 
+
+
+---
+
+[← Previous Chapter](front_matter.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch02_architecture.md)

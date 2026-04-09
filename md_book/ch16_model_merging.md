@@ -1,5 +1,6 @@
 # Model Merging and Recombination
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master task vector arithmetic and SLERP weight interpolation.
 > - Implement TIES-Merging and DARE for combining fine-tuned experts.
@@ -39,3 +40,8 @@ Task vector [ilharco2022editing] $\tau = \theta_\text{fine-tuned} - \theta_\text
 5. Distribute as a single merged model.
 
 Tools: `mergekit` [ilharco2022editing] (open source), Hugging Face `transformers` weight manipulation.
+
+
+---
+
+[← Previous Chapter](ch15_domain_multimodal.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch17_continual_learning.md)

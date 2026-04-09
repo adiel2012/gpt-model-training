@@ -1,5 +1,6 @@
 # Specialized Domains and Multi-modality
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master data curation and fine-tuning for Coding, Law, and Science.
 > - Implement the 2026 multi-modal stack: Vision, Audio, and Action.
@@ -30,3 +31,8 @@ LLMs as agents: perceive environment, plan actions, use tools, and produce obser
   - Tool-use fine-tuning: function calling, structured JSON output, code execution.
   - Multi-agent coordination: multiple specialized LLMs operating in concert.
 
+
+
+---
+
+[← Previous Chapter](ch14_inference.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch16_model_merging.md)

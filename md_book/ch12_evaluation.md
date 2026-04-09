@@ -1,5 +1,6 @@
 # Evaluating LLMs -- Benchmarks and Beyond
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master the 2026 benchmark suite: MMLU-Pro, HumanEval, and GPQA.
 > - Implement LLM-as-a-Judge and preference-based ELO evaluation systems.
@@ -36,3 +37,8 @@ Chatbot Arena (LMSYS) collects millions of pairwise human comparisons and comput
 - Evaluation data present in pre-training inflates scores. Always report decontamination procedures.
 - Optimizing specifically for a benchmark can improve scores without improving underlying capability (Goodhart's Law).
 - Mitigations: dynamic benchmarks with new questions each run, held-out test sets never used for selection, diverse multi-benchmark suites that resist narrow optimization.
+
+
+---
+
+[← Previous Chapter](ch11_distillation.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch13_safety.md)

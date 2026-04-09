@@ -1,5 +1,6 @@
 # Synthetic Data Generation
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Review the self-instruct and prompt-based data generation evolution.
 > - Master Magpie and PersonaHub for generating high-diversity instruction sets.
@@ -10,7 +11,7 @@ Frontier models are trained on trillions of tokens---but high-quality human-writ
 
 ## The Case for Synthetic Data
 
-  - **Scale without annotation cost:** A single human expert can label $\sim$1K examples per day; a model can generate millions in minutes.
+  - **Scale without annotation cost:** A single human expert can label ~1K examples per day; a model can generate millions in minutes.
   - **Long-tail coverage:** Rare instructions, specialized domains, and unusual reasoning patterns are under-represented in web crawls.
   - **Consistency:** Synthetic data can be templated to enforce format, difficulty, and safety constraints uniformly.
   - **Reasoning chain density:** Writing out step-by-step solutions is prohibitively slow for humans; LLMs produce them at scale.
@@ -29,7 +30,7 @@ Rather than generating new instructions from scratch, Evol-Instruct [xu2023wizar
 
 Magpie [xu2024magpie] exploits the observation that instruction-tuned models exposed to only a system prompt and role prefix will auto-complete realistic user instructions. The pipeline:
 
-  - Feed the model only the system header + user-role prefix (e.g., `<|start\_header\_id|>user<|end\_header\_id|>`).
+  - Feed the model only the system header + user-role prefix (e.g., `<|start_header_id|>user<|end_header_id|>`).
   - Sample a user instruction from the model's own distribution.
   - Feed the (system + generated instruction) back, sample the assistant response.
   - Filter by quality score (self-consistency, LLM-judge).
@@ -60,15 +61,15 @@ Raw synthetic data contains errors, repetition, and unsafe content. A multi-stag
   - **Format checks:** Regex validation for expected chat template structure.
   - **Length filtering:** Remove excessively short responses ($<$20 tokens) and runaway generations ($>$4K tokens without meaningful content).
   - **Self-consistency scoring:** Generate the response twice with different seeds; low cosine similarity flags inconsistent or hallucinated content.
-  - **LLM-as-judge:** Score on helpfulness, accuracy, and safety (1--5 scale). Discard scores $\leq$3.
+  - **LLM-as-judge:** Score on helpfulness, accuracy, and safety (1-5 scale). Discard scores $\leq$3.
   - **Deduplication:** MinHash near-deduplication to prevent overfitting to repeated patterns.
-  - **Human spot-check:** 1--2% random sample reviewed by domain experts to calibrate automated filters.
+  - **Human spot-check:** 1-2% random sample reviewed by domain experts to calibrate automated filters.
 
 ## Risks: Model Collapse and Bias Amplification
 
 > **Model Collapse**
 >
-> Training repeatedly on model-generated data without human-curated anchors leads to *model collapse* [shumailov2024ai]: the distribution narrows, variance decreases, and tail behaviors (rare but important knowledge) are lost. The antidote: always maintain a human-curated anchor set---typically 10--30% of the training mix---and monitor perplexity on a fixed held-out real-text corpus. If perplexity rises on the real-text held-out set, collapse is beginning.
+> Training repeatedly on model-generated data without human-curated anchors leads to *model collapse* [shumailov2024ai]: the distribution narrows, variance decreases, and tail behaviors (rare but important knowledge) are lost. The antidote: always maintain a human-curated anchor set---typically 10-30% of the training mix---and monitor perplexity on a fixed held-out real-text corpus. If perplexity rises on the real-text held-out set, collapse is beginning.
 
 Bias amplification: errors and biases in the teacher model are reproduced and reinforced in the student. Use diverse teacher models (not just one API) and human review to audit for systematic failures.
 
@@ -76,11 +77,16 @@ Bias amplification: errors and biases in the teacher model are reproduced and re
 
 | **Data Source** | **Proportion** | **Purpose** |
 |---|---|---|
-| Magpie (self-generated) | 20--40% | On-distribution instruction diversity |
-| Evol-Instruct evolved | 15--25% | Difficulty calibration |
-| Verified math/code chains | 10--20% | Reasoning capability |
-| Orca CoT augmented | 10--20% | Step-by-step process learning |
-| Human-curated anchor | 20--30% | Distribution grounding, collapse prevention |
+| Magpie (self-generated) | 20-40% | On-distribution instruction diversity |
+| Evol-Instruct evolved | 15-25% | Difficulty calibration |
+| Verified math/code chains | 10-20% | Reasoning capability |
+| Orca CoT augmented | 10-20% | Step-by-step process learning |
+| Human-curated anchor | 20-30% | Distribution grounding, collapse prevention |
 
 *Table: Recommended SFT data mix composition using synthetic sources*
 
+
+
+---
+
+[← Previous Chapter](ch04_tokenization.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch06_pretraining_objectives.md)

@@ -1,5 +1,6 @@
 # Continual Learning and Lifelong Adjustment
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Mitigate catastrophic forgetting using EWC and Low-Rank Adaptation.
 > - Implement dynamic weight updates for real-time knowledge injection.
@@ -28,3 +29,8 @@ Updating the base model on new data distributions (new knowledge, new language):
   - Data mixing: 80% new data + 20% replay from original pre-training corpus.
   - Context extension: interleave original context-length data with long-context data during extension training.
 
+
+
+---
+
+[← Previous Chapter](ch16_model_merging.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch18_future.md)

@@ -32,3 +32,8 @@
 - **TIES:** Trim, Elect, Sign -- Model merging algorithm that handles conflicting weight updates.
 - **DARE:** Drop And REscale -- Model merging via random delta dropout with magnitude rescaling.
 - **EWC:** Elastic Weight Consolidation -- Prevents catastrophic forgetting via Fisher information penalty.
+
+
+---
+
+[← Previous Chapter](ch19_company_profiles.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_b_reading.md)

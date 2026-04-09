@@ -230,3 +230,8 @@ trainer.train()
 
 This document reflects the state of the art as of April 2026. The field evolves rapidly; techniques described here represent current best practices.
 
+
+
+---
+
+[← Previous Chapter](app_c_hardware.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_e_cloud.md)

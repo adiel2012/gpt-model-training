@@ -1,5 +1,6 @@
 # Tokenization -- From Text to Vectors
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Compare BPE, Unigram, and WordPiece tokenization algorithms.
 > - Master the 2026 standard 128K vocabularies for multilingual performance.
@@ -131,3 +132,8 @@ def packed_attention_mask(doc_lengths: list[int]) -> torch.Tensor:
 | Code-heavy tasks | BPE with 64K+ vocab | Code tokens merge better with larger vocab |
 | On-device / edge | Smaller vocab (32K) | Smaller embedding matrix |
 | New language addition | Extend existing vocab | Add 2K--8K language-specific tokens |
+
+
+---
+
+[← Previous Chapter](ch03_data_curation.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch05_synthetic_data.md)

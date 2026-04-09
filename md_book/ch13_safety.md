@@ -1,5 +1,6 @@
 # Safety, Ethics, and Constitutional AI
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Implement red-teaming and adversarial testing for "jailbreak" prevention.
 > - Master Constitutional AI and the RLAIF (RL from AI Feedback) stack.
@@ -31,7 +32,7 @@ Advantages: dramatically reduces human annotation cost; the constitution is audi
 
 ## Interpretability and Explainability
 
-SHAP and LIME for feature attribution. Attention visualization (with caveats---attention patterns are not explanations). Mechanistic interpretability (Anthropic): identify circuits and features responsible for specific behaviors. EU AI Act (2024--2026) mandates transparency for high-risk AI applications.
+SHAP and LIME for feature attribution. Attention visualization (with caveats---attention patterns are not explanations). Mechanistic interpretability (Anthropic): identify circuits and features responsible for specific behaviors. EU AI Act (2024-2026) mandates transparency for high-risk AI applications.
 
 ## Safe Deployment Practices
 
@@ -41,3 +42,8 @@ SHAP and LIME for feature attribution. Attention visualization (with caveats---a
   - Human-in-the-loop for high-stakes decisions.
   - Staged rollouts with safety monitoring before broad deployment.
 
+
+
+---
+
+[← Previous Chapter](ch12_evaluation.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch14_inference.md)

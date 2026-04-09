@@ -25,11 +25,11 @@ A consolidated reference for common LLM training scenarios.
 | **Parameter** | **Value Range** | **Notes** |
 |---|---|---|
 | Learning rate | $1\times10^{-5}$ -- $5\times10^{-5}$ | Lower than pre-training; avoid forgetting |
-| Epochs | 2--5 | 3 is the most common sweet spot |
-| Batch size | 32--128 | Larger = more stable; use grad accum |
+| Epochs | 2-5 | 3 is the most common sweet spot |
+| Batch size | 32-128 | Larger = more stable; use grad accum |
 | Scheduler | Cosine or linear decay | Linear often sufficient for short runs |
-| Warmup ratio | 0.03--0.1 | 3--10% of total steps |
-| Max sequence length | 2,048--8,192 | Pack shorter sequences |
+| Warmup ratio | 0.03-0.1 | 3-10% of total steps |
+| Max sequence length | 2,048-8,192 | Pack shorter sequences |
 | Loss masking | On (assistant only) | Critical: never train on user/system tokens |
 
 *Table: SFT hyperparameter reference*
@@ -41,7 +41,7 @@ A consolidated reference for common LLM training scenarios.
 | Rank $r$ | 8 -- 64 | 16 is the most common default; higher $r$ = more params |
 | Alpha $\alpha$ | $2r$ (e.g., 32 for $r$=16) | $\alpha/r$ is the effective LR scale (usually 2) |
 | Dropout | 0.05 -- 0.1 | Low dropout for small datasets |
-| Target modules | q\_proj, v\_proj | Add k\_proj, o\_proj for harder tasks |
+| Target modules | q_proj, v_proj | Add k_proj, o_proj for harder tasks |
 | Learning rate | $1\times10^{-4}$ -- $3\times10^{-4}$ | Higher than full FT; adapter weights start near zero |
 | QLoRA quantization | nf4 (4-bit NormalFloat) | nf4 outperforms fp4 for most LLMs |
 | Compute dtype | BF16 | Always use BF16 for LoRA computation |
@@ -81,13 +81,18 @@ A consolidated reference for common LLM training scenarios.
 | **Symptom** | **Cause** | **Fix** |
 |---|---|---|
 | Loss NaN early in training | LR too high or warmup too short | Halve LR; double warmup steps |
-| Loss plateau without improvement | LR too low or dataset too small | Increase LR by 2$\times$; check data quality |
+| Loss plateau without improvement | LR too low or dataset too small | Increase LR by 2x; check data quality |
 | Loss spike then recovery | Corrupted data batch | Add data validation; inspect spike step's batch |
 | Gradient norm spikes | Outlier data or no clipping | Enable grad clip norm 1.0; filter data |
 | Model repeats outputs | Training data contamination or over-training | Reduce epochs; check for dedup failures |
-| DPO loss goes negative | $\beta$ too small or LR too high | Increase $\beta$; reduce LR by 5$\times$ |
+| DPO loss goes negative | $\beta$ too small or LR too high | Increase $\beta$; reduce LR by 5x |
 | GRPO reward stuck at zero | Reward function too strict or group too small | Soften reward; increase group size |
 | OOM during GRPO | Too many generations in memory | Reduce group size; use gradient checkpointing |
 
 *Table: Common training failure modes and remediation*
 
+
+
+---
+
+[← Previous Chapter](app_e_cloud.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_g_implementation_treasury.md)

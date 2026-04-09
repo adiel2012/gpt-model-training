@@ -18,3 +18,8 @@
   - **AI Engineering: Building Applications with Foundation Models** — Chip Huyen (2025)
   - *NLP with Transformers* (2025 rev. ed.) -- O'Reilly -- Hugging Face authors
 
+
+
+---
+
+[← Previous Chapter](app_a_glossary.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_c_hardware.md)

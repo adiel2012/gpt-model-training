@@ -14,3 +14,8 @@
 
 *Table: GPU and accelerator reference for LLM training (TFLOPS are peak BF16/FP16)*
 
+
+
+---
+
+[← Previous Chapter](app_b_reading.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_d_recipes.md)

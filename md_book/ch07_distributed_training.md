@@ -1,5 +1,6 @@
 # Distributed Training and Infrastructure
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master 3D Parallelism: Data, Tensor, and Pipeline strategies for scale.
 > - Review ZeRO optimizer sharding and communication-efficient NCCL patterns.
@@ -18,6 +19,23 @@
 
 Combining data, tensor, and pipeline parallelism simultaneously. Used for training models beyond 70B parameters:
 
+```mermaid
+graph TD
+    subgraph "3D Parallelism"
+        DP[Data Parallelism \n Replicated Weights]
+        TP[Tensor Parallelism \n Sharded Layers]
+        PP[Pipeline Parallelism \n Layer Stages]
+    end
+    
+    Training[Large Scale Training] --> DP
+    Training --> TP
+    Training --> PP
+    
+    DP --> Scale[Scale to 1000s of GPUs]
+    TP --> LargeModels[Handle Massive Parameter Counts]
+    PP --> Memory[Reduce Per-GPU VRAM Floor]
+```
+
   - **Inner (intra-node):** Tensor parallelism exploiting NVLink bandwidth (8-16 GPUs).
   - **Middle (inter-node):** Pipeline parallelism across nodes.
   - **Outer:** Data parallelism across replica groups.
@@ -30,7 +48,7 @@ BF16 (dominant, same exponent range as FP32) and FP8 (emerging frontier, native 
 
 ## Checkpointing and Fault Tolerance
 
-Periodic snapshots, asynchronous checkpointing, distributed sharding, automatic restart/recovery. At 1,000+ GPU scale, mean time between failures of $\sim$3 days makes fault tolerance critical. Async checkpointing overlaps saving with training at near-zero overhead.
+Periodic snapshots, asynchronous checkpointing, distributed sharding, automatic restart/recovery. At 1,000+ GPU scale, mean time between failures of ~3 days makes fault tolerance critical. Async checkpointing overlaps saving with training at near-zero overhead.
 
 ## Communication Optimization
 
@@ -57,7 +75,9 @@ Full update rules and code in [Appendix G](app_g_implementation_treasury.md): Ad
 Cosine decay with linear warmup is the standard:
 
 $$
+
 \eta(t) = \eta_\text{min} + \frac{1}{2}\left(\eta_\text{max} - \eta_\text{min}\right)\left(1 + \cos\left(\frac{t - t_\text{warmup}}{T - t_\text{warmup}}\pi\right)\right)
+
 $$
 
   - **Warmup steps:** 1,000-5,000 tokens. Prevents gradient explosions from random initial parameter distributions.
@@ -94,3 +114,8 @@ $$
 
 *Table: Key training frameworks in 2025-2026*
 
+
+
+---
+
+[← Previous Chapter](ch06_pretraining_objectives.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch08_sft.md)

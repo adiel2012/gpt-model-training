@@ -1,5 +1,6 @@
 # Alignment -- RLHF, DPO, and Beyond
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Trace the evolution from RLHF to reference-free methods (DPO, SimPO).
 > - Implement alignment with binary feedback (KTO) and group-relative rewards (GRPO).
@@ -27,7 +28,7 @@ Transformed GPT-3 into ChatGPT [ouyang2022training]. Pipeline: SFT $\rightarrow$
 
 ## DPO
 
-Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). 90--95% of RLHF performance at 40--60% less compute.
+Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). 90-95% of RLHF performance at 40-60% less compute.
 
 > **DPO Successors**
 >
@@ -38,10 +39,12 @@ Eliminates the reward model entirely [rafailov2023direct] (formula [Appendix G](
 
 ## GRPO
 
-DeepSeek's dominant algorithm for reasoning [guo2025deepseekr1] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). Generates a group of 8--64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33--50% memory savings over PPO.
+DeepSeek's dominant algorithm for reasoning [guo2025deepseekr1] (formula [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). Generates a group of 8-64 responses per prompt. Advantages normalized against group statistics. Eliminates the critic model, yielding 33-50% memory savings over PPO.
 
 $$
+
 \mathcal{L}_\text{GRPO} = \mathbb{E}\left[\sum_i \hat{A}_i \cdot \log \pi_\theta(o_i \mid q) - \beta \cdot \text{KL}[\pi_\theta \| \pi_\text{ref}]\right]
+
 $$
 
 where $\hat{A}_i = \frac{r_i - \text{mean}(r)}{\text{std}(r)}$ is the group-normalized advantage.
@@ -70,3 +73,8 @@ Verifiable rewards for math and code. Binary, objective signal resists reward ha
 
 *Table: The modular alignment stack in 2026*
 
+
+
+---
+
+[← Previous Chapter](ch08_sft.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch10_reasoning.md)

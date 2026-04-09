@@ -1,5 +1,6 @@
 # Knowledge Distillation and Model Compression
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master the forward and reverse KL distillation loss functions.
 > - Implement sequence-level distillation for complex reasoning tasks.
@@ -19,7 +20,9 @@ Frontier labs use distillation systematically: Behemoth $\rightarrow$ Scout/Mave
 The simplest form: generate responses from the teacher and use them as SFT labels for the student. The student minimizes the negative log-likelihood of teacher completions rather than human-annotated completions.
 
 $$
+
 \mathcal{L}_\text{resp} = -\sum_t \log p_\theta(y_t^\text{teacher} \mid x, y_{<t}^\text{teacher})
+
 $$
 
 **Advantages:** Simple pipeline; works with closed-source teachers (you only need teacher outputs, not logits). **Disadvantage:** Ignores the full teacher probability distribution---the student does not learn "how uncertain" the teacher is.
@@ -29,10 +32,12 @@ $$
 When teacher logits are available (open-weight teachers), the student matches the teacher's full output distribution via KL divergence:
 
 $$
+
 \mathcal{L}_\text{KD} = \alpha \cdot \mathcal{L}_\text{CE}(y^\text{gt}, p_\theta) + (1-\alpha) \cdot T^2 \cdot D_\text{KL}\left(\text{softmax}(z^\text{teacher}/T) \;\|\; \text{softmax}(z^\text{student}/T)\right)
+
 $$
 
-where $T$ is the temperature (commonly 2--4) and $\alpha$ balances ground-truth and teacher loss. Higher temperature softens the teacher distribution, providing richer signal on near-correct tokens.
+where $T$ is the temperature (commonly 2-4) and $\alpha$ balances ground-truth and teacher loss. Higher temperature softens the teacher distribution, providing richer signal on near-correct tokens.
 
 ## Sequence-Level Knowledge Distillation (SeqKD)
 
@@ -62,7 +67,7 @@ Requires either white-box access to teacher logits or a fast teacher inference e
 
 ## Speculative Decoding as Distillation
 
-Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$ tokens, verified in parallel by the target model. Beyond a decoding speedup, training the drafter to maximally predict acceptance by the target is a form of distillation---the drafter learns to approximate the target's conditional distribution on easy tokens, which constitute 70--90% of all tokens.
+Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$ tokens, verified in parallel by the target model. Beyond a decoding speedup, training the drafter to maximally predict acceptance by the target is a form of distillation---the drafter learns to approximate the target's conditional distribution on easy tokens, which constitute 70-90% of all tokens.
 
 ## Practical Distillation Workflow
 
@@ -74,7 +79,7 @@ Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$
 
 > **Distillation Rules of Thumb**
 >
-> - A 7B student distilled from a 70B teacher typically closes 60--80% of the gap to the teacher.
+> - A 7B student distilled from a 70B teacher typically closes 60-80% of the gap to the teacher.
 > - Distillation data volume: 50K--500K high-quality teacher completions is sufficient for most fine-tuning objectives.
 > - For reasoning tasks, only keep teacher traces that lead to correct verified answers---incorrect reasoning chains hurt more than they help.
 > - On-policy distillation adds significant complexity; prefer offline SeqKD unless you observe severe distribution mismatch.
@@ -108,3 +113,8 @@ def distillation_loss(student_logits, teacher_logits,
     return alpha * ce_loss + (1 - alpha) * kd_loss
 ```
 
+
+
+---
+
+[← Previous Chapter](ch10_reasoning.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch12_evaluation.md)

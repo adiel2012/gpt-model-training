@@ -1,14 +1,15 @@
 # Training for Reasoning
 
+> [!IMPORTANT]
 > **What You Will Learn**
-> - Analyze Chain-of-Thought (CoT) and its 2025--2026 training methods.
+> - Analyze Chain-of-Thought (CoT) and its 2025-2026 training methods.
 > - Master Process Reward Models (PRM) for step-level supervision.
 > - Implement test-time compute scaling and search (MCTS, Best-of-N).
 > - Understand Thinking Tokens (Quiet-STaR) for emergent reasoning.
 
 ## The Rise of Reasoning Models
 
-Models that break complex problems into explicit intermediate steps---the most significant capability development of 2025--2026. Reasoning models sacrifice token efficiency for accuracy on hard tasks.
+Models that break complex problems into explicit intermediate steps---the most significant capability development of 2025-2026. Reasoning models sacrifice token efficiency for accuracy on hard tasks.
 
 ## Chain-of-Thought (CoT)
 
@@ -16,7 +17,7 @@ Prompting or training models to generate intermediate reasoning steps before the
 
   - **Zero-shot CoT:** Append "Let's think step by step" to the prompt.
   - **Few-shot CoT:** Provide example (question, reasoning chain, answer) triples in the prompt.
-  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15% on GSM8K vs. single-sample CoT.
+  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5-15% on GSM8K vs. single-sample CoT.
 
 ## Process Reward Models (PRM)
 
@@ -38,11 +39,11 @@ Allocate more inference compute per query to find better solutions:
 
 > **Test-Time Compute Scaling**
 >
-> \textcite{snell2024scaling} showed that test-time compute can match training-time compute scaling: a model with 16$\times$ more test-time compute can match a model 16$\times$ larger. This creates a new performance axis independent of parameter count.
+> \textcite{snell2024scaling} showed that test-time compute can match training-time compute scaling: a model with 16x more test-time compute can match a model 16x larger. This creates a new performance axis independent of parameter count.
 
 ## TLT -- Accelerating Training
 
-MIT: a smaller "drafter" model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70--210% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
+MIT: a smaller "drafter" model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70-210% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
 
 ## R1-Style Pure RL Training
 
@@ -68,3 +69,8 @@ This allows models to benefit from reasoning even on tasks where explicit Chain-
 > **The Thinking Token Trade-off**
 >
 > Thinking tokens increase inference compute (latency and FLOPs) but can dramatically reduce the model size required to achieve a certain level of performance. A 7B model with 16 thinking tokens can match a 70B model on several reasoning-heavy benchmarks.
+
+
+---
+
+[← Previous Chapter](ch09_alignment.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch11_distillation.md)

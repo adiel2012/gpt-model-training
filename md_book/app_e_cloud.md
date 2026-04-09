@@ -19,8 +19,8 @@ GPU compute is available through major cloud providers, specialized AI cloud pro
 ## Reservation vs. Spot Strategies
 
   - **On-demand:** Full price; available immediately. Use for production inference or short experiments.
-  - **Reserved instances (1--3 years):** 30--60% discount vs. on-demand. Commit to this for sustained training workloads.
-  - **Spot / preemptible:** 60--90% cheaper; can be reclaimed with 30--120 seconds notice. Viable only with robust checkpoint-and-resume infrastructure. Run FSDP training with async checkpointing every 30 minutes.
+  - **Reserved instances (1-3 years):** 30-60% discount vs. on-demand. Commit to this for sustained training workloads.
+  - **Spot / preemptible:** 60-90% cheaper; can be reclaimed with 30-120 seconds notice. Viable only with robust checkpoint-and-resume infrastructure. Run FSDP training with async checkpointing every 30 minutes.
   - **Savings plans (AWS):** Commit to a spend level, not a specific instance type. Flexible across instance families.
 
 ## Cost Estimation: Representative Workloads
@@ -46,3 +46,8 @@ GPU compute is available through major cloud providers, specialized AI cloud pro
 >   - [x] Alert on loss spikes $>2\times$ rolling mean and OOM errors.
 >   - [x] Estimated total cost approved; spot interruption rate acceptable.
 >   - [x] Data pipeline throughput tested: can your dataloader saturate all GPUs?
+
+
+---
+
+[← Previous Chapter](app_d_recipes.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_f_hyperparams.md)

@@ -24,8 +24,11 @@ A production LLM is produced by five sequential optimisation stages.
 ### Stage 1 --- Pre-training
 
 **Objective** (causal language modelling):
+
 $$
+
   \theta_1^* = \arg\min_\theta\; \mathcal{L}_\mathrm{PT}(\theta) = -\frac{1}{|\mathcal{D}_\mathrm{PT}|}\sum_{(x_1,\ldots,x_T)\in\mathcal{D}_\mathrm{PT}} \sum_{t=1}^{T} \log p_\theta(x_t \mid x_{<t})
+
 $$
 
 ```python
@@ -42,7 +45,9 @@ def causal_lm_loss(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
 ### Perplexity (PPL)
 
 $$
+
   \mathrm{PPL} = \exp(\mathcal{L}_\mathrm{NTP})
+
 $$
 
 Perplexity measures the model's confidence in its predictions; it represents the average branching factor of the distribution.
@@ -50,18 +55,27 @@ Perplexity measures the model's confidence in its predictions; it represents the
 ### Stage 3 --- Preference Optimisation
 
 **DPO** (Direct Preference Optimization):
+
 $$
+
   \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\left[ \log\sigma\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
+
 $$
 
 **SimPO** (Simple Preference Optimization):
+
 $$
+
   \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\left[\log\sigma\left( \frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma \right)\right]
+
 $$
 
 **GRPO** (Group Relative Policy Optimisation):
+
 $$
+
   \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}
+
 $$
 
 ## Attention Mechanisms
@@ -69,7 +83,9 @@ $$
 ### Scaled Dot-Product Attention
 
 $$
+
   \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\left(\frac{Q K^\top}{\sqrt{d_k}} + M\right) V
+
 $$
 
 ```python
@@ -95,8 +111,10 @@ def scaled_dot_product_attention(
 ### Multi-Head Attention (MHA)
 
 $$
+
   \mathrm{head}_h = \mathrm{Attention}(Q W_h^Q, K W_h^K, V W_h^V), \quad
   \mathrm{MHA}(Q, K, V) = \mathrm{Concat}(\mathrm{head}_1, ..., \mathrm{head}_H) W^O
+
 $$
 
 ```python
@@ -178,7 +196,9 @@ class MultiQueryAttention(nn.Module):
 ### Multi-head Latent Attention (MLA)
 
 $$
+
   c_t^{KV} = W^{DKV} h_t, \quad [k_t^C; v_t^C] = W^{UKV} c_t^{KV}
+
 $$
 
 ```python
@@ -207,7 +227,9 @@ class MLA(nn.Module):
 Replaces the dense FFN with multiple "experts" and a router that activates a subset per token.
 
 $$
+
   \mathrm{MoE}(x) = \sum_{i \in \mathcal{K}} \mathrm{gate}(x)_i \cdot E_i(x)
+
 $$
 
 ```python
@@ -240,7 +262,9 @@ class MoE(nn.Module):
 ### Rotary Position Embedding (RoPE)
 
 $$
+
   R_{\theta_i, t} = \begin{pmatrix} \cos(t\theta_i) & -\sin(t\theta_i) \\ \sin(t\theta_i) & \cos(t\theta_i) \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d}
+
 $$
 
 ```python
@@ -261,7 +285,9 @@ def precompute_freqs(dim: int, seq_len: int, theta: float = 10000.0) -> torch.Te
 ### ALiBi (Attention with Linear Biases)
 
 $$
+
   \mathrm{score}_{ij} = \frac{q_i \cdot k_j}{\sqrt{d_k}} - m_h \cdot |i - j|
+
 $$
 
 ```python
@@ -280,7 +306,9 @@ def alibi_bias(n_heads: int, seq_len: int) -> torch.Tensor:
 ### RMSNorm
 
 $$
+
   \mathrm{RMSNorm}(x) = \gamma \odot \frac{x}{\|x\|_\mathrm{RMS} + \epsilon}, \quad \|x\|_\mathrm{RMS} = \sqrt{\frac{1}{d}\sum_ix_i^2}
+
 $$
 
 ```python
@@ -298,7 +326,9 @@ class RMSNorm(nn.Module):
 ### SwiGLU Feed-Forward Network
 
 $$
+
   \mathrm{SwiGLU}(x, W, V, W_2) = (x W \odot \mathrm{Swish}(x V)) W_2
+
 $$
 
 ```python
@@ -319,7 +349,9 @@ class SwiGLU(nn.Module):
 ### AdamW
 
 $$
+
   \theta_t = \theta_{t-1} - \eta \left(\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon} + \lambda \theta_{t-1}\right)
+
 $$
 
 ```python
@@ -344,7 +376,9 @@ def adamw_step(
 ### Muon Optimizer
 
 $$
+
   X_{new} = 0.5 X (3I - XX^\top)
+
 $$
 
 ```python
@@ -363,8 +397,11 @@ def muon_step(p, g, m, lr=0.02, momentum=0.95, n_iters=5):
 ### Lion Optimizer
 
 $$
+
   c_t = \text{sign}(\beta_1 m_{t-1} + (1-\beta_1) g_t), \quad m_t = \beta_2 m_{t-1} + (1-\beta_2) g_t
+
 $$
+
 Lion uses the `sign` operation to determine update direction, providing better generalization in specific LLM regimes.
 
 ```python
@@ -392,7 +429,9 @@ def cosine_lr(step: int, total_steps: int, lr_max: float, lr_min: float, warmup_
 ### LoRA (Low-Rank Adaptation)
 
 $$
+
   h = W_0 x + \frac{\alpha}{r} B A x
+
 $$
 
 ```python
@@ -412,13 +451,17 @@ class LoRALinear(nn.Module):
 ### DoRA (Weight-Decomposed Low-Rank Adaptation)
 
 $$
+
   W = m \frac{W_0 + BA}{\|W_0 + BA\|_F}
+
 $$
 
 ### PPO (Proximal Policy Optimization)
 
 $$
+
   \mathcal{L}_\mathrm{CLIP} = \hat{\mathbb{E}}_t [ \min(r_t(\theta) \hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t) ]
+
 $$
 
 ```python
@@ -434,7 +477,9 @@ def ppo_loss(policy_logits, old_logits, actions, advantages, eps=0.2):
 ### DPO (Direct Preference Optimization)
 
 $$
+
   \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\left[ \log\sigma\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
+
 $$
 
 ```python
@@ -449,7 +494,9 @@ def dpo_loss(policy, ref, x_w, x_l, beta=0.1):
 ### SimPO (Simple Preference Optimization)
 
 $$
+
   \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\left[\log\sigma\left( \frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma \right)\right]
+
 $$
 
 ```python
@@ -462,7 +509,9 @@ def simpo_loss(model, x_w, x_l, beta=2.0, gamma=0.5):
 ### GRPO (Group Relative Policy Optimisation)
 
 $$
+
   \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\left[\frac{1}{G}\sum_{i=1}^{G} \min\left(\rho_i \hat{A}_i,\; \mathrm{clip}(\rho_i, 1-\epsilon, 1+\epsilon)\hat{A}_i\right)\right]
+
 $$
 
 ```python
@@ -501,7 +550,9 @@ def grpo_step(
 ### KTO (Kahneman-Tversky Optimization)
 
 $$
+
   \mathcal{L}_\mathrm{KTO} = -\mathbb{E}[w \cdot \log \sigma(\beta(r(x,y) - \text{ref}))]
+
 $$
 
 ```python
@@ -546,7 +597,9 @@ def rlvr_step(policy, prompt_ids, reward_fn, G=8):
 ### Knowledge Distillation (Forward KL)
 
 $$
+
   \mathcal{L}_\mathrm{fwd} = D_\mathrm{KL}(p_\mathrm{teacher} \| p_\mathrm{student})
+
 $$
 
 ```python
@@ -559,22 +612,31 @@ def fwd_kl_distill(s_logits, t_logits, temp=2.0):
 ### MiniLLM (Reverse KL)
 
 $$
+
   \mathcal{L}_\mathrm{rev} = D_\mathrm{KL}(p_\mathrm{student} \| p_\mathrm{teacher})
+
 $$
 
 ### KV Cache Management
 
 The memory footprint (in bytes) of the KV cache is:
+
 $$
-  M_{KV} = 2 \times L \times T \times H \times d_k \times \text{bytes\_per\_param}
+
+  M_{KV} = 2 \times L \times T \times H \times d_k \times \text{bytes_per_param}
+
 $$
+
 where $L$ is layers, $T$ is sequence length, and $H$ is heads.
 
 ### Quantization Scaling
 
 Linear quantization to $n$ bits (e.g., INT8):
+
 $$
+
   x_q = \text{round}\left( \frac{x}{\Delta} \right), \quad \Delta = \frac{\max(|x|)}{2^{n-1}-1}
+
 $$
 
 ### Speculative Decoding
@@ -621,13 +683,17 @@ def speculative_decode(
 ### Task Vectors
 
 $$
+
   \tau = \theta_{fine-tuned} - \theta_{base}
+
 $$
 
 ### SLERP (Spherical Linear Interpolation)
 
 $$
+
   \mathrm{SLERP}(\theta_A, \theta_B, t) = \frac{\sin((1-t)\Omega)}{\sin\Omega}\theta_A + \frac{\sin(t\Omega)}{\sin\Omega}\theta_B
+
 $$
 
 ```python
@@ -643,8 +709,11 @@ def slerp(w_a: torch.Tensor, w_b: torch.Tensor, t: float) -> torch.Tensor:
 ### DARE (Drop And REscale)
 
 $$
+
   \theta_{merge} = \theta_{base} + \frac{1}{1-p} \sum_{i=1}^n \text{mask}_i \odot \tau_i
+
 $$
+
 where $p$ is the dropout probability.
 
 ### TIES-Merging
@@ -747,3 +816,8 @@ class TinyGPT(nn.Module):
         for layer in self.layers: x = layer(x, self.freqs)
         return self.head(self.norm(x))
 ```
+
+
+---
+
+[← Previous Chapter](app_f_hyperparams.md) | [Table of Contents](../README.md#table-of-contents)

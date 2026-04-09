@@ -1,5 +1,6 @@
 # Case Studies and Frontier Lab Analysis
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Analyze the architectural and data choices of Llama 4, GPT-5, and DeepSeek-V4.
 > - Compare the alignment strategies of Anthropic (Constitutional AI) vs. OpenAI.
@@ -15,7 +16,7 @@
 > 
 > **Post-training:** SFT + RLHF + "safe completions" (output-centric safety). Reasoning via dedicated RL chains of thought. Process reward models score intermediate reasoning steps.
 > 
-> **Deployment:** Real-time router (instant vs. deep reasoning). $\sim$80% fewer factual errors, 50--80% fewer output tokens.
+> **Deployment:** Real-time router (instant vs. deep reasoning). ~80% fewer factual errors, 50-80% fewer output tokens.
 
 ## DeepSeek -- R1 and V3
 
@@ -37,7 +38,7 @@
 ## Meta -- Llama 4 Family
 
 > **Meta -- Llama 4 Scout / Maverick / Behemoth**
-> **Architecture:** First Llama MoE. Scout: 17B/109B (16 exp.). Maverick: 17B/400B (128 exp.). Behemoth: 288B/$\sim$2T. iRoPE: 10M-token context.
+> **Architecture:** First Llama MoE. Scout: 17B/109B (16 exp.). Maverick: 17B/400B (128 exp.). Behemoth: 288B/~2T. iRoPE: 10M-token context.
 > 
 > **Pre-training:** Early fusion multimodality (text + image + video from start). MetaCLIP vision encoder.
 > 
@@ -47,7 +48,7 @@
 > - Lightweight DPO: final polish
 > - Behemoth codistillation: teacher $\rightarrow$ Scout/Maverick
 > 
-> **Deployment:** Scout on 1$\times$H100 (INT4). 9--23$\times$ price-performance vs. GPT-4o.
+> **Deployment:** Scout on 1xH100 (INT4). 9-23x price-performance vs. GPT-4o.
 
 ## Anthropic -- Claude Family
 
@@ -84,7 +85,7 @@
 >
 > - **Modular post-training:** Distinct stages, not monolithic. Heavy SFT hurts RL (Meta).
 >   - **MoE is default:** Meta, DeepSeek, Qwen, rumored closed labs.
->   - **GRPO displaces PPO:** Critic-free, 33--50% memory savings.
+>   - **GRPO displaces PPO:** Critic-free, 33-50% memory savings.
 >   - **Distillation is first-class:** Behemoth$\rightarrow$Scout, R1$\rightarrow$1.5B--70B, Pro$\rightarrow$Flash$\rightarrow$Nano.
 >   - **Reasoning via RL:** Pure RL (DeepSeek), unified routing (OpenAI), thinking modes (Google/Qwen).
 >   - **Safety diverges productively:** Safe completions, CAI, Llama-as-judge, separate RMs.
@@ -100,3 +101,8 @@
 
 *Table: Comparison of frontier lab training approaches*
 
+
+
+---
+
+[← Previous Chapter](ch18_future.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](app_a_glossary.md)

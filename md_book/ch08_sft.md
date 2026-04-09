@@ -1,5 +1,6 @@
 # Supervised Fine-Tuning (SFT)
 
+> [!IMPORTANT]
 > **What You Will Learn**
 > - Master instruction tuning requirements and token-masking techniques.
 > - Implement parameter-efficient fine-tuning (PEFT) with LoRA and QLoRA.
@@ -45,3 +46,8 @@ Full derivations in [Appendix G](app_g_implementation_treasury.md): LoRA, DoRA; 
   - **DoRA [liu2024dora**:] Weight-Decomposed Low-Rank Adaptation. Decomposes updates into magnitude and direction components---matches or exceeds full fine-tuning on several benchmarks.
   - **Spectrum:** Signal-to-noise ratio analysis identifies the most informative layers for fine-tuning, enabling partial fine-tuning with better ROI per updated parameter.
 
+
+
+---
+
+[← Previous Chapter](ch07_distributed_training.md) | [Table of Contents](../README.md#table-of-contents) | [Next Chapter →](ch09_alignment.md)
