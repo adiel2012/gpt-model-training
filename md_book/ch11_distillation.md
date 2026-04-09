@@ -54,9 +54,9 @@ Align hidden states or attention patterns at intermediate layers, not just the o
 
 A key failure mode of offline response distillation: the student is trained on teacher trajectories but evaluated on *its own* trajectories. Distribution mismatch grows with model capability gap. On-policy distillation:
 
-  - Roll out the *student* to generate candidate completions.
-  - Score each completion with the teacher (assign log-probability or RM score).
-  - Minimize KL between student and teacher-scored distribution.
+1. Roll out the *student* to generate candidate completions.
+2. Score each completion with the teacher (assign log-probability or RM score).
+3. Minimize KL between student and teacher-scored distribution.
 
 Requires either white-box access to teacher logits or a fast teacher inference endpoint. Used in GKD [agarwal2024onpolicy] (Generalized Knowledge Distillation).
 
@@ -66,18 +66,18 @@ Speculative decoding [leviathan2023fast] uses a small draft model to propose $k$
 
 ## Practical Distillation Workflow
 
-  - Select teacher (strongest accessible model: open-weight 70B--671B or API).
-  - Generate responses on your instruction set. For reasoning tasks, generate with high temperature ($T = 0.7$--$1.0$) and filter by verifiable correctness.
-  - Optionally: collect teacher logits for logit-level KD (requires local teacher).
-  - Fine-tune student with $\alpha = 0.5$: 50% KD loss, 50% standard CE loss on human labels.
-  - Evaluate on target benchmarks; iterate on temperature and $\alpha$.
+1. Select teacher (strongest accessible model: open-weight 70B--671B or API).
+2. Generate responses on your instruction set. For reasoning tasks, generate with high temperature ($T = 0.7$--$1.0$) and filter by verifiable correctness.
+3. Optionally: collect teacher logits for logit-level KD (requires local teacher).
+4. Fine-tune student with $\alpha = 0.5$: 50% KD loss, 50% standard CE loss on human labels.
+5. Evaluate on target benchmarks; iterate on temperature and $\alpha$.
 
 > **Distillation Rules of Thumb**
 >
 > - A 7B student distilled from a 70B teacher typically closes 60--80% of the gap to the teacher.
->   - Distillation data volume: 50K--500K high-quality teacher completions is sufficient for most fine-tuning objectives.
->   - For reasoning tasks, only keep teacher traces that lead to correct verified answers---incorrect reasoning chains hurt more than they help.
->   - On-policy distillation adds significant complexity; prefer offline SeqKD unless you observe severe distribution mismatch.
+> - Distillation data volume: 50K--500K high-quality teacher completions is sufficient for most fine-tuning objectives.
+> - For reasoning tasks, only keep teacher traces that lead to correct verified answers---incorrect reasoning chains hurt more than they help.
+> - On-policy distillation adds significant complexity; prefer offline SeqKD unless you observe severe distribution mismatch.
 
 ```python
 import torch
