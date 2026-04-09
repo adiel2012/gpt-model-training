@@ -44,18 +44,19 @@ def causal_lm_loss(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
 $$
   \mathrm{PPL} = \exp(\mathcal{L}_\mathrm{NTP})
 $$
+
 Perplexity measures the model's confidence in its predictions; it represents the average branching factor of the distribution.
 
 ### Stage 3 --- Preference Optimisation
 
 **DPO** (Direct Preference Optimization):
 $$
-  \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\!\left[ \log\sigma\!\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
+  \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\left[ \log\sigma\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
 $$
 
 **SimPO** (Simple Preference Optimization):
 $$
-  \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\!\left[\log\sigma\!\left( \frac{\beta}{|y_w|}{\log\pi_\theta(y_w|x)} - \frac{\beta}{|y_l|}{\log\pi_\theta(y_l|x)} - \gamma \right)\right]
+  \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\left[\log\sigma\left( \frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma \right)\right]
 $$
 
 **GRPO** (Group Relative Policy Optimisation):
@@ -203,7 +204,7 @@ class MLA(nn.Module):
 
 ### Mixture of Experts (MoE)
 
-Replaces the dense FFN with multiple ``experts'' and a router that activates a subset per token.
+Replaces the dense FFN with multiple "experts" and a router that activates a subset per token.
 
 $$
   \mathrm{MoE}(x) = \sum_{i \in \mathcal{K}} \mathrm{gate}(x)_i \cdot E_i(x)
@@ -433,7 +434,7 @@ def ppo_loss(policy_logits, old_logits, actions, advantages, eps=0.2):
 ### DPO (Direct Preference Optimization)
 
 $$
-  \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\!\left[ \log\sigma\!\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
+  \mathcal{L}_\mathrm{DPO}(\theta) = -\mathbb{E}_{(x,y_w,y_l)}\left[ \log\sigma\left( \beta\log\frac{\pi_\theta(y_w|x)}{\pi_\mathrm{ref}(y_w|x)} - \beta\log\frac{\pi_\theta(y_l|x)}{\pi_\mathrm{ref}(y_l|x)} \right) \right]
 $$
 
 ```python
@@ -448,7 +449,7 @@ def dpo_loss(policy, ref, x_w, x_l, beta=0.1):
 ### SimPO (Simple Preference Optimization)
 
 $$
-  \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\!\left[\log\sigma\!\left( \frac{\beta}{|y_w|}{\log\pi_\theta(y_w|x)} - \frac{\beta}{|y_l|}{\log\pi_\theta(y_l|x)} - \gamma \right)\right]
+  \mathcal{L}_\mathrm{SimPO} = -\mathbb{E}\left[\log\sigma\left( \frac{\beta}{|y_w|}\log\pi_\theta(y_w|x) - \frac{\beta}{|y_l|}\log\pi_\theta(y_l|x) - \gamma \right)\right]
 $$
 
 ```python

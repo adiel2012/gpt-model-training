@@ -22,14 +22,14 @@ $$
 \mathcal{L}_\text{resp} = -\sum_t \log p_\theta(y_t^\text{teacher} \mid x, y_{<t}^\text{teacher})
 $$
 
-**Advantages:** Simple pipeline; works with closed-source teachers (you only need teacher outputs, not logits). **Disadvantage:** Ignores the full teacher probability distribution---the student does not learn ``how uncertain'' the teacher is.
+**Advantages:** Simple pipeline; works with closed-source teachers (you only need teacher outputs, not logits). **Disadvantage:** Ignores the full teacher probability distribution---the student does not learn "how uncertain" the teacher is.
 
 ## Logit-Level Distillation
 
 When teacher logits are available (open-weight teachers), the student matches the teacher's full output distribution via KL divergence:
 
 $$
-\mathcal{L}_\text{KD} = \alpha \cdot \mathcal{L}_\text{CE}(y^\text{gt}, p_\theta) + (1-\alpha) \cdot T^2 \cdot D_\text{KL}\!\left(\text{softmax}(z^\text{teacher}/T) \;\|\; \text{softmax}(z^\text{student}/T)\right)
+\mathcal{L}_\text{KD} = \alpha \cdot \mathcal{L}_\text{CE}(y^\text{gt}, p_\theta) + (1-\alpha) \cdot T^2 \cdot D_\text{KL}\left(\text{softmax}(z^\text{teacher}/T) \;\|\; \text{softmax}(z^\text{student}/T)\right)
 $$
 
 where $T$ is the temperature (commonly 2--4) and $\alpha$ balances ground-truth and teacher loss. Higher temperature softens the teacher distribution, providing richer signal on near-correct tokens.
@@ -40,7 +40,7 @@ Rather than optimizing token-level KL, SeqKD [kim2016sequence] generates *mode s
 
 ## MiniLLM: Reverse KL for Distillation
 
-Standard KD minimizes forward KL $D_\text{KL}(p_\text{teacher} \| p_\text{student})$, which forces the student to cover all teacher modes and leads to ``mean-seeking'' behaviour. MiniLLM [gu2024minillm] minimizes reverse KL $D_\text{KL}(p_\text{student} \| p_\text{teacher})$, encouraging mode-seeking: the student becomes sharp and accurate on the teacher's most probable outputs, avoiding the diffusion of probability mass across irrelevant alternatives. Reverse KL is estimated via policy gradient on student-generated sequences with teacher log-probability as reward.
+Standard KD minimizes forward KL $D_\text{KL}(p_\text{teacher} \| p_\text{student})$, which forces the student to cover all teacher modes and leads to "mean-seeking" behaviour. MiniLLM [gu2024minillm] minimizes reverse KL $D_\text{KL}(p_\text{student} \| p_\text{teacher})$, encouraging mode-seeking: the student becomes sharp and accurate on the teacher's most probable outputs, avoiding the diffusion of probability mass across irrelevant alternatives. Reverse KL is estimated via policy gradient on student-generated sequences with teacher log-probability as reward.
 
 ## Intermediate Layer Distillation
 
@@ -108,6 +108,3 @@ def distillation_loss(student_logits, teacher_logits,
     return alpha * ce_loss + (1 - alpha) * kd_loss
 ```
 
-% ══════════════════════════════════════════════════════════════════
-| %  PART V: EVALUATION | DEPLOYMENT |
-% ══════════════════════════════════════════════════════════════════

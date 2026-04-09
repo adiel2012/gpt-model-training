@@ -14,9 +14,9 @@ Models that break complex problems into explicit intermediate steps---the most s
 
 Prompting or training models to generate intermediate reasoning steps before the final answer. Few-shot CoT [wei2022chain] demonstrated step-by-step prompting dramatically improves multi-step arithmetic, symbolic reasoning, and commonsense tasks.
 
-  - **Zero-shot CoT:** Append ``Let's think step by step'' to the prompt.
+  - **Zero-shot CoT:** Append "Let's think step by step" to the prompt.
   - **Few-shot CoT:** Provide example (question, reasoning chain, answer) triples in the prompt.
-  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15% on GSM8K vs.\ single-sample CoT.
+  - **Self-consistency:** Sample $k$ CoT paths and take the majority vote answer. +5--15% on GSM8K vs. single-sample CoT.
 
 ## Process Reward Models (PRM)
 
@@ -42,7 +42,7 @@ Allocate more inference compute per query to find better solutions:
 
 ## TLT -- Accelerating Training
 
-MIT: a smaller ``drafter'' model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70--210% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
+MIT: a smaller "drafter" model predicts outputs; a larger verifier model confirms them [leviathan2023fast]. 70--210% acceleration with preserved accuracy. The drafter is reusable for speculative decoding at inference.
 
 ## R1-Style Pure RL Training
 
@@ -50,20 +50,20 @@ DeepSeek demonstrated that pure RL on verifiable tasks produces emergent reasoni
 
   - Start from the base model (no instruction tuning).
   - Apply GRPO (formulation [Appendix G](app_g_implementation_treasury.md)) with binary correctness reward on math/code tasks.
-  - Emergent behaviors: self-verification (``wait, let me reconsider''), extended thinking, strategy switching.
+  - Emergent behaviors: self-verification ("wait, let me reconsider"), extended thinking, strategy switching.
 
 > **Pure RL Training Instability**
 >
 > R1-Zero (pure RL, no SFT cold start) exhibits language mixing, repetitive patterns, and poor readability. The DeepSeek production pipeline uses a cold-start SFT phase (a few thousand high-quality CoT examples) before GRPO to stabilize training.
 ## Thinking Tokens (Quiet-STaR)
 
-Rather than forcing reasoning into a separate pre-response phase, Quiet-STaR [schulman2024quietstar] trains the model to generate ``internal monologue'' tokens at every position in the sequence:
+Rather than forcing reasoning into a separate pre-response phase, Quiet-STaR [schulman2024quietstar] trains the model to generate "internal monologue" tokens at every position in the sequence:
 
   - **Divergent Thinking:** The model generates multiple parallel reasoning traces (thoughts) in the background.
   - **Rationalization:** It selects the thought that most improves the prediction of the subsequent actual text tokens.
   - **Token-Level RL:** Thoughts are rewarded based on how much they reduce the cross-entropy loss of the next real token.
 
-This allows models to benefit from reasoning even on tasks where explicit Chain-of-Thought is not requested, and it creates a unified architecture for both ``fast'' (direct) and ``slow'' (reasoned) processing.
+This allows models to benefit from reasoning even on tasks where explicit Chain-of-Thought is not requested, and it creates a unified architecture for both "fast" (direct) and "slow" (reasoned) processing.
 
 > **The Thinking Token Trade-off**
 >

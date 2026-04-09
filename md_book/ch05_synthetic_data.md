@@ -23,7 +23,7 @@ Self-Instruct [wang2022selfinstructaligning] bootstraps instruction data from a 
 
 ### Evol-Instruct (WizardLM)
 
-Rather than generating new instructions from scratch, Evol-Instruct [xu2023wizardlm] mutates an existing instruction through four ``evolution'' operators: add constraints, deepen complexity, concretize, increase reasoning steps. Each mutation produces a harder variant. Training on evolved instructions produces models that significantly outperform models trained on the original dataset because they see a graduated difficulty curriculum automatically.
+Rather than generating new instructions from scratch, Evol-Instruct [xu2023wizardlm] mutates an existing instruction through four "evolution" operators: add constraints, deepen complexity, concretize, increase reasoning steps. Each mutation produces a harder variant. Training on evolved instructions produces models that significantly outperform models trained on the original dataset because they see a graduated difficulty curriculum automatically.
 
 ### Magpie: Model Self-Generation
 
@@ -51,7 +51,7 @@ DeepSeek's reasoning data pipeline uses this approach: generate a candidate, ver
 
 ### Persona-Driven Diversity
 
-Persona Hub [chan2024personahub]: maintain a library of 1 billion synthesized user personas (age, profession, goals, style). Sample personas at generation time to produce diverse instruction styles. Prevents the ``assistant voice'' homogenization that afflicts single-persona synthesis.
+Persona Hub [chan2024personahub]: maintain a library of 1 billion synthesized user personas (age, profession, goals, style). Sample personas at generation time to produce diverse instruction styles. Prevents the "assistant voice" homogenization that afflicts single-persona synthesis.
 
 ## Quality Filtering
 
@@ -84,6 +84,3 @@ Bias amplification: errors and biases in the teacher model are reproduced and re
 
 *Table: Recommended SFT data mix composition using synthetic sources*
 
-% ══════════════════════════════════════════════════════════════════
-%  PART III: PRE-TRAINING
-% ══════════════════════════════════════════════════════════════════

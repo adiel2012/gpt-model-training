@@ -1,5 +1,3 @@
-\part{Pre-training}
-
 # Pre-training Objectives and Strategies
 
 > **What You Will Learn**
@@ -9,10 +7,13 @@
 > - Understand the multi-stage compute-optimal context extension pipeline.
 
 ## Next-Token Prediction
+
 Self-supervised causal language modeling (see also [Appendix G](app_g_implementation_treasury.md) for the full NTP objective and perplexity; code: [Appendix G](app_g_implementation_treasury.md)):
+
 $$
   \mathcal{L} = -\sum_{t=1}^{T} \log p_\theta(x_t \mid x_1, \ldots, x_{t-1})
 $$
+
 No labeled data needed. Captures syntax, semantics, factual knowledge, and reasoning patterns. Despite its simplicity, this objective is sufficient to produce emergent capabilities at scale.
 
 ## Reinforcement Pre-Training (RPT)

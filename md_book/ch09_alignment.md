@@ -65,7 +65,7 @@ Verifiable rewards for math and code. Binary, objective signal resists reward ha
 | Instruction Following | SFT | Format, tone, task execution |
 | Preference Alignment | DPO / SimPO / KTO | Human values, norms |
 | Reasoning | GRPO / DAPO + RLVR | Math, code, planning |
-| Safety \ | Helpfulness | RLHF (neural RM) | Open-ended quality, harm avoidance |
+| Safety & Helpfulness | RLHF (neural RM) | Open-ended quality, harm avoidance |
 | Constitutional Guardrails | CAI / RLAIF | Scalable safety principles |
 
 *Table: The modular alignment stack in 2026*

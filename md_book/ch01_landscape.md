@@ -12,7 +12,7 @@ Large language models have undergone a dramatic transformation. What began as re
 
 The training paradigm has shifted substantially. Early models relied on a simple recipe: more data plus more parameters equals better performance. By late 2025, several hard constraints became apparent. Marginal gains from more compute diminish. High-quality, deduplicated text is finite and increasingly expensive. And ever-larger models collide with real-time product requirements and energy budgets.
 
-**Post-training**---the combination of supervised fine-tuning, preference optimization, and reinforcement learning---now accounts for the majority of a model's usable capability. The field has moved from ``make the base model bigger'' to ``given a strong base model, how do we make it safe, efficient, and excellent at specific jobs?''
+**Post-training**---the combination of supervised fine-tuning, preference optimization, and reinforcement learning---now accounts for the majority of a model's usable capability. The field has moved from "make the base model bigger" to "given a strong base model, how do we make it safe, efficient, and excellent at specific jobs?"
 
 ## The Modern Training Pipeline
 
@@ -30,7 +30,7 @@ By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a 
 
 > **Scaling Law Implications for Practitioners**
 >
-> - Smaller models trained longer (``overtrained'' relative to Chinchilla) are cheaper to deploy.
+> - Smaller models trained longer ("overtrained" relative to Chinchilla) are cheaper to deploy.
 >   - At 7B parameters, the Chinchilla-optimal token count is $\sim$140B; in practice, training on 1T+ tokens delivers significantly better downstream performance.
 >   - Emergent capabilities appear discontinuously at scale, making capability predictions unreliable.
 >   - Data quality exerts a multiplicative effect: doubling data quality is often more impactful than doubling data quantity.

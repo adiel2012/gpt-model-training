@@ -34,7 +34,7 @@ Periodic snapshots, asynchronous checkpointing, distributed sharding, automatic 
 
 ## Communication Optimization
 
-  - **NVLink:** 600-900 GB/s bidirectional within a node (vs.\ 32 GB/s PCIe). Essential for tensor parallelism.
+  - **NVLink:** 600-900 GB/s bidirectional within a node (vs. 32 GB/s PCIe). Essential for tensor parallelism.
   - **InfiniBand (400G):** 50-100 GB/s cross-node. All-reduce is the dominant communication pattern.
   - **Gradient compression:** Top-$k$ sparsification or quantized gradients for bandwidth-limited setups.
 
@@ -48,21 +48,22 @@ Full update rules and code in [Appendix G](app_g_implementation_treasury.md): Ad
 
   - **Muon (Momentum + Orthogonalization)** [kosson2024muon]: Applies a Nesterov momentum update followed by orthogonalization via Newton-Schulz iterations. It treats weight matrices as the correct unit of analysis rather than individual scalars, ensuring that all directions in weight space are explored with equal intensity. Matches or exceeds AdamW on pre-training perplexity with 25% fewer FLOPs on the optimizer step (see formulation [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)).
 
-  - **Lion (EvoLved Sign Momentum)** [chen2023symbolic]: Sign-based update rule: uses only the sign of the gradient momentum, not its magnitude. 2-3x memory reduction vs.\ AdamW (no second moment). Effective learning rate typically needs to be 3-10x smaller than AdamW. Works well for fine-tuning; mixed results at large pre-training scale (formulation [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)).
+  - **Lion (EvoLved Sign Momentum)** [chen2023symbolic]: Sign-based update rule: uses only the sign of the gradient momentum, not its magnitude. 2-3x memory reduction vs. AdamW (no second moment). Effective learning rate typically needs to be 3-10x smaller than AdamW. Works well for fine-tuning; mixed results at large pre-training scale (formulation [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)).
 
   - **Sophia** [liu2023sophia]: Diagonal Hessian preconditioned optimizer. Estimates curvature via Hutchinson estimator every 10 steps. Reported 2x faster than AdamW on pre-training; not yet widely adopted due to implementation complexity.
 
 ### Learning Rate Schedule
 
 Cosine decay with linear warmup is the standard:
+
 $$
-\eta(t) = \eta_\text{min} + \frac{1}{2}\left(\eta_\text{max} - \eta_\text{min}\right)\left(1 + \cos\!\left(\frac{t - t_\text{warmup}}{T - t_\text{warmup}}\pi\right)\right)
+\eta(t) = \eta_\text{min} + \frac{1}{2}\left(\eta_\text{max} - \eta_\text{min}\right)\left(1 + \cos\left(\frac{t - t_\text{warmup}}{T - t_\text{warmup}}\pi\right)\right)
 $$
 
   - **Warmup steps:** 1,000-5,000 tokens. Prevents gradient explosions from random initial parameter distributions.
   - **Peak LR:** $3 \times 10^{-4}$ (7B), $1 \times 10^{-4}$ (70B). Larger models require smaller peak LR because parameter interactions are stronger.
   - **Final LR:** $\eta_\text{min} = 0.1 \times \eta_\text{max}$ (10% of peak). Do not decay to zero: residual LR prevents overfitting on the tail of training.
-  - **WSD (Warmup-Stable-Decay):** Used by MiniCPM and Qwen. Three-phase schedule: warmup $\rightarrow$ constant ``stable'' phase $\rightarrow$ rapid decay. Enables model checkpointing at multiple scales without performance cliff.
+  - **WSD (Warmup-Stable-Decay):** Used by MiniCPM and Qwen. Three-phase schedule: warmup $\rightarrow$ constant "stable" phase $\rightarrow$ rapid decay. Enables model checkpointing at multiple scales without performance cliff.
 
 ### Gradient Clipping and Stability
 

@@ -1,5 +1,3 @@
-\part{Advanced Topics and Future Directions}
-
 # Specialized Domains and Multi-modality
 
 > **What You Will Learn**

@@ -1,5 +1,3 @@
-\part{Post-Training -- From Base Model to Product}
-
 # Supervised Fine-Tuning (SFT)
 
 > **What You Will Learn**

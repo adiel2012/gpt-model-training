@@ -11,7 +11,7 @@
   - **Post-training dominance:** A strong base model plus well-designed post-training can match models 10$\times$ larger with less careful alignment.
   - **Reasoning as a trainable skill:** RLVR + GRPO enable systematic reasoning improvements beyond what SFT achieves.
   - **Synthetic data at scale:** Frontier models generate training data for the next generation. Data flywheel dynamics favor incumbents with strong base models.
-  - **Efficiency breakthroughs:** MoE, FP8, speculative decoding, and quantization collectively enable 10--50$\times$ inference cost reduction vs.\ 2023 baselines.
+  - **Efficiency breakthroughs:** MoE, FP8, speculative decoding, and quantization collectively enable 10--50$\times$ inference cost reduction vs. 2023 baselines.
   - **Open-source convergence:** Open models (Llama, Qwen, Mistral) approach closed model performance within 6--12 months of release.
   - **Test-time compute scaling:** A new scaling axis complementing parameter and data scaling, trading inference cost for accuracy.
 
@@ -29,4 +29,3 @@
 
 Likely near-term directions: hardware-software co-design (custom AI chips with in-memory compute), world models for physical reasoning, neurosymbolic integration for reliable formal reasoning, and on-device continual learning for personalization without data privacy risks.
 
-% ──────────────────────────────────────────────────────────────────
