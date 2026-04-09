@@ -2,6 +2,7 @@
 > **What You Will Learn**
 > - Evaluate the decoder-only transformer and its 2026 architectural variations.
 > - Analyze MQA, GQA, and MLA for efficient KV cache management at scale.
+> - Evaluate the rise of Hybrid SSM-Transformer architectures (Mamba, Jamba).
 > - Compare modern positional encodings including RoPE, iRoPE, and ALiBi.
 > - Review production-standard normalization (RMSNorm) and activation (SwiGLU) functions.
 > - Understand the 2025 transition to fine-grained Mixture of Experts (MoE).
@@ -61,6 +62,42 @@ Standard multi-head attention (MHA) uses $H$ heads each with independent $Q$, $K
 > $$
 
 > where $W_{DK}$ is a down-projection and $W_{UK}$ an up-projection. RoPE is applied to a separate, non-compressed portion of the query and key to maintain relative position awareness without bloating the KV cache.
+
+## Post-Transformer & Hybrid Architectures
+
+While the Transformer remains dominant, 2025-2026 has seen the maturation of **State Space Models (SSMs)** and **Hybrid** architectures that challenge the quadratic complexity of attention.
+
+### Mamba and the Selective Scan
+
+Mamba [gu2023mamba] replaces the attention mechanism with a **Selective State Space Model**. Unlike Transformers, which attend to the entire history (quadratic cost), Mamba compresses the history into a fixed-size latent state (linear cost).
+
+- **Selective Scan:** Allows the model to decide what information to "forget" or "remember" based on the current input.
+- **Inference Speed:** Up to 5x faster than Transformers at long context.
+- **Memory:** Constant memory footprint during generation (no KV cache).
+
+### Hybrid Architectures (Jamba, Bolt)
+
+Hybrid models like **Jamba** [lieber2024jamba] combine Transformer blocks and Mamba blocks in a single architecture. This provides the "best of both worlds": the strong reasoning and in-context learning of Transformers with the efficiency and long-context performance of SSMs.
+
+```mermaid
+graph LR
+    Input[Input] --> T1[Transformer Block]
+    T1 --> M1[Mamba/SSM Block]
+    M1 --> T2[Transformer Block]
+    T2 --> M2[Mamba/SSM Block]
+    M2 --> Output[Output]
+    
+    subgraph "Hybrid Block Ratio"
+        R[1:7 Ratio Typical]
+    end
+```
+
+| **Architecture** | **Complexity** | **Memory (Inference)** | **Best For** |
+| :--- | :--- | :--- | :--- |
+| Pure Transformer | $O(n^2)$ | Linear (KV Cache) | Reasoning, Few-shot |
+| Pure Mamba/SSM | $O(n)$ | Constant (Hidden State) | Extrem long context, Edge |
+| Hybrid (Jamba) | $O(n)$ effective | Reduced Cache | Production Frontier 2026 |
+
 
 ### Positional Encodings
 

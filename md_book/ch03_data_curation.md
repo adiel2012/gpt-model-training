@@ -4,6 +4,7 @@
 > **What You Will Learn**
 > - Implement quality filtering and deduplication at the trillion-token scale.
 > - Review domain sampling proportions (Web, Code, Science, Books) for 2026.
+> - Optimize Data Mixtures using DoReMi and scaling-law analytics.
 > - Analyze strategies for removing PII and toxic content while preserving knowledge.
 > - Understand the 2025 shift from quantity-driven to quality-driven curation.
 
@@ -44,6 +45,17 @@ Exact (hash-based), near-duplicate (MinHash/LSH with GPU-accelerated connected c
 ## Multi-Stage Training
 
 Stage 1: large corpus (10T+) for breadth. Stage 2: curated subset (0.5-1T) for depth and polish. Some labs add a Stage 3: task-specific mix (code-heavy, math-heavy) aligned to deployment use case.
+
+## Data Mixture Optimization (DoReMi)
+
+Selecting the right proportion of data sources (The "Data Mix") is the most critical hyperparameters in 2026. **DoReMi** (Domain Reweighting with Mini-models) [xie2023doremi] automates this process.
+
+1.  **Train a small reference model:** Train on a balanced or baseline mixture.
+2.  **Calculate excess loss:** Identify domains where the model performance lags behind the theoretical optimal.
+3.  **Reweight:** Increase the sampling frequency of high-loss/high-information domains (e.g., math, code) for the main run.
+
+This systematically identifies the "difficulty" of each domain and ensures the model allocates its fixed compute budget efficiently across source types.
+
 
 > **Data Contamination**
 >

@@ -5,6 +5,7 @@
 > - Implement red-teaming and adversarial testing for "jailbreak" prevention.
 > - Master Constitutional AI and the RLAIF (RL from AI Feedback) stack.
 > - Analyze mitigation strategies for bias, hallucination, and PII leakage.
+> - Implement Governance & Strategic Compliance (EU AI Act, Data Provenance).
 > - Review the 2026 safety standards for high-stakes AI deployments.
 
 ## Safety Taxonomy
@@ -41,6 +42,25 @@ SHAP and LIME for feature attribution. Attention visualization (with caveats---a
   - Rate limiting and usage monitoring.
   - Human-in-the-loop for high-stakes decisions.
   - Staged rollouts with safety monitoring before broad deployment.
+
+## Governance & Strategic Compliance
+
+In 2026, "Production-Ready" training includes a legal and environmental checkpoint. Governance is no longer an afterthought but a core engineering requirement.
+
+### 1. EU AI Act Technical Compliance
+The **EU AI Act** classifies frontier LLMs as "High-Risk" or "Systemic Risk" systems, requiring:
+- **Model Documentation:** Technical logs of data sources, compute usage, and evaluation results.
+- **Transparency:** Clear disclosure of AI generation and watermarking for synthetic content.
+- **Adversarial Testing:** Documented proof of safety red-teaming.
+
+### 2. Data Provenance and IP (C2PA)
+To mitigate copyright litigation, production pipelines now implement **C2PA** (Coalition for Content Provenance and Authenticity) headers to track data lineage. This ensures that the model can "prove" it was trained on licensed or fair-use data.
+
+### 3. Environmental Impact (Carbon Accounting)
+Large-scale training on 10,000+ GPUs has a massive energy footprint.
+- **Carbon Intensity Training:** Scheduling the heaviest training runs (e.g., Stage 1) during periods of high renewable energy availability.
+- **Reporting:** Mandatory disclosure of total megawatt-hours and metric tons of CO2e emitted during the training lifecycle.
+
 
 
 

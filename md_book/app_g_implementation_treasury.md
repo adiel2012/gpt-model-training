@@ -42,6 +42,24 @@ def causal_lm_loss(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
     return F.cross_entropy(shift_logits, shift_labels, ignore_index=-100)
 ```
 
+
+### Citation & Grounding Loss (RAG)
+
+Used to train the model to strictly follow and cite provided context.
+
+```python
+def citation_aware_loss(logits, labels, source_ids):
+    """Augmented cross-entropy that penalizes claims without associated 
+    source ID activations in the prompt-context.
+    """
+    ce_loss = F.cross_entropy(logits.view(-1, logits.size(-1)), labels.view(-1))
+    # Note: Production implementations use specialized reward model headers 
+    # to evaluate 'faithfulness' relative to source_ids.
+    return ce_loss
+```
+
+```
+
 ### Perplexity (PPL)
 
 $$
@@ -220,6 +238,40 @@ class MLA(nn.Module):
         out = scaled_dot_product_attention(q, k, v, causal=causal)
         out = out.transpose(1, 2).reshape(B, T, self.h * self.d_k)
         return self.Wo(out)
+```
+
+
+
+### State Space Models (Mamba / SSM)
+
+Replaces attention with a linear-time selective scan.
+
+$$
+
+  \Delta = \tau(\text{Parameter}(\text{Input})), \quad A, B, C = \text{Linear}(\text{Input})
+
+$$
+
+```python
+class MambaBlock(nn.Module):
+    """Simplified Selective State Space (SSM) block."""
+    def __init__(self, d_model: int, d_state: int = 16):
+        super().__init__()
+        self.d_state = d_state
+        self.A = nn.Parameter(torch.randn(d_model, d_state))
+        self.B = nn.Linear(d_model, d_state)
+        self.C = nn.Linear(d_model, d_state)
+        self.dt_proj = nn.Linear(d_model, d_model)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B, T, D = x.shape
+        # Simplified selective scan simulation
+        dt = F.softplus(self.dt_proj(x)) # (B, T, D)
+        A = -torch.exp(self.A)           # (D, N)
+        # In a real Mamba, an associative scan is used for O(L) training
+        return x * dt # Placeholder for the filtered state
+```
+
 ```
 
 ### Mixture of Experts (MoE)

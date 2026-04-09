@@ -4,7 +4,7 @@
 > **What You Will Learn**
 > - Master data curation and fine-tuning for Coding, Law, and Science.
 > - Implement the 2026 multi-modal stack: Vision, Audio, and Action.
-> - Analyze world models and agentic integration in specialized domains.
+> - Train for Agentic AI: Tool-use SFT, Function Calling, and Environment-Loop RL.
 > - Evaluate the "Small Language Model" (SLM) trend for domain-specific edge AI.
 
 ## Domain-Specific Pre-training
@@ -25,11 +25,24 @@ Domain-specific models outperform general models on target tasks because domain 
 
 ## Agentic AI
 
-LLMs as agents: perceive environment, plan actions, use tools, and produce observable effects. Training considerations:
+LLMs as agents: perceive environment, plan actions, use tools, and produce observable effects. Training a "frontier agent" in 2026 requires three specific technical layers.
 
-  - End-to-end agent evaluation (SWE-bench, WebArena, GAIA) requires operating in real environments, not just text.
-  - Tool-use fine-tuning: function calling, structured JSON output, code execution.
-  - Multi-agent coordination: multiple specialized LLMs operating in concert.
+### 1. Tool-use SFT (Supervised Fine-Tuning)
+The model must learn to recognize when to use a tool and how to generate formatted calls (JSON/XML).
+- **Function Calling Datasets:** Models like Llama-3-Agent or Berkeley Function Calling (BFCL) are trained on millions of synthetic tool-use traces (e.g., Magpie method).
+- **Negative Constraint Training:** Training the model to *reject* tool-use when the user's intent is purely conversational, reducing hallucinated code execution.
+
+### 2. Planning and Chain-of-Thought (RL)
+Complex agency requires planning before execution.
+- **R1-style Planning:** Inspired by DeepSeek-R1, models are trained to output a `<thought>` block detailing the intended multi-step strategy before generating the tool call.
+- **Environment-Loop RL:** The model generates an action, receives the real output from the tool (e.g., a Python interpreter), and is rewarded for achieving the final goal. This allows the model to learn from execution errors.
+
+### 3. Agentic Evaluation
+End-to-end evaluation requires operating in real environments, not just measuring text similarity.
+- **SWE-bench:** Solving GitHub issues in a live repository.
+- **GAIA:** General AI Assistants benchmark requiring 2025-level cross-domain tool orchestration.
+- **Multi-agent Coordination:** Training multiple LLMs to operate in hierarchical structures (e.g., Manager-Worker patterns).
+
 
 
 

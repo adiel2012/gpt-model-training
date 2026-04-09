@@ -5,6 +5,7 @@
 > - Trace the evolution from RLHF to reference-free methods (DPO, SimPO).
 > - Implement alignment with binary feedback (KTO) and group-relative rewards (GRPO).
 > - Evaluate the role of verifiable rewards (RLVR) in reasoning-heavy models.
+> - Master Retrieval-Aware Training (RAG) for citation and grounding accuracy.
 > - Understand the 2026 modular alignment stack for safety and helpfulness.
 
 ## The Alignment Problem
@@ -57,9 +58,16 @@ Removes reference model dependency from GRPO [yu2025dapo] (formulation [Appendix
 
 AI-generated preferences replace human annotations. Anthropic's CAI [bai2022constitutional]: model self-critiques against constitutional principles, creating scalable alignment data without per-example human annotation.
 
-## RLVR
-
 Verifiable rewards for math and code. Binary, objective signal resists reward hacking. DeepSeek R1 demonstrated emergent reasoning from pure RLVR + GRPO without SFT (formulation [Appendix G](app_g_implementation_treasury.md), code [Appendix G](app_g_implementation_treasury.md)). The key insight: verifiable correctness is a cleaner training signal than a learned reward model.
+
+## Retrieval-Aware Training (RAG Alignment)
+
+In 2026, production models are increasingly aligned to be "retrieval-aware". This goes beyond simple prompting; it involves training the model to prioritize, cite, and reconcile external knowledge.
+
+- **Citation Alignment:** SFT on datasets where every factual claim is paired with a bracketed reference to the provided context.
+- **Handling Contradictions:** Training on "conflict sets" where provided documents contradict the model's pre-trained internal knowledge. The model is rewarded for following the *context* over its *priors*.
+- **RA-DIT (Retrieval-Augmented Data Integration):** A two-stage fine-tuning approach that aligns both the LLM and the retriever recursively to ensure the model knows how to extract the most relevant signal from noisy retrieval results.
+
 
 ## The Modern Alignment Stack
 
@@ -68,6 +76,7 @@ Verifiable rewards for math and code. Binary, objective signal resists reward ha
 | Instruction Following | SFT | Format, tone, task execution |
 | Preference Alignment | DPO / SimPO / KTO | Human values, norms |
 | Reasoning | GRPO / DAPO + RLVR | Math, code, planning |
+| Grounding / RAG | Citation SFT / RA-DIT | Factuality, external knowledge |
 | Safety & Helpfulness | RLHF (neural RM) | Open-ended quality, harm avoidance |
 | Constitutional Guardrails | CAI / RLAIF | Scalable safety principles |
 
