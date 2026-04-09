@@ -65,17 +65,17 @@ Self-contained deep-dives into every major algorithm referenced across the chapt
 
 | File | Algorithms |
 |---|---|
-| [attention_mechanisms.md](algorithms/attention_mechanisms.md) | MHA, GQA, MQA, MLA, Flash Attention, Sliding Window, Ring Attention |
+| [attention_mechanisms.md](algorithms/attention_mechanisms.md) | MHA, GQA, MQA, MLA, Flash Attention, Sliding Window, Ring Attention, **Mamba (SSM)**, **Hybrid** |
 | [positional_encodings.md](algorithms/positional_encodings.md) | Sinusoidal, RoPE, iRoPE, ALiBi, YaRN / LongRoPE |
 | [optimizers.md](algorithms/optimizers.md) | AdamW, Muon, Lion, Sophia, Cosine / WSD schedules, gradient clipping |
 | [peft.md](algorithms/peft.md) | LoRA, QLoRA, DoRA, Spectrum |
-| [alignment_objectives.md](algorithms/alignment_objectives.md) | Bradley-Terry, PPO, DPO, SimPO, KTO, GRPO, DAPO, RLVR, Constitutional AI |
+| [alignment_objectives.md](algorithms/alignment_objectives.md) | Bradley-Terry, PPO, DPO, SimPO, KTO, GRPO, DAPO, RLVR, Constitutional AI, **RAG Alignment** |
 | [reasoning_techniques.md](algorithms/reasoning_techniques.md) | CoT, Self-Consistency, PRM, Best-of-N, MCTS, Test-time compute, R1-style RL |
 | [distillation.md](algorithms/distillation.md) | Response KD, Logit KD, SeqKD, MiniLLM, Feature / Attention distillation, GKD |
 | [inference_optimization.md](algorithms/inference_optimization.md) | INT8/INT4/FP8/BitNet quantization, Speculative Decoding, Medusa, PagedAttention, Continuous Batching, Prefix Caching |
 | [model_merging.md](algorithms/model_merging.md) | Task Vectors, Linear Interpolation, SLERP, TIES, DARE |
 | [parallelism.md](algorithms/parallelism.md) | DP / ZeRO / FSDP, Tensor Parallelism, Pipeline Parallelism (1F1B), 3D Parallelism |
-| [data_methods.md](algorithms/data_methods.md) | Self-Instruct, Evol-Instruct, Magpie, Orca, MinHash, SemDedup, curriculum learning |
+| [data_methods.md](algorithms/data_methods.md) | Self-Instruct, Evol-Instruct, Magpie, Orca, MinHash, SemDedup, curriculum learning, **DoReMi** |
 
 ---
 

@@ -131,12 +131,19 @@ Distributes the $T \times T$ attention computation across $N$ devices arranged i
 
 ## Comparison Table
 
-| Method | KV Cache | Quality | Primary Use |
-|---|---|---|---|
-| MHA | $H \times d_h$ per token | Best | Training, small models |
-| GQA | $G \times d_h$ per token | Near-MHA | LLaMA 3, Mistral, production |
-| MQA | $d_h$ per token | Good | Memory-constrained inference |
-| MLA | $d_c$ per token ($d_c \ll d_h$) | Best | DeepSeek V2/V3 |
-| Flash Attention | $O(T)$ | Exact | All modern training |
-| Sliding Window | Local only | Bounded | Long-context with local patterns |
 | Ring Attention | Distributed | Exact | Million-token training |
+
+---
+
+## State Space Models (Mamba / SSM)
+
+Replaces attention with a linear-time selective scan. Unlike the $O(n^2)$ attention mechanism, SSMs maintain a fixed-size latent state $h_t$ that evolves over time:
+
+$$
+h_t = \bar{A} h_{t-1} + \bar{B} x_t, \quad y_t = C h_t
+$$
+
+- **Selective Scan:** $A, B, C$ are functions of the input $x_t$, allowing the model to focus on relevant tokens.
+- **Complexity:** $O(n)$ time and $O(1)$ inference memory (no KV cache).
+- **Hybrid (Jamba/Bolt):** Alternating Transformer and Mamba blocks to balance reasoning and efficiency.
+

@@ -8,7 +8,7 @@ Detailed explanations of every major algorithm referenced across the chapters. E
 
 ### Core Architecture
 
-- **[attention_mechanisms.md](attention_mechanisms.md)** — Scaled dot-product attention, MHA, MQA, GQA, MLA (DeepSeek), Flash Attention (v1/v2/v3), Sliding Window, Ring Attention.
+- **[attention_mechanisms.md](attention_mechanisms.md)** — Scaled dot-product attention, MHA, MQA, GQA, MLA (DeepSeek), Flash Attention (v1/v2/v3), Sliding Window, Ring Attention, **Mamba (SSM)**, and **Hybrid (Jamba/Bolt)** architectures.
 
 - **[positional_encodings.md](positional_encodings.md)** — Sinusoidal, RoPE (rotation matrix + code), iRoPE (Llama 4), ALiBi, YaRN / LongRoPE (NTK-aware interpolation).
 
@@ -22,7 +22,7 @@ Detailed explanations of every major algorithm referenced across the chapters. E
 
 ### Post-Training & Alignment
 
-- **[alignment_objectives.md](alignment_objectives.md)** — Bradley-Terry model, PPO (clipped objective, 4-model setup), DPO (derivation), SimPO (length normalization, reference-free), KTO (Kahneman-Tversky, binary feedback), GRPO (group-normalized advantages), DAPO (clip-higher, token normalization), RLVR (verifiable rewards), Constitutional AI.
+- **[alignment_objectives.md](alignment_objectives.md)** — Bradley-Terry model, PPO, DPO, SimPO, KTO, GRPO (group-normalized advantages), DAPO, RLVR, Constitutional AI, and **Retrieval-Aware Training (RAG Alignment)**.
 
 - **[reasoning_techniques.md](reasoning_techniques.md)** — Chain-of-Thought (zero-shot, few-shot), Self-Consistency, Process Reward Models (PRM vs ORM), Best-of-N / Rejection Sampling, MCTS (UCB + value function), Test-Time Compute Scaling, Extended Thinking / Thinking Tokens, R1-style Pure RL.
 
@@ -36,7 +36,7 @@ Detailed explanations of every major algorithm referenced across the chapters. E
 
 - **[model_merging.md](model_merging.md)** — Task Vectors, Linear Interpolation (Model Soup), SLERP, TIES-Merging (trim-elect-merge), DARE (drop-and-rescale), Model Breadcrumbs.
 
-- **[data_methods.md](data_methods.md)** — Self-Instruct, Evol-Instruct, Magpie, Orca / Orca 2, Persona Hub, MinHash deduplication, SemDedup, quality filtering, curriculum learning, data mixture weighting, decontamination.
+- **[data_methods.md](data_methods.md)** — Self-Instruct, Evol-Instruct, Magpie, Orca / Orca 2, Persona Hub, MinHash deduplication, SemDedup, quality filtering, curriculum learning, data mixture weighting (**DoReMi**), decontamination.
 
 ---
 
@@ -56,3 +56,7 @@ Detailed explanations of every major algorithm referenced across the chapters. E
 | Generate synthetic training data | [data_methods.md → Self-Instruct, Magpie](data_methods.md) |
 | Reduce memory during training | [parallelism.md → FSDP / ZeRO-3](parallelism.md) |
 | Transfer knowledge to small model | [distillation.md → GKD, SeqKD](distillation.md) |
+| Optimize pre-training data mixtures | [data_methods.md → DoReMi](data_methods.md) |
+| Ground a model in external facts | [alignment_objectives.md → RAG Alignment](alignment_objectives.md) |
+| Run inference in constant memory | [attention_mechanisms.md → Mamba](attention_mechanisms.md) |
+

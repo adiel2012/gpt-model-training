@@ -206,16 +206,21 @@ $$
 
 ## Comparison
 
-| Method | Models Needed | Data Required | Primary Use |
-|---|---|---|---|
-| PPO | 4 (policy, ref, RM, critic) | Paired preferences | Classic RLHF |
-| DPO | 2 (policy, ref) | Paired preferences | Offline alignment |
-| SimPO | 1 (policy only) | Paired preferences | Memory-efficient alignment |
-| KTO | 2 (policy, ref) | Binary labels (unpaired) | Large-scale implicit feedback |
-| GRPO | 3 (policy, ref, verifier) | Prompts + reward fn | Reasoning/math RL |
-| DAPO | 3 + entropy term | Prompts + reward fn | Stable long-horizon RL |
-| RLVR | 2 (policy, ref) | Verifiable answers | Math, code tasks |
 | CAI | 1 (+ constitution) | Principles text | Scalable safety alignment |
+| RAG Alignment | 2 (policy, retriever) | Citation datasets | Grounding & Factuality |
+
+---
+
+## Retrieval-Aware Training (RAG Alignment)
+
+Training models to utilize external context effectively, cite sources, and handle knowledge conflicts.
+
+- **Citation SFT:** The model is fine-tuned on (Context, Query, Response) triples where the response must include inline citations to the context.
+- **RA-DIT (Retrieval-Augmented Data Integration):**
+    1. **LM-FT:** Fine-tune the LLM to handle retrieved documents.
+    2. **R-FT:** Fine-tune the retriever's embeddings to match the LLM's preferred context signals.
+- **Conflict Training:** Exposing the model to "counterfactual" or conflicting documents to teach it to trust the provided context over its pre-trained internal biases.
+
 
 **$\beta$ tuning guidance:**
 - Too high: policy stays close to reference → limited improvement.

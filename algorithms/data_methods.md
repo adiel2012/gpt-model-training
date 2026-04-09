@@ -145,6 +145,10 @@ Schedule training data from easy to hard over the course of training.
 
 **Importance sampling:** Down-weight documents that are similar to many others (over-represented topics) and up-weight rare, high-quality documents. Applied in DCLM and Dolma v2.
 
+**DoReMi (Domain Reweighting with Mini-models):**
+Automates domain weight discovery by training a small "reference" model on a baseline mixture, then adjusting weights for the main run based on where the reference model's loss exceeds theoretical bounds (optimizing the ratio of group-specific losses).
+
+
 ---
 
 ## Data Decontamination
