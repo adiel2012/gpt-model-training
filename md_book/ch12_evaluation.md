@@ -1,5 +1,3 @@
-
-
 # Evaluating LLMs -- Benchmarks and Beyond
 
 > **What You Will Learn**
@@ -8,7 +6,9 @@
 > - Detect and mitigate data contamination in benchmark results.
 > - Evaluate qualitative capabilities through red-teaming and side-by-side comparison.
 
-| **Benchmark** | **Focus** | **Type** |
+## Standard Benchmarks
+
+| **Benchmark** | **What It Measures** | **Type** |
 |---|---|---|
 | MMLU / MMLU-Pro | Broad academic knowledge (57+ subjects) | Multiple choice |
 | HumanEval / MBPP | Code generation correctness | Code execution |
@@ -33,7 +33,6 @@ Chatbot Arena (LMSYS) collects millions of pairwise human comparisons and comput
 
 ## Benchmark Contamination and Gaming
 
-  - Evaluation data present in pre-training inflates scores. Always report decontamination procedures.
-  - Optimizing specifically for a benchmark can improve scores without improving underlying capability (Goodhart's Law).
-  - Mitigations: dynamic benchmarks with new questions each run, held-out test sets never used for selection, diverse multi-benchmark suites that resist narrow optimization.
-
+- Evaluation data present in pre-training inflates scores. Always report decontamination procedures.
+- Optimizing specifically for a benchmark can improve scores without improving underlying capability (Goodhart's Law).
+- Mitigations: dynamic benchmarks with new questions each run, held-out test sets never used for selection, diverse multi-benchmark suites that resist narrow optimization.

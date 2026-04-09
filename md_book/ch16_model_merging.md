@@ -12,8 +12,8 @@ Model merging combines the weights of multiple fine-tuned models without additio
 
   - **Linear interpolation:** $\theta = (1-\alpha)\theta_A + \alpha\theta_B$. Simple but creates interference between dissimilar capabilities.
   - **SLERP (Spherical Linear Interpolation):** Interpolates along the geodesic of weight space. Better than linear for preserving each model's characteristics.
-  - **TIES-Merging [yadav2023ties**:] Trim redundant deltas $\rightarrow$ Elect sign direction $\rightarrow$ Disjoint merge. Handles sign conflicts between different fine-tuned models.
-  - **DARE [yu2023language** (Drop And REscale):] Randomly drop task-vector parameters and rescale survivors. Reduces interference between merged models by eliminating redundant updates.
+  - **TIES-Merging [yadav2023ties]:** Trim redundant deltas $\rightarrow$ Elect sign direction $\rightarrow$ Disjoint merge. Handles sign conflicts between different fine-tuned models.
+  - **DARE [yu2023language] (Drop And REscale):** Randomly drop task-vector parameters and rescale survivors. Reduces interference between merged models by eliminating redundant updates.
   - **Model Breadcrumbs:** Remove outlier parameters before merging. Outliers cause interference; removing them improves merge quality.
 
 ## Task Vectors
@@ -32,10 +32,10 @@ Task vector [ilharco2022editing] $\tau = \theta_\text{fine-tuned} - \theta_\text
 
 ## Practical Merging Workflow
 
-  - Fine-tune $n$ specialized models from the same base.
-  - Compute task vectors $\tau_i = \theta_i - \theta_\text{base}$ for each.
-  - Apply TIES or DARE to reduce interference.
-  - Evaluate merged model on target benchmarks; tune merge coefficients $\alpha_i$.
-  - Distribute as a single merged model.
+1. Fine-tune $n$ specialized models from the same base.
+2. Compute task vectors $\tau_i = \theta_i - \theta_\text{base}$ for each.
+3. Apply TIES or DARE to reduce interference.
+4. Evaluate merged model on target benchmarks; tune merge coefficients $\alpha_i$.
+5. Distribute as a single merged model.
 
 Tools: `mergekit` [ilharco2022editing] (open source), Hugging Face `transformers` weight manipulation.
