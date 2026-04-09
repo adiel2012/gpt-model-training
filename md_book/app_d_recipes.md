@@ -228,7 +228,5 @@ trainer = Trainer(
 trainer.train()
 ```
 
-\vfill
-
- This document reflects the state of the art as of April 2026.\\The field evolves rapidly; techniques described here represent current best practices.
+This document reflects the state of the art as of April 2026. The field evolves rapidly; techniques described here represent current best practices.
 

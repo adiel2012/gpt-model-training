@@ -19,7 +19,7 @@ Frontier models are trained on trillions of tokens---but high-quality human-writ
 
 ### Self-Instruct and Alpaca
 
-Self-Instruct [wang2022selfinstructaligning] bootstraps instruction data from a seed set of 175 human-written examples, using an LLM to generate new (instruction, input, output) triples, then filtering by ROUGE-based deduplication. Stanford Alpaca [taori2023alpaca] applied this to LLaMA-7B using GPT-3.5, generating 52K instruction-following examples for under \$500. Despite the low cost, Alpaca matched InstructGPT-175B on several instruction-following metrics, demonstrating the asymmetric leverage of synthetic data.
+Self-Instruct [wang2022selfinstructaligning] bootstraps instruction data from a seed set of 175 human-written examples, using an LLM to generate new (instruction, input, output) triples, then filtering by ROUGE-based deduplication. Stanford Alpaca [taori2023alpaca] applied this to LLaMA-7B using GPT-3.5, generating 52K instruction-following examples for under $500. Despite the low cost, Alpaca matched InstructGPT-175B on several instruction-following metrics, demonstrating the asymmetric leverage of synthetic data.
 
 ### Evol-Instruct (WizardLM)
 

@@ -40,7 +40,7 @@ Loss masking: compute cross-entropy loss *only* on assistant tokens, not on syst
 
 ## Parameter-Efficient Fine-Tuning (PEFT)
 
-Full derivations in Appendix~app:peft: LoRA ([Appendix G](app_g_implementation_treasury.md), DoRA ([Appendix G](app_g_implementation_treasury.md); code: [Appendix G](app_g_implementation_treasury.md).
+Full derivations in [Appendix G](app_g_implementation_treasury.md): LoRA, DoRA; code: [Appendix G](app_g_implementation_treasury.md).
 
   - **LoRA [hu2022lora**:] Low-rank matrices on frozen weights. $<$1% extra parameters. Dominant PEFT method.
   - **QLoRA [dettmers2023qlora**:] LoRA + 4-bit quantization. Enables 70B+ models on a single consumer GPU.

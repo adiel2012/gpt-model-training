@@ -18,7 +18,7 @@ Model merging combines the weights of multiple fine-tuned models without additio
 
 ## Task Vectors
 
-Full formulations in Appendix~app:merging: task arithmetic, SLERP, TIES, DARE; code: [Appendix G](app_g_implementation_treasury.md), [Appendix G](app_g_implementation_treasury.md).
+Full formulations in [Appendix G](app_g_implementation_treasury.md): task arithmetic, SLERP, TIES, DARE; code: [Appendix G](app_g_implementation_treasury.md).
 
 Task vector [ilharco2022editing] $\tau = \theta_\text{fine-tuned} - \theta_\text{base}$. Arithmetic on task vectors enables:
 

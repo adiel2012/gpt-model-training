@@ -8,7 +8,7 @@
 
 ## The Evolution of Language Model Training
 
-Large language models have undergone a dramatic transformation. What began as research curiosities have become the computational backbone of search engines, coding assistants, data analysis platforms, and creative tools. The global market for LLMs was valued at \$6.4 billion in 2024 and is projected to reach \$36.1 billion by 2030.
+Large language models have undergone a dramatic transformation. What began as research curiosities have become the computational backbone of search engines, coding assistants, data analysis platforms, and creative tools. The global market for LLMs was valued at $6.4 billion in 2024 and is projected to reach $36.1 billion by 2030.
 
 The training paradigm has shifted substantially. Early models relied on a simple recipe: more data plus more parameters equals better performance. By late 2025, several hard constraints became apparent. Marginal gains from more compute diminish. High-quality, deduplicated text is finite and increasingly expensive. And ever-larger models collide with real-time product requirements and energy budgets.
 
@@ -39,12 +39,12 @@ By 2025--2026, frontier labs diverge from strict Chinchilla prescriptions for a 
 
 | **Phase** | **Cost Range** | **Key Driver** |
 |---|---|---|
-| Pre-training (frontier) | \$5M -- \$100M+ | Compute (GPU hours) |
-| Pre-training (7B--70B) | \$50K -- \$5M | Data quality + GPU hours |
-| Fine-tuning (LoRA/QLoRA) | \$100 -- \$10K | Dataset size, GPU type |
-| RLHF / DPO alignment | \$10K -- \$500K | Human annotation costs |
-| Evaluation & Red-teaming | \$5K -- \$100K | Evaluator complexity |
-| Inference infrastructure | \$1K -- \$50K/mo | Traffic, latency SLA |
+| Pre-training (frontier) | $5M -- $100M+ | Compute (GPU hours) |
+| Pre-training (7B--70B) | $50K -- $5M | Data quality + GPU hours |
+| Fine-tuning (LoRA/QLoRA) | $100 -- $10K | Dataset size, GPU type |
+| RLHF / DPO alignment | $10K -- $500K | Human annotation costs |
+| Evaluation & Red-teaming | $5K -- $100K | Evaluator complexity |
+| Inference infrastructure | $1K -- $50K/mo | Traffic, latency SLA |
 
 *Table: Typical cost ranges for LLM training components*
 

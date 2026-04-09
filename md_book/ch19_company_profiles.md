@@ -22,7 +22,7 @@
 > **DeepSeek -- R1 / V3**
 > **Architecture:** Fine-grained MoE, shared expert isolation, multi-head latent attention (MLA).
 > 
-> **Pre-training:** Trillions of tokens at $\sim$\$5.5M.
+> **Pre-training:** Trillions of tokens at $\sim$$5.5M.
 > 
 > **R1 pipeline [guo2025deepseekr1** (4 stages):]
 > [leftmargin=*]

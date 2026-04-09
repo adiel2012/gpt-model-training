@@ -12,7 +12,7 @@ A grammatically perfect model may be unhelpful, evasive, or unsafe. The field ha
 
 ## Reward Modeling
 
-Complete objectives in Appendix~app:alignment: PPO, DPO, SimPO, KTO, GRPO.
+Complete objectives in [Appendix G](app_g_implementation_treasury.md): PPO, DPO, SimPO, KTO, GRPO.
 
 The reward model (RM) translates human preferences into scalar scores. RM quality determines the ceiling for all RM-based alignment methods.
 

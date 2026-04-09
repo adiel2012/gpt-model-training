@@ -8,7 +8,7 @@
 
 ## The Forgetting Problem
 
-EWC Fisher penalty: [Appendix G](app_g_implementation_treasury.md) in Appendix~app:continual; code: [Appendix G](app_g_implementation_treasury.md).
+EWC Fisher penalty: [Appendix G](app_g_implementation_treasury.md); code: [Appendix G](app_g_implementation_treasury.md).
 
 When a model is fine-tuned on task B, performance on previously learned task A degrades---sometimes catastrophically. This limits the ability to update deployed models without full retraining.
 

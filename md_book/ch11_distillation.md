@@ -10,7 +10,7 @@ Knowledge distillation (KD) transfers capability from a large *teacher* model to
 
 ## Why Distillation Matters
 
-Complete derivations in Appendix~app:distill: forward KL, reverse KL (MiniLLM), speculative decoding acceptance; code: [Appendix G](app_g_implementation_treasury.md), [Appendix G](app_g_implementation_treasury.md).
+Complete derivations in [Appendix G](app_g_implementation_treasury.md): forward KL, reverse KL (MiniLLM), speculative decoding acceptance; code: [Appendix G](app_g_implementation_treasury.md).
 
 Frontier labs use distillation systematically: Behemoth $\rightarrow$ Scout/Maverick (Meta), R1-671B $\rightarrow$ 1.5B--70B (DeepSeek), Gemini Pro $\rightarrow$ Flash $\rightarrow$ Nano (Google). Distilled 7B models now routinely outperform undistilled 70B models on target tasks.
 
