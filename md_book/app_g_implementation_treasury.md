@@ -69,7 +69,7 @@ $$
 ### Scaled Dot-Product Attention
 
 $$
-  \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\!\left(\frac{Q K^\top}{\sqrt{d_k}} + M\right) V
+  \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\left(\frac{Q K^\top}{\sqrt{d_k}} + M\right) V
 $$
 
 ```python
@@ -462,7 +462,7 @@ def simpo_loss(model, x_w, x_l, beta=2.0, gamma=0.5):
 ### GRPO (Group Relative Policy Optimisation)
 
 $$
-  \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\!\left[\sum_{i=1}^{G}\sum_t ... \right]
+  \hat{A}_i = \frac{r_i - \mu_r}{\sigma_r}, \quad \mathcal{L}_\mathrm{GRPO}(\theta) = -\mathbb{E}\left[\frac{1}{G}\sum_{i=1}^{G} \min\left(\rho_i \hat{A}_i,\; \mathrm{clip}(\rho_i, 1-\epsilon, 1+\epsilon)\hat{A}_i\right)\right]
 $$
 
 ```python
@@ -574,7 +574,7 @@ where $L$ is layers, $T$ is sequence length, and $H$ is heads.
 
 Linear quantization to $n$ bits (e.g., INT8):
 $$
-  x_q = \text{round}\!\left( \frac{x}{\Delta} \right), \quad \Delta = \frac{\max(|x|)}{2^{n-1}-1}
+  x_q = \text{round}\left( \frac{x}{\Delta} \right), \quad \Delta = \frac{\max(|x|)}{2^{n-1}-1}
 $$
 
 ### Speculative Decoding
@@ -661,10 +661,30 @@ def task_vector(base_sd: dict, ft_sd: dict) -> dict:
 def ties_merge(base_sd: dict, ft_sds: list[dict], lambdas: list[float], density: float = 0.7) -> dict:
     """Trim, Elect, and Merge conflict resolution."""
     taus = [task_vector(base_sd, ft) for ft in ft_sds]
-    trimmed = []
-    # ... (Trimming and logic)
-    return merged
 
+    # Step 1 — Trim: keep top-density fraction by magnitude, zero the rest
+    trimmed = []
+    for tau in taus:
+        trimmed_tau = {}
+        for k, v in tau.items():
+            threshold = torch.quantile(v.abs().float(), 1.0 - density)
+            trimmed_tau[k] = v * (v.abs() >= threshold)
+        trimmed.append(trimmed_tau)
+
+    # Step 2 — Elect sign: majority sign per parameter across all task vectors
+    merged = {}
+    for k in base_sd:
+        stacked = torch.stack([t[k].float() for t in trimmed], dim=0)
+        elected_sign = torch.sign(stacked.sum(dim=0))
+
+        # Step 3 — Disjoint merge: average only vectors that agree with elected sign
+        mask = (torch.sign(stacked) == elected_sign.unsqueeze(0)).float()
+        denom = mask.sum(dim=0).clamp(min=1)
+        delta = (stacked * mask).sum(dim=0) / denom
+        scale = sum(lambdas) / len(lambdas)
+        merged[k] = base_sd[k] + scale * delta.to(base_sd[k].dtype)
+
+    return merged
 ```
 
 ## Continual Learning --- EWC
@@ -674,9 +694,28 @@ def ties_merge(base_sd: dict, ft_sds: list[dict], lambdas: list[float], density:
 ```python
 class EWC:
     def __init__(self, model, dataset, lam=1000.0):
-        self.lam, self.params = lam, {n: p.clone().detach() for n, p in model.named_parameters()}
+        self.lam = lam
+        self.params = {n: p.clone().detach() for n, p in model.named_parameters()}
         self.fisher = self._compute_fisher(model, dataset)
-    # ... (Penalty and Fisher logic)
+
+    def _compute_fisher(self, model, dataset):
+        fisher = {n: torch.zeros_like(p) for n, p in model.named_parameters()}
+        model.eval()
+        for x, y in dataset:
+            model.zero_grad()
+            loss = F.cross_entropy(model(x), y)
+            loss.backward()
+            for n, p in model.named_parameters():
+                if p.grad is not None:
+                    fisher[n] += p.grad.detach() ** 2
+        n = len(dataset)
+        return {n: f / n for n, f in fisher.items()}
+
+    def penalty(self, model):
+        loss = 0.0
+        for n, p in model.named_parameters():
+            loss += (self.fisher[n] * (p - self.params[n]) ** 2).sum()
+        return self.lam * loss
 ```
 
 ## Final Assembly --- TinyGPT

@@ -12,7 +12,7 @@ SFT transitions the base model to an instruction-following assistant. It is stab
 
 ## Data Quality for SFT
 
-The Llama~2 team [touvron2023llama] found that 27K high-quality examples outperform 1M noisy examples. Key quality dimensions:
+The Llama 2 team [touvron2023llama] found that 27K high-quality examples outperform 1M noisy examples. Key quality dimensions:
 
   - **Diversity:** Cover the full distribution of user intents.
   - **Accuracy:** Ground-truth responses must be verifiably correct.
