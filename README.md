@@ -9,7 +9,6 @@
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/adiel2012/gpt-model-training/blob/main/llm_implementations.ipynb)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-adiel2012%2Fgpt--model--training-blue?logo=github)](https://github.com/adiel2012/gpt-model-training)
-[![Companion Book](https://img.shields.io/badge/PDF-Companion_Book-red?logo=adobe-acrobat)](https://github.com/adiel2012/gpt-model-training/blob/main/book/Training_Production_Ready_LLMs_2026.pdf)
 
 ---
 
@@ -20,13 +19,12 @@ This repository is a comprehensive, production-oriented guide to training Large 
 ### Key Features
 
 - **Notebook-Centric Implementation**: All core architectures and algorithms (MLA, GQA, MoE, LoRA, DPO, GRPO) are implemented from scratch in **[llm_implementations.ipynb](llm_implementations.ipynb)** with Google-style documentation and type hints.
-- **Implementation Treasury (Appendix G)**: A unique interleaved guide in the companion book where complex mathematical formulations are presented side-by-side with their corresponding PyTorch source code.
+- **Implementation Treasury (Appendix G)**: A unique interleaved guide where complex mathematical formulations are presented side-by-side with their corresponding PyTorch source code.
 - **2026 Frontier Tech Stack**: Extensive coverage of Multi-head Latent Attention (MLA), Muon & Lion optimizers, SimPO/KTO/GRPO alignment, and Speculative Decoding.
-- **Reproducible PDF Build**: A Docker-based environment for generating the 117-page companion book with a single command.
 
 ---
 
-## 📚 Table of Contents (Companion Book)
+## 📚 Table of Contents
 
 ### Part I: Foundations
 - **[Chapter 1: The LLM Training Landscape in 2026](md_book/ch01_landscape.md)**
@@ -64,25 +62,7 @@ This repository is a comprehensive, production-oriented guide to training Large 
 
 ## 🛠️ Getting Started
 
-### 1. Interactive Code (Jupyter/Colab)
 Open **[llm_implementations.ipynb](llm_implementations.ipynb)** directly in Google Colab to run the training loops, attention mechanisms, and alignment algorithms on free T4/L4 GPU instances.
-
-### 2. Building the Companion Book (PDF)
-The book is written in LaTeX and uses a Docker-based system for reproducible builds.
-
-**Prerequisites:** Docker installed.
-
-**Build Command (PowerShell):**
-```powershell
-powershell -File book/build_pdf.ps1
-```
-
-**Build Command (Bash):**
-```bash
-sh book/build.sh
-```
-
-The resulting **`Training_Production_Ready_LLMs_2026.pdf`** will be generated in the `book/` directory.
 
 ---
 
