@@ -152,12 +152,12 @@ Replaces the dense FFN with $E$ smaller expert networks plus a learned router. O
 
 ```mermaid
 graph LR
-    Token[Token x_t] --> Router["Router\n(Linear + Softmax)"]
-    Router -->|"Top-k weights w_i"| E1[Expert 1\nFFN]
-    Router --> E2[Expert 2\nFFN]
+    Token["Token x_t"] --> Router["Router<br/>(Linear + Softmax)"]
+    Router -->|"Top-k weights w_i"| E1["Expert 1<br/>FFN"]
+    Router --> E2["Expert 2<br/>FFN"]
     Router --> E3["..."]
-    Router --> En["Expert E\nFFN"]
-    E1 -->|"w_1 · FFN_1(x)"| Sum["Weighted Sum\n∑ w_i · FFN_i(x)"]
+    Router --> En["Expert E<br/>FFN"]
+    E1 -->|"w_1 · FFN_1(x)"| Sum["Weighted Sum<br/>∑ w_i · FFN_i(x)"]
     E2 --> Sum
     En --> Sum
     Sum --> Out[Output]
@@ -195,8 +195,8 @@ Hybrid models like **Jamba** (Lieber et al., 2024) interleave Transformer and Ma
 
 ```mermaid
 graph LR
-    In[Input] --> T1[Transformer Block\nattention + FFN]
-    T1 --> M1[Mamba Block\nSSM + FFN]
+    In[Input] --> T1["Transformer Block<br/>attention + FFN"]
+    T1 --> M1["Mamba Block<br/>SSM + FFN"]
     M1 --> T2[Transformer Block]
     T2 --> M2[Mamba Block]
     M2 --> T3[Transformer Block]

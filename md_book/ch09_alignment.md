@@ -18,11 +18,11 @@ The field has evolved rapidly. Early systems relied exclusively on RLHF. By 2025
 
 ```mermaid
 graph LR
-    Base["Base Model\n(Pre-trained)"]
-    SFT["SFT\nInstruction following"]
-    Pref["Preference Alignment\nDPO / SimPO / KTO"]
-    Reason["Reasoning RL\nGRPO / DAPO + RLVR"]
-    Safety["Safety Layer\nRLHF / CAI / RLAIF"]
+    Base["Base Model<br/>(Pre-trained)"]
+    SFT["SFT<br/>Instruction following"]
+    Pref["Preference Alignment<br/>DPO / SimPO / KTO"]
+    Reason["Reasoning RL<br/>GRPO / DAPO + RLVR"]
+    Safety["Safety Layer<br/>RLHF / CAI / RLAIF"]
     Deploy["Deployed Assistant"]
 
     Base --> SFT --> Pref --> Reason --> Safety --> Deploy
@@ -94,10 +94,10 @@ RLHF (Ouyang et al., 2022) transformed GPT-3 into ChatGPT — the first demonstr
 
 ```mermaid
 graph LR
-    SFT_Model["SFT Model\n(frozen copy = ref)"]
-    RM["Reward Model\n(Bradley-Terry trained)"]
-    PPO_Agent["Policy\n(PPO-trained LM)"]
-    Human["Human Annotators\n(preference pairs)"]
+    SFT_Model["SFT Model<br/>(frozen copy = ref)"]
+    RM["Reward Model<br/>(Bradley-Terry trained)"]
+    PPO_Agent["Policy<br/>(PPO-trained LM)"]
+    Human["Human Annotators<br/>(preference pairs)"]
 
     Human -->|"rank completions"| RM
     SFT_Model -->|"initialize"| PPO_Agent
@@ -333,13 +333,13 @@ A two-stage fine-tuning approach (Lin et al., 2023) that aligns both the LLM and
 
 ```mermaid
 graph TD
-    Q1{"Have pairwise\npreference pairs?"}
-    Q1 -->|Yes| Q2{"Memory\nconstrained?"}
+    Q1{"Have pairwise<br/>preference pairs?"}
+    Q1 -->|Yes| Q2{"Memory<br/>constrained?"}
     Q1 -->|No, binary only| KTO["KTO"]
-    Q2 -->|Yes| SimPO["SimPO\n(no ref model)"]
-    Q2 -->|No| Q3{"Verifiable\ntask (math/code)?"}
+    Q2 -->|Yes| SimPO["SimPO<br/>(no ref model)"]
+    Q2 -->|No| Q3{"Verifiable<br/>task (math/code)?"}
     Q3 -->|Yes| RLVR["RLVR + GRPO"]
-    Q3 -->|No| Q4{"Need PPO-level\nperformance?"}
+    Q3 -->|No| Q4{"Need PPO-level<br/>performance?"}
     Q4 -->|Yes| RLHF["RLHF (PPO)"]
     Q4 -->|No| DPO["DPO / IPO"]
 

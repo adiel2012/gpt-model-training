@@ -16,11 +16,11 @@ The most significant capability development of 2025–2026: models that explicit
 
 ```mermaid
 graph LR
-    Base["Base LLM\n(fast, direct answer)"]
-    CoT["CoT Training\n(step-by-step)"]
-    RL["RL on Verifiable Tasks\n(RLVR + GRPO)"]
-    TTC["Test-Time Compute\n(search at inference)"]
-    Reasoning["Reasoning Model\n(o3, R1, DeepSeek-R1)"]
+    Base["Base LLM<br/>(fast, direct answer)"]
+    CoT["CoT Training<br/>(step-by-step)"]
+    RL["RL on Verifiable Tasks<br/>(RLVR + GRPO)"]
+    TTC["Test-Time Compute<br/>(search at inference)"]
+    Reasoning["Reasoning Model<br/>(o3, R1, DeepSeek-R1)"]
 
     Base --> CoT --> RL --> TTC --> Reasoning
 
@@ -137,11 +137,11 @@ Full tree exploration with PRM-based value estimates. Used in AlphaCode 2 and Op
 ```mermaid
 graph TD
     Root["Question q"]
-    S1["Step 1a\nPRM=0.82"]
-    S2["Step 1b\nPRM=0.41"]
-    S3["Step 2a\nPRM=0.91"]
-    S4["Step 2b\nPRM=0.55"]
-    Ans["Answer\nVerified ✓"]
+    S1["Step 1a<br/>PRM=0.82"]
+    S2["Step 1b<br/>PRM=0.41"]
+    S3["Step 2a<br/>PRM=0.91"]
+    S4["Step 2b<br/>PRM=0.55"]
+    Ans["Answer<br/>Verified ✓"]
 
     Root -->|"explore"| S1
     Root -->|"explore"| S2
@@ -198,10 +198,10 @@ DeepSeek (Guo et al., 2025) demonstrated that **emergent reasoning** can be prod
 
 ```mermaid
 graph LR
-    A["Stage 1\nCold-Start SFT\n~thousands of CoT examples"]
-    B["Stage 2\nRLVR + GRPO\n16 samples/prompt\nrule-based rewards"]
-    C["Stage 3\nRejection Sampling + SFT\n800K filtered examples"]
-    D["Stage 4\nRLVR + RLHF\nreasoning + helpfulness/safety"]
+    A["Stage 1<br/>Cold-Start SFT<br/>~thousands of CoT examples"]
+    B["Stage 2<br/>RLVR + GRPO<br/>16 samples/prompt<br/>rule-based rewards"]
+    C["Stage 3<br/>Rejection Sampling + SFT<br/>800K filtered examples"]
+    D["Stage 4<br/>RLVR + RLHF<br/>reasoning + helpfulness/safety"]
 
     A --> B --> C --> D
 
@@ -313,12 +313,12 @@ The common pattern: a **thinking budget** parameter controls the maximum test-ti
 
 ```mermaid
 graph TD
-    D["Quality pre-training\n(math, code, science heavy mix)"]
-    E["Cold-start SFT\n(few thousand long CoT examples)"]
-    F["RLVR + GRPO\n(rule-based binary rewards)"]
-    G["Rejection sampling + SFT\n(distill best completions)"]
-    H["Optional: PRM training\n(for search at inference)"]
-    I["Deployment\n(+ thinking budget parameter)"]
+    D["Quality pre-training<br/>(math, code, science heavy mix)"]
+    E["Cold-start SFT<br/>(few thousand long CoT examples)"]
+    F["RLVR + GRPO<br/>(rule-based binary rewards)"]
+    G["Rejection sampling + SFT<br/>(distill best completions)"]
+    H["Optional: PRM training<br/>(for search at inference)"]
+    I["Deployment<br/>(+ thinking budget parameter)"]
 
     D --> E --> F --> G --> H --> I
 

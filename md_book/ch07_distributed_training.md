@@ -76,9 +76,9 @@ graph TD
         end
     end
 
-    note1["Inner (NVLink): Tensor parallel\nExploits 900 GB/s bandwidth"]
-    note2["Middle (IB): Pipeline parallel\nPoint-to-point activation passing"]
-    note3["Outer (IB): Data parallel\nAll-reduce on gradient replicas"]
+    note1["Inner (NVLink): Tensor parallel<br/>Exploits 900 GB/s bandwidth"]
+    note2["Middle (IB): Pipeline parallel<br/>Point-to-point activation passing"]
+    note3["Outer (IB): Data parallel<br/>All-reduce on gradient replicas"]
 ```
 
 **Rule of thumb:** Tensor-parallel degree = GPUs per node (NVLink domain). Pipeline-parallel degree = number of nodes per replica. Data-parallel degree = total nodes ÷ nodes per replica.
@@ -153,10 +153,10 @@ At 1,000+ GPU scale, hardware failures occur approximately every **3 days** (MTB
 
 ```mermaid
 graph TD
-    A["H100 GPU (80GB)"] <-->|"NVLink 6\n900 GB/s bidi"| B["H100 GPU (80GB)"]
-    B <-->|"NVLink 6"| C["... 8× H100 per node"]
-    C <-->|"PCIe\n32–128 GB/s"| D["CPU / NIC"]
-    D <-->|"InfiniBand NDR 400G\n~50 GB/s effective"| E["Remote Node"]
+    A["H100 GPU (80GB)"] <-->|"NVLink 6 — 900 GB/s"| B["H100 GPU (80GB)"]
+    B <-->|"NVLink 6"| C["... 8x H100 per node"]
+    C <-->|"PCIe — 32-128 GB/s"| D["CPU / NIC"]
+    D <-->|"InfiniBand NDR 400G — 50 GB/s"| E["Remote Node"]
 ```
 
 | Link | Bandwidth | Latency | Used For |
