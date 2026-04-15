@@ -222,7 +222,7 @@ The Newton-Schulz iteration (5 steps suffices in practice) maps $G \mapsto O$ su
 
 $$u_t = \beta_1\, m_{t-1} + (1-\beta_1)\,g_t \qquad \text{(interpolate old momentum and new grad)}$$
 
-$$\theta_t = \theta_{t-1} - \eta\left(\operatorname{sign}(u_t) + \lambda\,\theta_{t-1}\right)$$
+$$\theta_t = \theta_{t-1} - \eta\left(\text{sign}(u_t) + \lambda\,\theta_{t-1}\right)$$
 
 $$m_t = \beta_2\, m_{t-1} + (1-\beta_2)\,g_t \qquad \text{(update momentum with different } \beta_2\text{)}$$
 
@@ -240,9 +240,9 @@ Every $k$ steps (typically $k=10$), estimate the diagonal Hessian via the Hutchi
 
 $$h_t = \beta_2\, h_{t-1} + (1-\beta_2)\left(g_t \odot g_t\right) \qquad \text{(or: } h_t \leftarrow \mathbf{E}_{z}[(z \odot g_t)^2]\text{)}$$
 
-$$\theta_t = \theta_{t-1} - \eta \cdot \operatorname{clip}\!\left(\frac{m_t}{\max(h_t,\,\epsilon)},\; \gamma\right) - \eta\lambda\,\theta_{t-1}$$
+$$\theta_t = \theta_{t-1} - \eta \cdot \text{clip}\!\left(\frac{m_t}{\max(h_t,\,\epsilon)},\; \gamma\right) - \eta\lambda\,\theta_{t-1}$$
 
-The $\operatorname{clip}(\cdot, \gamma)$ (element-wise, $\gamma \approx 1$) prevents division by near-zero curvature estimates from producing unbounded steps. Requires storing $h_t$ in addition to $m_t$ — hence 4× model memory. Reported 2× faster convergence than AdamW in tokens-to-target-loss; adoption remains limited due to Hessian estimation overhead.
+The $\text{clip}(\cdot, \gamma)$ (element-wise, $\gamma \approx 1$) prevents division by near-zero curvature estimates from producing unbounded steps. Requires storing $h_t$ in addition to $m_t$ — hence 4× model memory. Reported 2× faster convergence than AdamW in tokens-to-target-loss; adoption remains limited due to Hessian estimation overhead.
 
 ### Learning Rate Schedule
 
