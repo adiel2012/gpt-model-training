@@ -186,11 +186,63 @@ Full update rules and runnable code in [Appendix G](app_g_implementation_treasur
 
 **AdamW** (Loshchilov & Hutter, 2019): The 2025–2026 default. Decoupled weight decay — applies $\lambda\theta$ directly rather than through the gradient, which correctly regularizes adaptive learning rates. Standard hyperparameters: $\beta_1=0.9$, $\beta_2=0.95$, $\epsilon=10^{-8}$, $\lambda=0.1$.
 
-**Muon** (Kosson et al., 2024): Applies Nesterov momentum then orthogonalizes the update via Newton-Schulz iterations. Treats weight matrices as the correct unit (not individual scalars), ensuring uniform exploration of all weight-space directions. Matches or exceeds AdamW at lower optimizer step cost. See [Appendix G](app_g_implementation_treasury.md).
+*Algorithm — per step $t$:*
 
-**Lion** (Chen et al., 2023): Sign-based update — uses only the sign of a gradient momentum blend. 2–3× less memory than AdamW (no second moment). Requires 3–10× smaller LR than AdamW. Strong for fine-tuning; mixed results at full pre-training scale. See [Appendix G](app_g_implementation_treasury.md).
+$$m_t = \beta_1 m_{t-1} + (1-\beta_1)\,g_t$$
 
-**Sophia** (Liu et al., 2023): Diagonal Hessian preconditioned optimizer. Estimates curvature via Hutchinson estimator every 10 steps. Reported 2× faster than AdamW; not yet widely adopted due to implementation complexity.
+$$v_t = \beta_2 v_{t-1} + (1-\beta_2)\,g_t^2$$
+
+$$\hat{m}_t = \frac{m_t}{1-\beta_1^t}, \qquad \hat{v}_t = \frac{v_t}{1-\beta_2^t}$$
+
+$$\theta_t = \theta_{t-1} - \eta\left(\frac{\hat{m}_t}{\sqrt{\hat{v}_t}+\epsilon} + \lambda\,\theta_{t-1}\right)$$
+
+The key difference from Adam: weight decay $\lambda\theta_{t-1}$ is applied **directly to the parameter**, not folded into $g_t$ before the adaptive scaling. This means heavy-decay dimensions are not under-regularized by a small $\hat{v}_t$ denominator.
+
+---
+
+**Muon** (Keller Jordan, 2024): Applies Nesterov momentum then orthogonalizes the update via Newton-Schulz iterations. Treats weight matrices as the correct geometric unit, ensuring uniform step magnitude across all weight-space directions.
+
+*Algorithm — per step $t$:*
+
+$$m_t = \beta\, m_{t-1} + g_t \qquad \text{(Nesterov lookahead gradient)}$$
+
+$$\tilde{g}_t = g_t + \beta\, m_t \qquad \text{(Nesterov blended update)}$$
+
+$$O_t = \text{NewtonSchulz}(\tilde{g}_t) \qquad \text{(orthogonalize: } O_t^\top O_t \approx I\text{)}$$
+
+$$\theta_t = \theta_{t-1} - \eta\, O_t$$
+
+The Newton-Schulz iteration (5 steps suffices in practice) maps $G \mapsto O$ such that $O$ has orthonormal rows — every direction in weight space receives the same step magnitude regardless of gradient scale. Applied only to 2-D weight matrices; embeddings and biases fall back to Adam. See [Appendix G](app_g_implementation_treasury.md).
+
+---
+
+**Lion** (Chen et al., 2023): Sign-based update — uses only the sign of a gradient momentum blend. Stores one momentum buffer instead of two (no second moment $v_t$), giving 2–3× less memory than AdamW. Requires 3–10× smaller LR than AdamW.
+
+*Algorithm — per step $t$:*
+
+$$u_t = \beta_1\, m_{t-1} + (1-\beta_1)\,g_t \qquad \text{(interpolate old momentum and new grad)}$$
+
+$$\theta_t = \theta_{t-1} - \eta\left(\operatorname{sign}(u_t) + \lambda\,\theta_{t-1}\right)$$
+
+$$m_t = \beta_2\, m_{t-1} + (1-\beta_2)\,g_t \qquad \text{(update momentum with different } \beta_2\text{)}$$
+
+Typical values: $\beta_1=0.9$, $\beta_2=0.99$, $\lambda=0.01$. The sign operation produces a uniform $\{-1,+1\}$ update — every parameter moves the same magnitude each step, which acts as an implicit normalization. Strong for fine-tuning; mixed results at full pre-training scale. See [Appendix G](app_g_implementation_treasury.md).
+
+---
+
+**Sophia** (Liu et al., 2023): Diagonal Hessian preconditioned optimizer. Scales each gradient coordinate by an estimate of local curvature, taking larger steps where the loss surface is flat and smaller steps where it curves sharply.
+
+*Algorithm — per step $t$:*
+
+$$m_t = \beta_1\, m_{t-1} + (1-\beta_1)\,g_t \qquad \text{(first moment)}$$
+
+Every $k$ steps (typically $k=10$), estimate the diagonal Hessian via the Hutchinson estimator:
+
+$$h_t = \beta_2\, h_{t-1} + (1-\beta_2)\left(g_t \odot g_t\right) \qquad \text{(or: } h_t \leftarrow \mathbf{E}_{z}[(z \odot g_t)^2]\text{)}$$
+
+$$\theta_t = \theta_{t-1} - \eta \cdot \operatorname{clip}\!\left(\frac{m_t}{\max(h_t,\,\epsilon)},\; \gamma\right) - \eta\lambda\,\theta_{t-1}$$
+
+The $\operatorname{clip}(\cdot, \gamma)$ (element-wise, $\gamma \approx 1$) prevents division by near-zero curvature estimates from producing unbounded steps. Requires storing $h_t$ in addition to $m_t$ — hence 4× model memory. Reported 2× faster convergence than AdamW in tokens-to-target-loss; adoption remains limited due to Hessian estimation overhead.
 
 ### Learning Rate Schedule
 
