@@ -76,9 +76,6 @@ graph TD
         end
     end
 
-    note1["Inner (NVLink): Tensor parallel<br/>Exploits 900 GB/s bandwidth"]
-    note2["Middle (IB): Pipeline parallel<br/>Point-to-point activation passing"]
-    note3["Outer (IB): Data parallel<br/>All-reduce on gradient replicas"]
 ```
 
 **Rule of thumb:** Tensor-parallel degree = GPUs per node (NVLink domain). Pipeline-parallel degree = number of nodes per replica. Data-parallel degree = total nodes ÷ nodes per replica.
@@ -199,15 +196,15 @@ Full update rules and runnable code in [Appendix G](app_g_implementation_treasur
 
 Cosine decay with linear warmup is the standard for pre-training and SFT. Full implementation in [Appendix G](app_g_implementation_treasury.md).
 
-$$\eta(t) = \eta_\min + \frac{1}{2}\left(\eta_\max - \eta_\min\right)\left(1 + \cos\!\left(\frac{t - t_\text{warmup}}{T - t_\text{warmup}}\,\pi\right)\right)$$
+$$\eta(t) = \eta_{\text{min}} + \frac{1}{2}\left(\eta_{\text{max}} - \eta_{\text{min}}\right)\left(1 + \cos\!\left(\frac{t - t_\text{warmup}}{T - t_\text{warmup}}\,\pi\right)\right)$$
 
 **Key hyperparameters:**
 
 | Parameter | Typical Value | Rationale |
 | :--- | :--- | :--- |
 | Warmup steps | 1,000–5,000 | Prevents gradient explosions from random init |
-| Peak LR $\eta_\max$ | $3\times10^{-4}$ (7B), $1\times10^{-4}$ (70B) | Larger models need smaller LR |
-| Final LR $\eta_\min$ | $0.1\times\eta_\max$ | Do not decay to zero — avoids tail overfitting |
+| Peak LR $\eta_{\text{max}}$ | $3\times10^{-4}$ (7B), $1\times10^{-4}$ (70B) | Larger models need smaller LR |
+| Final LR $\eta_{\text{min}}$ | $0.1\times\eta_{\text{max}}$ | Do not decay to zero — avoids tail overfitting |
 | Batch size | 1M–4M tokens | Large batches enable higher peak LR |
 
 **WSD Schedule (Warmup–Stable–Decay):** Used by MiniCPM and Qwen. Three phases: warmup → constant "stable" phase → rapid cosine decay. Enables checkpointing the model at multiple token counts without a performance cliff — each checkpoint can be continued or further decayed independently.
