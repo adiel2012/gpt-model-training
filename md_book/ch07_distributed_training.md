@@ -166,8 +166,18 @@ graph TD
 ### Overlap and Compression
 
 - **Gradient communication overlap:** Overlap all-reduce with the backward pass using gradient bucketing (PyTorch DDP default bucket size: 25 MB).
-- **Top-$k$ sparsification:** Communicate only the top-$k$ gradient values by magnitude. 99% sparsification with error feedback preserves convergence at 100× bandwidth reduction — used in bandwidth-limited setups (Ethernet clusters).
+- **Top-$k$ sparsification:** Communicate only the top-$k$ gradient values by magnitude, using error feedback to accumulate the residual so no information is permanently lost. Used in bandwidth-limited setups (Ethernet clusters, cross-datacenter training).
 - **1-bit Adam / PowerSGD:** Quantized or low-rank gradient communication. Effective for large batch sizes where gradient variance is low.
+
+**Top-$k$ sparsification — algorithm.** Each worker maintains a local error buffer $e_t$. At step $t$:
+
+$$\tilde{g}_t = g_t + e_t \qquad \text{(add residual from previous step)}$$
+
+$$\hat{g}_t = \text{TopK}(\tilde{g}_t,\, k) \qquad \text{(keep top-}k\text{ entries by magnitude, zero the rest)}$$
+
+$$e_{t+1} = \tilde{g}_t - \hat{g}_t \qquad \text{(carry unset residual to next step)}$$
+
+Only $\hat{g}_t$ — a sparse vector with $k$ non-zero entries — is all-reduced across workers. At $k = 0.01 \times d$ (99% sparsification) bandwidth drops 100× with negligible convergence loss: the error buffer guarantees every gradient coordinate is eventually communicated, just potentially one step late.
 
 ---
 
