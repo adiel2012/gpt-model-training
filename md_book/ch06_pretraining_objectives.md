@@ -130,6 +130,24 @@ $$h_i = f_\theta(C_i,\, h_{i-1})$$
 
 This forces the model to encode useful long-range information into $h$ rather than relying solely on in-context attention.
 
+**Why this constraint matters — the compression argument.**
+A standard transformer predicts $x_t$ by attending directly to every prior token $x_{<t}$ in its context window. When the full history is available, the model can be "lazy": it looks up what it needs token-by-token and never has to summarize anything. As documents grow longer than the context window, this strategy breaks completely.
+
+The recurrent formulation removes that shortcut. When processing chunk $C_i$, the model *cannot* attend back to chunks $C_1, \dots, C_{i-1}$ — those tokens are gone. The only bridge to the past is $h_{i-1}$, a fixed-size vector. To predict tokens in $C_i$ correctly, the model must have packed everything worth knowing from earlier chunks into $h$. If chunk $C_1$ introduced a key character and $C_4$ refers to that character by pronoun, the only way to resolve the pronoun is if $h_3$ carried that fact forward.
+
+**Contrast with standard in-context attention:**
+
+| Mechanism | How past context is accessed | What the model learns |
+| :--- | :--- | :--- |
+| Full-attention transformer | Direct token-level lookup (softmax over all prior positions) | Fine-grained retrieval; no compression required |
+| Recurrent memory $h$ | Single fixed-size vector passed across chunk boundaries | Must summarize: select, compress, and retain what matters |
+
+**The training signal this creates.**
+Because the prediction loss $\mathcal{L}_\text{RPT}$ is summed over *all* chunks, a mistake in chunk $C_4$ caused by a poorly-compressed $h_3$ produces a gradient that flows back through $f_\theta$ into earlier chunks. The model is penalized for *forgetting* relevant facts, not just for local token errors. This is a much richer learning signal than standard NTP, which only grades each token on what is immediately visible.
+
+**Practical effect.**
+Models trained with this objective demonstrate stronger coherence across document boundaries, better pronoun and entity tracking in long-form text, and improved performance on tasks that require integrating information spread across many paragraphs — reasoning traces, long-context QA, and multi-chapter summarization.
+
 **Key properties:**
 - Fully self-supervised — no human labels or reward model needed.
 - Richer gradient signals than maximum likelihood: the model receives feedback about long-horizon sequence quality.
