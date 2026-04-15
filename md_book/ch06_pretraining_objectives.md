@@ -16,6 +16,10 @@ Self-supervised causal language modeling — the core objective for every modern
 
 $$\mathcal{L}_\mathrm{NTP}(\theta) = -\frac{1}{|\mathcal{D}|}\sum_{x \in \mathcal{D}}\sum_{t=1}^{T} \log p_\theta(x_t \mid x_1, \ldots, x_{t-1})$$
 
+The model factorizes the joint distribution **autoregressively** — each token is conditioned on all preceding tokens:
+
+$$P_\theta(x_1, \dots, x_T) = \prod_{t=1}^{T} P_\theta(x_t \mid x_{<t})$$
+
 No labeled data is needed. Despite its simplicity, NTP is sufficient to produce emergent capabilities at scale: syntax, semantics, factual knowledge, multi-step reasoning, and in-context learning all emerge from this single objective applied to enough high-quality text.
 
 **Perplexity** is the standard evaluation metric during pre-training:
@@ -51,11 +55,58 @@ This means earlier large models (GPT-3, PaLM) were systematically **undertrained
 
 ### The Scaling Law Formula
 
-For a transformer trained on $D$ tokens:
+For a transformer with $N$ parameters trained on $D$ tokens, the expected cross-entropy loss decomposes into three additive terms:
 
 $$L(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_\infty$$
 
-where $L_\infty$ is the irreducible loss from noise in the data, and typical values are $\alpha \approx 0.34$, $\beta \approx 0.28$ (Hoffmann et al., 2022).
+#### Term-by-Term Breakdown
+
+| Term | Name | Meaning |
+| :--- | :--- | :--- |
+| $A / N^\alpha$ | **Capacity term** | Loss reducible by adding parameters. Larger $N$ → better function approximation |
+| $B / D^\beta$ | **Data term** | Loss reducible by seeing more tokens. Larger $D$ → better statistical estimation |
+| $L_\infty$ | **Irreducible loss** | The entropy of the data distribution — the noise floor no model can beat |
+
+**Fitted constants** (Hoffmann et al., 2022): $A \approx 406.4$, $B \approx 410.7$, $\alpha \approx 0.34$, $\beta \approx 0.28$, $L_\infty \approx 1.69$ nats per token.
+
+$L_\infty$ represents the true entropy of natural language — the fraction of each token that is genuinely unpredictable (typos, stylistic variation, factual ambiguity). Even with infinite parameters and infinite data, $L(N, D) \to L_\infty$.
+
+#### What the Exponents Mean
+
+Because $\alpha > \beta$ ($0.34 > 0.28$), **model size reduces loss slightly faster per unit of added compute than data does** — but both terms matter roughly equally, which is the core Chinchilla finding.
+
+Contrast with Kaplan et al. (2020), which estimated $\alpha \approx 0.076$, $\beta \approx 0.095$ using a different experimental protocol (model size was scaled while data was held nearly fixed). That methodology biased the fit toward making model size appear more impactful, leading to the GPT-3 era of very large, undertrained models.
+
+#### The Compute Budget and Optimal Allocation
+
+Training a dense transformer costs approximately:
+
+$$C \approx 6ND \text{ FLOPs}$$
+
+The factor of 6 comes from: $2N$ FLOPs per token in the forward pass + $4N$ in the backward pass (gradient computation costs roughly $2\times$ the forward pass).
+
+Given a fixed budget $C$, substitute $D = C / 6N$ and minimize $L(N, C/6N)$ over $N$. Taking the derivative and setting it to zero yields:
+
+$$N^* = \left(\frac{A \alpha}{B \beta}\right)^{\frac{1}{\alpha + \beta}} \cdot \left(\frac{C}{6}\right)^{\frac{\beta}{\alpha + \beta}}, \qquad D^* = \frac{C}{6N^*}$$
+
+With $\alpha \approx \beta$, the exponents are both close to $0.5$, giving the symmetric result $N^* \propto C^{0.5}$, $D^* \propto C^{0.5}$.
+
+The **optimal token-to-parameter ratio** implied by the fitted constants is approximately:
+
+$$\frac{D^*}{N^*} \approx 20$$
+
+That is, each parameter should see roughly 20 tokens of training data at Chinchilla-optimal compute allocation.
+
+#### Loss Curves at Fixed Compute
+
+The formula makes the trade-off explicit. At fixed $C = 6ND$:
+
+- If $N$ is too large (too few tokens): the data term $B/D^\beta$ dominates — the model is statistically underfit.
+- If $D$ is too large (too small a model): the capacity term $A/N^\alpha$ dominates — the model cannot represent what it has seen.
+- Optimal: both terms contribute equally to the reducible loss.
+
+> [!NOTE]
+> The formula applies to the **pre-training loss** on the training distribution. It does not directly predict downstream benchmark scores, which depend on data quality, tokenizer efficiency, and task-specific factors. However, pre-training loss is a reliable *monotonic proxy* for benchmark performance across model families trained on the same data mix.
 
 ---
 
@@ -66,6 +117,18 @@ Microsoft Research (2025): reformulates next-token prediction as a **sequential 
 Standard NTP: maximize $\log p_\theta(x_t \mid x_{<t})$ for each token independently.
 
 RPT: treat each token prediction as a policy action $a_t = x_t$ with state $s_t = x_{<t}$. The model receives a reward signal based on the quality of the generated sequence, not just local token-level likelihood.
+
+### Recurrent / Long-Horizon Formulation
+
+A complementary framing for long documents: split into chunks $C_1, C_2, \dots, C_n$ and carry a **memory state** $h_i$ across chunk boundaries. The loss conditions on the accumulated context:
+
+$$\mathcal{L}_\text{RPT} = -\sum_{i=1}^{n} \sum_{t=1}^{|C_i|} \log P_\theta\!\left(x_t^{(i)} \mid x_{<t}^{(i)},\, h_{i-1}\right)$$
+
+The memory state is updated recurrently after processing each chunk:
+
+$$h_i = f_\theta(C_i,\, h_{i-1})$$
+
+This forces the model to encode useful long-range information into $h$ rather than relying solely on in-context attention.
 
 **Key properties:**
 - Fully self-supervised — no human labels or reward model needed.
@@ -79,7 +142,13 @@ RPT: treat each token prediction as a policy action $a_t = x_t$ with state $s_t 
 
 An objective specifically designed for **code models** that enables infilling (completing code given both prefix and suffix context).
 
-$$\langle \mathrm{PRE}\rangle\, \text{prefix}\, \langle\mathrm{SUF}\rangle\, \text{suffix}\, \langle\mathrm{MID}\rangle\, \text{middle}$$
+A document is split into three spans: prefix $P$, middle $M$, suffix $S$. The input sequence is **rearranged** so the suffix comes first, and the model predicts the middle tokens:
+
+$$\mathcal{L}_\text{FIM} = -\sum_{t=1}^{|M|} \log P_\theta(m_t \mid S, P, m_{<t})$$
+
+The transformation applied to the sequence before training:
+
+$$\langle P,\, M,\, S \rangle \;\rightarrow\; \langle \text{[SUF]},\, S,\, \text{[PRE]},\, P,\, \text{[MID]},\, M \rangle$$
 
 The model learns to predict the `middle` given `prefix` and `suffix`. This enables:
 - Code completion at the cursor position (not just append-mode).
@@ -98,6 +167,22 @@ FIM transform:  <PRE>def add(a, b):\n<SUF>\n<MID>    return a + b
 ## Curriculum Learning
 
 Data organized by difficulty (simple → complex) accelerates convergence and improves final performance compared to random shuffling.
+
+### Formal Definition
+
+Define a difficulty scoring function $d(x)$ over samples (e.g., perplexity under a small reference model, text quality score). At training step $k$, the model draws only from the subset of data below a threshold $\delta_k$:
+
+$$\mathcal{D}_k = \{ x \in \mathcal{D} \mid d(x) \leq \delta_k \}$$
+
+The threshold increases monotonically across training:
+
+$$\delta_1 \leq \delta_2 \leq \cdots \leq \delta_K$$
+
+The loss at step $k$ is standard NTP restricted to $\mathcal{D}_k$:
+
+$$\mathcal{L}_k = -\mathbb{E}_{x \sim \mathcal{D}_k} \sum_t \log P_\theta(x_t \mid x_{<t})$$
+
+As training progresses, $\delta_k \to \infty$ and the full dataset is eventually used.
 
 ### Difficulty Metrics
 
@@ -148,7 +233,13 @@ where $\alpha_k$ are domain weights constrained to the simplex $\Delta$.
 
 Synthetic instruction-response pairs mixed into the pre-training corpus bridge the gap to supervised fine-tuning.
 
-**Typical mix:** 1–3% of total pre-training tokens.
+The corpus is a mixture of raw text $\mathcal{D}_\text{raw}$ and synthetic instruction pairs $\mathcal{D}_\text{inst} = \{(q_i, r_i)\}$. The loss is a **weighted combination** of NTP on raw text and conditional generation on instruction pairs:
+
+$$\mathcal{L}_\text{IA} = -\mathbb{E}_{x \sim \mathcal{D}_\text{raw}} \sum_t \log P_\theta(x_t \mid x_{<t}) \;-\; \lambda \cdot \mathbb{E}_{(q,r) \sim \mathcal{D}_\text{inst}} \sum_t \log P_\theta(r_t \mid q, r_{<t})$$
+
+where $\lambda$ controls the weight of instruction supervision during pretraining.
+
+**Typical mix:** 1–3% of total pre-training tokens ($\lambda \approx 0.01$–$0.03$).
 
 **Effect:** Reduces SFT data required by 5–10× for comparable instruction-following quality. The model learns the assistant format during pre-training, so SFT need only refine tone and safety — not teach the format from scratch.
 
