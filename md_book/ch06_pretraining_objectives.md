@@ -18,7 +18,7 @@ $$\mathcal{L}_\mathrm{NTP}(\theta) = -\frac{1}{|\mathcal{D}|}\sum_{x \in \mathca
 
 The model factorizes the joint distribution **autoregressively** — each token is conditioned on all preceding tokens:
 
-$$P_\theta(x_1, \dots, x_T) = \prod_{t=1}^{T} P_\theta(x_t \mid x_{<t})$$
+$$P_\theta(x_1, \dots, x_T) = \prod_{t=1}^{T} P_\theta(x_t \mid x_{\lt t})$$
 
 No labeled data is needed. Despite its simplicity, NTP is sufficient to produce emergent capabilities at scale: syntax, semantics, factual knowledge, multi-step reasoning, and in-context learning all emerge from this single objective applied to enough high-quality text.
 
@@ -93,7 +93,7 @@ With $\alpha \approx \beta$, the exponents are both close to $0.5$, giving the s
 
 The **optimal token-to-parameter ratio** implied by the fitted constants is approximately:
 
-$$\frac{D^*}{N^*} \approx 20$$
+$$\frac{D^{\ast}}{N^{\ast}} \approx 20$$
 
 That is, each parameter should see roughly 20 tokens of training data at Chinchilla-optimal compute allocation.
 
@@ -122,7 +122,7 @@ RPT: treat each token prediction as a policy action $a_t = x_t$ with state $s_t 
 
 A complementary framing for long documents: split into chunks $C_1, C_2, \dots, C_n$ and carry a **memory state** $h_i$ across chunk boundaries. The loss conditions on the accumulated context:
 
-$$\mathcal{L}_\text{RPT} = -\sum_{i=1}^{n} \sum_{t=1}^{|C_i|} \log P_\theta\!\left(x_t^{(i)} \mid x_{<t}^{(i)},\, h_{i-1}\right)$$
+$$\mathcal{L}_{\text{RPT}} = -\sum_{i=1}^{n} \sum_{t=1}^{|C_i|} \log P_\theta\!\left(x_t^{(i)} \mid x_{\lt t}^{(i)},\, h_{i-1}\right)$$
 
 The memory state is updated recurrently after processing each chunk:
 
@@ -143,7 +143,7 @@ The recurrent formulation removes that shortcut. When processing chunk $C_i$, th
 | Recurrent memory $h$ | Single fixed-size vector passed across chunk boundaries | Must summarize: select, compress, and retain what matters |
 
 **The training signal this creates.**
-Because the prediction loss $\mathcal{L}_\text{RPT}$ is summed over *all* chunks, a mistake in chunk $C_4$ caused by a poorly-compressed $h_3$ produces a gradient that flows back through $f_\theta$ into earlier chunks. The model is penalized for *forgetting* relevant facts, not just for local token errors. This is a much richer learning signal than standard NTP, which only grades each token on what is immediately visible.
+Because the prediction loss $\mathcal{L}_{\text{RPT}}$ is summed over **all** chunks, a mistake in chunk $C_4$ caused by a poorly-compressed $h_3$ produces a gradient that flows back through $f_{\theta}$ into earlier chunks. The model is penalized for **forgetting** relevant facts, not just for local token errors. This is a much richer learning signal than standard NTP, which only grades each token on what is immediately visible.
 
 **Practical effect.**
 Models trained with this objective demonstrate stronger coherence across document boundaries, better pronoun and entity tracking in long-form text, and improved performance on tasks that require integrating information spread across many paragraphs — reasoning traces, long-context QA, and multi-chapter summarization.
