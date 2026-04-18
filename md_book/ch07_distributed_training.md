@@ -75,8 +75,8 @@ def column_parallel_linear(X: torch.Tensor, W_local_chunk: torch.Tensor) -> torc
     return Y_full
 
 # Example Usage:
-# Assume we have 2 GPUs (world_size = 2) and want to process a layer where d=1024, out=4096.
-# W is split along the column dimension, so each GPU holds a chunk of shape (1024, 2048).
+# Assume we have a global weight matrix W_full of shape (1024, 4096).
+# We split W_full along the column dimension across all available GPUs.
 
 if __name__ == "__main__":
     # In practice, this script is launched via `torchrun`
@@ -87,14 +87,23 @@ if __name__ == "__main__":
         d, out_features = 1024, 4096
         local_out_features = out_features // world_size
         
-        # 1. Initialize local weight shard for this GPU
-        W_local_chunk = torch.randn(d, local_out_features, device=f"cuda:{rank}")
+        # 1. Start with the full weight matrix (typically loaded from a checkpoint on CPU)
+        # Using a fixed manual seed so all GPUs generate the identical full matrix before splitting
+        torch.manual_seed(42)
+        W_full = torch.randn(d, out_features)
         
-        # 2. Input tensor X is replicated exactly the same across all GPUs
+        # 2. Obtain the specific chunk for this GPU rank (slicing columns)
+        start_idx = rank * local_out_features
+        end_idx = (rank + 1) * local_out_features
+        
+        # W_local_chunk shape: (1024, 4096 / world_size)
+        W_local_chunk = W_full[:, start_idx:end_idx].to(f"cuda:{rank}")
+        
+        # 3. Input tensor X is replicated exactly the same across all GPUs
         batch_size, seq_len = 8, 128
         X = torch.randn(batch_size, seq_len, d, device=f"cuda:{rank}")
         
-        # 3. Execute the column-parallel linear layer
+        # 4. Execute the column-parallel linear layer
         # Every GPU will end up with an identical Y_full tensor of shape (8, 128, 4096)
         Y_full = column_parallel_linear(X, W_local_chunk)
 ```
