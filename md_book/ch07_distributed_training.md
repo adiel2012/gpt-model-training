@@ -73,7 +73,32 @@ def column_parallel_linear(X: torch.Tensor, W_local_chunk: torch.Tensor) -> torc
     Y_full = torch.cat(gathered_chunks, dim=-1)
     
     return Y_full
+
+# Example Usage:
+# Assume we have 2 GPUs (world_size = 2) and want to process a layer where d=1024, out=4096.
+# W is split along the column dimension, so each GPU holds a chunk of shape (1024, 2048).
+
+if __name__ == "__main__":
+    # In practice, this script is launched via `torchrun`
+    if dist.is_available() and dist.is_initialized():
+        rank = dist.get_rank()
+        world_size = dist.get_world_size()
+        
+        d, out_features = 1024, 4096
+        local_out_features = out_features // world_size
+        
+        # 1. Initialize local weight shard for this GPU
+        W_local_chunk = torch.randn(d, local_out_features, device=f"cuda:{rank}")
+        
+        # 2. Input tensor X is replicated exactly the same across all GPUs
+        batch_size, seq_len = 8, 128
+        X = torch.randn(batch_size, seq_len, d, device=f"cuda:{rank}")
+        
+        # 3. Execute the column-parallel linear layer
+        # Every GPU will end up with an identical Y_full tensor of shape (8, 128, 4096)
+        Y_full = column_parallel_linear(X, W_local_chunk)
 ```
+
 
 Requires NVLink bandwidth (600–900 GB/s) — tensor parallelism across slow cross-node links is typically not worthwhile. Practical degree: 2–8 GPUs within a single node.
 
