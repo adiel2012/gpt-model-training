@@ -97,6 +97,38 @@ $$\frac{D^{\ast}}{N^{\ast}} \approx 20$$
 
 That is, each parameter should see roughly 20 tokens of training data at Chinchilla-optimal compute allocation.
 
+#### PyTorch Implementation
+
+Here is a PyTorch snippet to calculate the expected loss and the optimal parameter/token allocation for a given compute budget:
+
+```python
+import torch
+
+def chinchilla_expected_loss(N: torch.Tensor, D: torch.Tensor) -> torch.Tensor:
+    """
+    Calculates the expected cross-entropy loss (in nats) based on the Chinchilla scaling laws.
+    """
+    A, B, alpha, beta, L_inf = 406.4, 410.7, 0.34, 0.28, 1.69
+    return (A / (N ** alpha)) + (B / (D ** beta)) + L_inf
+
+def chinchilla_optimal_allocation(C: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Calculates the compute-optimal parameter count (N*) and token count (D*) 
+    for a given compute budget C (in FLOPs).
+    """
+    A, B, alpha, beta = 406.4, 410.7, 0.34, 0.28
+    
+    # N* calculation
+    term1 = (A * alpha) / (B * beta)
+    term2 = C / 6.0
+    N_opt = (term1 ** (1 / (alpha + beta))) * (term2 ** (beta / (alpha + beta)))
+    
+    # D* calculation (since C = 6 * N * D)
+    D_opt = C / (6.0 * N_opt)
+    
+    return N_opt, D_opt
+```
+
 #### Loss Curves at Fixed Compute
 
 The formula makes the trade-off explicit. At fixed $C = 6ND$:
@@ -166,7 +198,7 @@ $$\mathcal{L}_\text{FIM} = -\sum_{t=1}^{|M|} \log P_\theta(m_t \mid S, P, m_{<t}
 
 The transformation applied to the sequence before training:
 
-$$\langle P,\, M,\, S \rangle \;\rightarrow\; \langle \text{[SUF]},\, S,\, \text{[PRE]},\, P,\, \text{[MID]},\, M \rangle$$
+$$\langle P,\, M,\, S \rangle \;\rightarrow\; \langle \text{<PRE>},\, P,\, \text{<SUF>},\, S,\, \text{<MID>},\, M \rangle$$
 
 The model learns to predict the `middle` given `prefix` and `suffix`. This enables:
 - Code completion at the cursor position (not just append-mode).
@@ -174,6 +206,8 @@ The model learns to predict the `middle` given `prefix` and `suffix`. This enabl
 - Test generation from implementation.
 
 **Implementation:** With probability $p_\mathrm{FIM}$ (typically 0.5), transform a document into FIM format before packing. The remaining $(1 - p_\mathrm{FIM})$ fraction trains on standard NTP. Used in Code Llama, DeepSeek-Coder, and StarCoder.
+
+Note that models often use the **PSM** (Prefix-Suffix-Middle) ordering as shown below, though **SPM** (Suffix-Prefix-Middle) is also common.
 
 ```
 Standard NTP:   def add(a, b):\n    return a + b

@@ -40,12 +40,39 @@ Standard data parallelism (DDP) replicates the full model on every GPU and all-r
 
 ### Tensor Parallelism
 
-Split individual weight matrices across GPUs. A linear layer $Y = XW$ with $W \in \mathbb{R}^{d \times 4d}$ is split into column-parallel chunks processed independently, then all-reduced:
+Split individual weight matrices across GPUs. A linear layer $Y = XW$ with $W \in \mathbb{R}^{d \times 4d}$ is split into column-parallel chunks processed independently, then gathered via an All-Gather operation:
 
-```
+```text
 GPU 0: Y₀ = X · W[:, :2d]
 GPU 1: Y₁ = X · W[:, 2d:]
-All-reduce → Y = [Y₀ | Y₁]
+All-Gather → Y = [Y₀ | Y₁]
+```
+
+#### PyTorch Implementation
+
+```python
+import torch
+import torch.distributed as dist
+
+def column_parallel_linear(X: torch.Tensor, W_local_chunk: torch.Tensor) -> torch.Tensor:
+    """
+    Executes a column-parallel linear layer on a single GPU rank.
+    Assumes X is already replicated across GPUs, and W is split column-wise.
+    """
+    # 1. Local matrix multiplication (e.g., Y_0 = X @ W[:, :2d])
+    Y_local = torch.matmul(X, W_local_chunk)
+    
+    # 2. Prepare tensors to gather results from all GPUs
+    world_size = dist.get_world_size()
+    gathered_chunks = [torch.zeros_like(Y_local) for _ in range(world_size)]
+    
+    # 3. All-Gather: Synchronize and collect Y_local from all GPUs
+    dist.all_gather(tensor_list=gathered_chunks, tensor=Y_local)
+    
+    # 4. Concatenate chunks along the feature dimension to get the full output Y
+    Y_full = torch.cat(gathered_chunks, dim=-1)
+    
+    return Y_full
 ```
 
 Requires NVLink bandwidth (600–900 GB/s) — tensor parallelism across slow cross-node links is typically not worthwhile. Practical degree: 2–8 GPUs within a single node.
