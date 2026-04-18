@@ -108,6 +108,19 @@ if __name__ == "__main__":
         Y_full = column_parallel_linear(X, W_local_chunk)
 ```
 
+> [!NOTE]
+> **# In practice, this script is launched via `torchrun`**
+> 
+> That specific comment is the most important clue. It refers to the launcher, which is the external tool responsible for creating multiple processes.
+> 
+> When you see that a script is designed for torchrun, it implies that the code doesn't just run once—it runs parallel copies of itself. Here is how that translates to running on multiple CPUs:
+> 
+> **1. The "Hidden" Multi-CPU Command**
+> Even though it isn't a line of Python code inside your script, torchrun is a command you type into your terminal. It looks like this:
+> 
+> ```bash
+> torchrun --nproc_per_node=4 your_script.py
+> ```
 
 Requires NVLink bandwidth (600–900 GB/s) — tensor parallelism across slow cross-node links is typically not worthwhile. Practical degree: 2–8 GPUs within a single node.
 
